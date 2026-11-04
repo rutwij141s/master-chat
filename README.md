@@ -53,7 +53,6 @@ graph TD
 
 ```
 MasterChat/
-├── .env.example                       # Reference environment variables
 ├── .env                               # Local active environment configuration
 ├── docker-compose.yml                 # Multi-container local orchestration
 ├── Makefile                           # Developer workflow shortcuts
@@ -172,7 +171,7 @@ MasterChat/
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and configure your API keys:
+Configure your environment variables in `.env`:
 
 | Variable | Description | Default |
 |---|---|---|
@@ -201,7 +200,6 @@ Copy `.env.example` to `.env` and configure your API keys:
 1. Ensure Docker is running.
 2. Clone the repository and configure your environment:
    ```bash
-   cp .env.example .env
    # Add your OPENAI_API_KEY and/or ANTHROPIC_API_KEY to .env
    ```
 3. Start the entire platform with one command:
