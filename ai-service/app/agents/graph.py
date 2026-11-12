@@ -21,8 +21,19 @@ def router_node(state: AgentState) -> Dict[str, Any]:
     """Determines execution path: direct answer, RAG retrieval, tool call, or web search."""
     user_input = state.get("user_input", "")
     use_rag = state.get("use_rag", False)
+    doc_ids = state.get("doc_ids")
 
-    if use_rag:
+    # Document intent detection: auto-route to RAG if user refers to documents or asks to summarize
+    doc_keywords = [
+        r"\b(?:document|doc|docs|pdf|file|uploaded|attachment|attached)\b",
+        r"\b(?:summarize|summary|overview|synopsis|outline|key points|takeaways)\b",
+        r"\b(?:what does the (?:doc|document|pdf|file) say)\b",
+        r"\b(?:explain the (?:doc|document|pdf|file))\b",
+        r"\brealtime_global\b",
+    ]
+    is_doc_intent = any(re.search(pat, user_input, re.IGNORECASE) for pat in doc_keywords)
+
+    if use_rag or bool(doc_ids) or is_doc_intent:
         return {"route": "rag"}
 
     # Math/Calculation intent
@@ -44,23 +55,52 @@ def direct_node(state: AgentState) -> Dict[str, Any]:
 
 
 def rag_node(state: AgentState) -> Dict[str, Any]:
-    """Retrieve grounded chunks from ChromaDB via MMR, rerank, and sanitize."""
+    """Retrieve grounded chunks from ChromaDB via MMR + overview chunks, rerank, and sanitize."""
     user_id = state.get("user_id", "")
     query = state.get("user_input", "")
     doc_ids = state.get("doc_ids")
 
-    # 1. MMR Retrieval
-    retrieved_chunks = vector_store.query_mmr(
+    is_summary = any(
+        w in query.lower()
+        for w in ["summarize", "summary", "overview", "synopsis", "outline", "what is this document", "main points", "tl;dr"]
+    )
+
+    candidate_chunks: List[Dict[str, Any]] = []
+
+    # If user wants a summary or overview, retrieve opening sequential chunks
+    if is_summary:
+        overview_chunks = vector_store.get_overview_chunks(
+            user_id=user_id,
+            doc_ids=doc_ids,
+            limit=8,
+        )
+        candidate_chunks.extend(overview_chunks)
+
+    # MMR Retrieval for diverse semantic chunks
+    mmr_chunks = vector_store.query_mmr(
         user_id=user_id,
         query_text=query,
         doc_ids=doc_ids,
-        top_k=4,
+        top_k=6 if is_summary else 4,
     )
 
-    # 2. Cross-Encoder Rerank
-    reranked = reranker.rerank(query=query, chunks=retrieved_chunks, top_k=4)
+    # Deduplicate candidate chunks while preserving order
+    seen_ids = set()
+    final_candidates = []
+    for c in candidate_chunks + mmr_chunks:
+        if c["id"] not in seen_ids:
+            seen_ids.add(c["id"])
+            final_candidates.append(c)
 
-    # 3. Delimit context and format citations
+    if not is_summary and final_candidates:
+        # Cross-Encoder Rerank for specific queries
+        reranked = reranker.rerank(query=query, chunks=final_candidates, top_k=4)
+    else:
+        # For summaries, sort by chunk_index to present a coherent narrative flow
+        final_candidates.sort(key=lambda x: x.get("metadata", {}).get("chunk_index", 0))
+        reranked = final_candidates[:8]
+
+    # Delimit context and format citations
     context_str, citations = reranker.sanitize_and_delimit_context(reranked)
 
     return {

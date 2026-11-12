@@ -25,12 +25,19 @@ export default function ChatPage() {
       try {
         setUser(JSON.parse(storedUser));
       } catch {
-        setUser({ id: "mock-user-1", email: "demo@masterchat.ai" });
+        setUser({ id: "4fd1629e-5f63-4135-80e8-807a1632c551", email: "demo@masterchat.ai" });
       }
     } else {
-      // Demo / development auto-provision so user can test immediately
-      const demoUser = { id: "00000000-0000-0000-0000-000000000001", email: "demo@masterchat.ai" };
-      setUser(demoUser);
+      // Auto-authenticate as demo user to ensure valid JWT token is set for immediate testing
+      api
+        .login("demo@masterchat.ai", "Password123!")
+        .then((res) => {
+          setUser(res.user);
+        })
+        .catch((err) => {
+          console.warn("Auto demo login note:", err);
+          setUser({ id: "4fd1629e-5f63-4135-80e8-807a1632c551", email: "demo@masterchat.ai" });
+        });
     }
   }, []);
 

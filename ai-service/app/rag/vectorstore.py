@@ -70,6 +70,47 @@ class ChromaManager:
         except Exception as e:
             logger.warning(f"Error deleting chunks for document {document_id}: {e}")
 
+    def get_overview_chunks(
+        self,
+        user_id: str,
+        doc_ids: Optional[List[str]] = None,
+        limit: int = 8,
+    ) -> List[Dict[str, Any]]:
+        """Retrieve sequential opening chunks for high-level document summarization and overviews."""
+        try:
+            collection = self.get_or_create_collection(user_id)
+            if collection.count() == 0:
+                return []
+
+            where_filter = None
+            if doc_ids:
+                if len(doc_ids) == 1:
+                    where_filter = {"document_id": str(doc_ids[0])}
+                else:
+                    where_filter = {"$or": [{"document_id": str(did)} for did in doc_ids]}
+
+            res = collection.get(
+                where=where_filter,
+                limit=limit,
+                include=["documents", "metadatas"],
+            )
+
+            chunks = []
+            if res and res.get("ids"):
+                for idx in range(len(res["ids"])):
+                    chunks.append({
+                        "id": res["ids"][idx],
+                        "text": res["documents"][idx],
+                        "metadata": res["metadatas"][idx] or {},
+                        "score": 1.0,
+                    })
+            # Order chunks by original document position
+            chunks.sort(key=lambda x: x["metadata"].get("chunk_index", 0))
+            return chunks
+        except Exception as exc:
+            logger.warning(f"get_overview_chunks error: {exc}")
+            return []
+
     def query_similarity(
         self,
         user_id: str,

@@ -76,6 +76,12 @@ async def stream_generator(
             "You are an expert AI assistant. Provide direct, beautifully structured, and accurate responses.\n"
             "Use Markdown formatting with tables, bullet points, and code blocks where helpful."
         )
+        if final_state.get("retrieved_context"):
+            system_instructions += (
+                "\n\nYou have direct access to reference documents in the <retrieved_context> tags.\n"
+                "Ground your answers thoroughly in these documents. If the user asks for a summary or questions about the file, "
+                "synthesize a detailed, well-structured response with key sections, bullet points, and main takeaways based strictly on the content."
+            )
         if final_state.get("summary"):
             system_instructions += f"\n\nContext summary of earlier discussion:\n{final_state['summary']}"
 
