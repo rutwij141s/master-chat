@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Copy,
@@ -11,6 +11,8 @@ import {
   Edit2,
   Sparkles,
   User as UserIcon,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { Message } from "@/lib/types";
 import { MarkdownRenderer } from "./MarkdownRenderer";
@@ -34,6 +36,56 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Stop any active speech when component unmounts
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
+
+  const handleToggleSpeak = () => {
+    if (typeof window === "undefined") return;
+
+    if (isPlayingAudio) {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+      setIsPlayingAudio(false);
+      return;
+    }
+
+    // Clean markdown syntax for pleasant vocal articulation
+    const plainText = message.content
+      .replace(/!\[.*?\]\(.*?\)/g, "")
+      .replace(/\[(.*?)\]\(.*?\)/g, "$1")
+      .replace(/[`*#_~]/g, "")
+      .trim();
+
+    if (!plainText) return;
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(plainText);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.onstart = () => setIsPlayingAudio(true);
+      utterance.onend = () => setIsPlayingAudio(false);
+      utterance.onerror = () => setIsPlayingAudio(false);
+      window.speechSynthesis.speak(utterance);
+    }
+  };
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(message.content);
@@ -159,6 +211,22 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
               </button>
             ) : (
               <>
+                <button
+                  onClick={handleToggleSpeak}
+                  title={isPlayingAudio ? "Stop speaking" : "Read aloud (Text-to-Speech)"}
+                  className={cn(
+                    "p-1 rounded-lg transition-colors cursor-pointer",
+                    isPlayingAudio
+                      ? "text-indigo-500 bg-indigo-500/10 hover:bg-indigo-500/20"
+                      : "hover:bg-black/5 dark:hover:bg-white/10 hover:text-foreground"
+                  )}
+                >
+                  {isPlayingAudio ? (
+                    <VolumeX className="w-3.5 h-3.5 animate-pulse text-indigo-500" />
+                  ) : (
+                    <Volume2 className="w-3.5 h-3.5" />
+                  )}
+                </button>
                 {onRegenerate && (
                   <button
                     onClick={onRegenerate}

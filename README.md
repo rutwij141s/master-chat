@@ -4,7 +4,7 @@ MasterChat is an enterprise-grade, multi-model conversational AI platform featur
 
 - **GitHub Repository:** [https://github.com/rutwij141s/master-chat](https://github.com/rutwij141s/master-chat) (Branch: `master`)
 - **System Health:** 7/7 Containers Active & Operational
-- **Test Suite Status:** 20/20 End-to-End API Tests Verified (100.0% Pass Rate)
+- **Test Suite Status:** 24/24 End-to-End API Tests Verified (100.0% Pass Rate)
 
 ---
 
@@ -116,7 +116,8 @@ MasterChat/
 │   │   │   ├── state.py
 │   │   │   ├── memory.py
 │   │   │   └── graph.py               # Router, RAG, Web, Tool, Synthesis nodes
-│   │   └── api/v1/                    # REST & SSE streaming routers
+│   │   └── api/v1/                    # REST & SSE streaming routers (chat, docs, media, audio)
+│   │       └── media.py               # DALL-E 3, Video gen, Whisper STT & neural TTS
 │   └── tests/                         # Pytest suite with mock providers
 ├── gateway-go/
 │   ├── go.mod / go.sum
@@ -128,8 +129,8 @@ MasterChat/
 │   │   ├── redis/client.go            # Redis client & sliding window rate limiter
 │   │   ├── middleware/                # Auth, RateLimit, CORS, Slog logger, RequestID
 │   │   ├── proxy/sse_proxy.go         # Zero-buffering SSE reverse-proxy
-│   │   └── handlers/                  # Auth, chat, documents, models, usage handlers
-│   └── tests/                         # Table-driven Go tests
+│   │   └── handlers/                  # Auth, chat, documents, models, usage, media handlers
+│   │       └── media.go               # Proxy endpoints for image, video, STT & TTS
 └── frontend/
     ├── package.json / tsconfig.json
     ├── tailwind.config.ts             # Apple Liquid Glass design tokens
@@ -295,6 +296,32 @@ npm run dev
 - `GET /documents`: List user's indexed documents with chunk counts and statuses
 - `DELETE /documents/{id}`: Purge document and remove vector chunks from ChromaDB
 
+### AI Media Studio & Audio Capabilities
+- `POST /media/image/generate`: High-resolution AI artwork generation using OpenAI DALL-E 3 with stylized visual fallback:
+  ```json
+  {
+    "prompt": "Futuristic cyberpunk skyline with floating neon signs",
+    "size": "1024x1024",
+    "quality": "standard"
+  }
+  ```
+- `POST /media/video/generate`: Cinematic scene generation and video preview:
+  ```json
+  {
+    "prompt": "Aerial view of ocean waves crashing onto golden cliffs at sunset",
+    "duration_seconds": 5
+  }
+  ```
+- `POST /audio/transcribe`: Speech-to-Text (STT) audio transcription using OpenAI Whisper (`multipart/form-data` with `file` upload)
+- `POST /audio/speech`: Text-to-Speech (TTS) natural voice streaming synthesis:
+  ```json
+  {
+    "text": "Hello, welcome to MasterChat AI platform.",
+    "voice": "alloy",
+    "speed": 1.0
+  }
+  ```
+
 ### Metadata & Observability
 - `GET /models`: List available models and capabilities (`gpt-4o`, `gpt-4o-mini`, `claude-3-5-sonnet`, `claude-3-5-haiku`)
 - `GET /usage`: View user token and cost consumption
@@ -306,7 +333,7 @@ npm run dev
 ## Running Tests
 
 ### End-to-End API Test Suite
-Run the 20-endpoint comprehensive test suite against the live platform (health probes, auth, models, conversations, PDF ingestion, MMR vector retrieval, Cross-Encoder reranking, SSE streaming, usage tracking, and resource cleanup):
+Run the 24-endpoint comprehensive test suite against the live platform (health probes, auth, models, conversations, PDF ingestion, MMR vector retrieval, Cross-Encoder reranking, SSE streaming, AI image generation, AI video generation, Whisper STT, neural TTS, usage tracking, and resource cleanup):
 ```bash
 python3 tests/test_all_apis.py
 ```

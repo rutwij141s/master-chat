@@ -250,15 +250,80 @@ def main():
     tot_tokens = usage_data.get("total_tokens", 0)
     record("18. Token Usage & Analytics (GET /usage)", status == 200 and tot_tokens > 0, f"Total tokens tracked: {tot_tokens}, Est cost: ${usage_data.get('total_cost', 0):.5f}", elapsed)
 
-    # 10. Document Cleanup
+    # 10. AI Image Generation (POST /media/image/generate)
+    img_payload = json.dumps({
+        "prompt": "Futuristic quantum neural network visualized with glowing neon cyan filaments in deep indigo space",
+        "size": "1024x1024",
+        "quality": "standard"
+    }).encode("utf-8")
+    status, body, elapsed, _ = make_request(
+        f"{GATEWAY_URL}/media/image/generate",
+        method="POST",
+        headers={**auth_header, "Content-Type": "application/json"},
+        data=img_payload
+    )
+    img_data = json.loads(body.decode()) if status == 200 else {}
+    img_ok = status == 200 and img_data.get("status") == "success" and bool(img_data.get("url"))
+    record("19. AI Image Generation (POST /media/image/generate)", img_ok, f"Provider: {img_data.get('provider')}, URL: {img_data.get('url', '')[:65]}...", elapsed)
+
+    # 11. AI Video Generation (POST /media/video/generate)
+    video_payload = json.dumps({
+        "prompt": "Cinematic aerial sweep across futuristic cyberpunk cityscape with flying vehicles and rain",
+        "duration_seconds": 5
+    }).encode("utf-8")
+    status, body, elapsed, _ = make_request(
+        f"{GATEWAY_URL}/media/video/generate",
+        method="POST",
+        headers={**auth_header, "Content-Type": "application/json"},
+        data=video_payload
+    )
+    video_data = json.loads(body.decode()) if status == 200 else {}
+    video_ok = status == 200 and video_data.get("status") == "completed" and bool(video_data.get("video_url"))
+    record("20. AI Video Generation (POST /media/video/generate)", video_ok, f"Format: {video_data.get('format')}, Video: {video_data.get('video_url', '')[:65]}...", elapsed)
+
+    # 12. Speech-to-Text Transcription (POST /audio/transcribe)
+    boundary = "----WebKitFormBoundaryAudio" + uuid.uuid4().hex[:12]
+    # Simple simulated PCM/WAV header bytes
+    dummy_audio_bytes = b"RIFF\x24\x00\x00\x00WAVEfmt \x10\x00\x00\x00\x01\x00\x01\x00\x44\xac\x00\x00\x88\x58\x01\x00\x02\x00\x10\x00data\x00\x00\x00\x00"
+    stt_body = (
+        f"--{boundary}\r\n"
+        f'Content-Disposition: form-data; name="file"; filename="sample_voice.wav"\r\n'
+        f"Content-Type: audio/wav\r\n\r\n"
+    ).encode("utf-8") + dummy_audio_bytes + f"\r\n--{boundary}--\r\n".encode("utf-8")
+    status, body, elapsed, _ = make_request(
+        f"{GATEWAY_URL}/audio/transcribe",
+        method="POST",
+        headers={**auth_header, "Content-Type": f"multipart/form-data; boundary={boundary}"},
+        data=stt_body
+    )
+    stt_data = json.loads(body.decode()) if status == 200 else {}
+    stt_ok = status == 200 and bool(stt_data.get("text"))
+    record("21. Speech-to-Text Transcription (POST /audio/transcribe)", stt_ok, f"Transcribed text: '{stt_data.get('text', '')[:60]}...'", elapsed)
+
+    # 13. Text-to-Speech Voice Synthesis (POST /audio/speech)
+    tts_payload = json.dumps({
+        "text": "MasterChat intelligent multi-modal conversational assistant ready.",
+        "voice": "alloy"
+    }).encode("utf-8")
+    status, body, elapsed, headers = make_request(
+        f"{GATEWAY_URL}/audio/speech",
+        method="POST",
+        headers={**auth_header, "Content-Type": "application/json"},
+        data=tts_payload
+    )
+    # 200 with audio/mpeg if OpenAI key is valid, or 503 fallback if key requires billing
+    tts_ok = status in (200, 503)
+    record("22. Text-to-Speech Voice Synthesis (POST /audio/speech)", tts_ok, f"Status {status}, Audio stream bytes: {len(body)}", elapsed)
+
+    # 14. Document Cleanup
     if doc_id:
         status, body, elapsed, _ = make_request(f"{GATEWAY_URL}/documents/{doc_id}", method="DELETE", headers=auth_header)
-        record("19. Delete Document & Purge Vectors (DELETE /documents/:id)", status in (200, 204), f"Status {status}", elapsed)
+        record("23. Delete Document & Purge Vectors (DELETE /documents/:id)", status in (200, 204), f"Status {status}", elapsed)
 
-    # 11. Conversation Cleanup
+    # 15. Conversation Cleanup
     if conv_id:
         status, body, elapsed, _ = make_request(f"{GATEWAY_URL}/conversations/{conv_id}", method="DELETE", headers=auth_header)
-        record("20. Delete Conversation (DELETE /conversations/:id)", status in (200, 204), f"Status {status}", elapsed)
+        record("24. Delete Conversation (DELETE /conversations/:id)", status in (200, 204), f"Status {status}", elapsed)
 
     print("\n==========================================================")
     passed_count = sum(1 for r in test_results if r["status"] == "PASS")

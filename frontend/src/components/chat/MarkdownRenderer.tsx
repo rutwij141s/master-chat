@@ -69,6 +69,76 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
               </td>
             );
           },
+          // Custom Image Rendering (Liquid Glass Container)
+          img({ src, alt }: any) {
+            return (
+              <div className="my-3 group relative rounded-2xl overflow-hidden border border-white/20 dark:border-white/10 shadow-lg bg-black/5 dark:bg-white/5">
+                <img
+                  src={src}
+                  alt={alt || "Generated visual"}
+                  className="w-full max-h-[500px] object-cover rounded-2xl transition-transform duration-300 hover:scale-[1.01]"
+                  loading="lazy"
+                />
+                {alt && (
+                  <div className="px-3 py-1.5 text-xs text-white/90 bg-black/60 backdrop-blur-md flex items-center justify-between">
+                    <span className="truncate max-w-[85%]">{alt}</span>
+                    <a
+                      href={src}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-indigo-300 hover:underline text-[11px]"
+                    >
+                      Full Size ↗
+                    </a>
+                  </div>
+                )}
+              </div>
+            );
+          },
+          // Custom Link & Video Embed Rendering
+          a({ href, children }: any) {
+            if (
+              href &&
+              (href.endsWith(".mp4") ||
+                href.includes("gtv-videos-bucket") ||
+                href.includes("sample/"))
+            ) {
+              return (
+                <div className="my-3 rounded-2xl overflow-hidden border border-white/20 dark:border-white/10 shadow-xl bg-black">
+                  <video
+                    controls
+                    className="w-full max-h-[420px] rounded-2xl"
+                    preload="metadata"
+                  >
+                    <source src={href} type="video/mp4" />
+                    Your browser does not support video playback.
+                  </video>
+                  <div className="px-3 py-2 bg-black/70 text-xs text-white/90 flex items-center justify-between">
+                    <span>🎬 AI Video Scene Preview</span>
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      className="text-indigo-400 hover:underline font-medium"
+                    >
+                      Download MP4 ↗
+                    </a>
+                  </div>
+                </div>
+              );
+            }
+            return (
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+              >
+                {children}
+              </a>
+            );
+          },
         }}
       >
         {content}

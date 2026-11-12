@@ -54,6 +54,7 @@ func main() {
 	docHandler := handlers.NewDocumentHandler(cfg)
 	modelHandler := handlers.NewModelHandler(cfg)
 	usageHandler := handlers.NewUsageHandler(cfg)
+	mediaHandler := handlers.NewMediaHandler(cfg)
 	healthHandler := handlers.NewHealthHandler(database, redisClient)
 
 	// Router setup
@@ -98,6 +99,14 @@ func main() {
 
 		// Usage
 		api.GET("/usage", usageHandler.GetUsage)
+
+		// Media & AI Generation (Image, Video)
+		api.POST("/media/image/generate", mediaHandler.GenerateImage)
+		api.POST("/media/video/generate", mediaHandler.GenerateVideo)
+
+		// Audio Capabilities (STT Whisper & TTS Speech)
+		api.POST("/audio/transcribe", mediaHandler.TranscribeAudio)
+		api.POST("/audio/speech", mediaHandler.TextToSpeech)
 	}
 
 	srv := &http.Server{

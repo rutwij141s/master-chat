@@ -1,7 +1,19 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { ArrowUp, Paperclip, Database, StopCircle, FileText, Sparkles, Globe } from "lucide-react";
+import {
+  ArrowUp,
+  Paperclip,
+  Database,
+  StopCircle,
+  FileText,
+  Sparkles,
+  Globe,
+  Mic,
+  MicOff,
+  Image as ImageIcon,
+  Video,
+} from "lucide-react";
 import { GlassCard } from "../ui/GlassCard";
 import { ModelSelector } from "./ModelSelector";
 import { cn } from "@/lib/utils";
@@ -30,7 +42,9 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   const [input, setInput] = useState("");
   const [useRag, setUseRag] = useState(false);
   const [useWebSearch, setUseWebSearch] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const recognitionRef = useRef<any>(null);
 
   // Automatically enable RAG when documents are detected
   useEffect(() => {
@@ -38,6 +52,79 @@ export const MessageInput: React.FC<MessageInputProps> = ({
       setUseRag(true);
     }
   }, [hasDocuments]);
+
+  // Clean up speech recognition on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {
+          // ignore
+        }
+      }
+    };
+  }, []);
+
+  const toggleListening = () => {
+    if (typeof window === "undefined") return;
+
+    if (isListening) {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {
+          // ignore
+        }
+      }
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert("Speech-to-Text recognition is not supported in this browser. Please use Chrome or Edge.");
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+
+      let initialText = input;
+
+      recognition.onstart = () => {
+        setIsListening(true);
+      };
+
+      recognition.onresult = (event: any) => {
+        let currentTranscript = "";
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          currentTranscript += event.results[i][0].transcript;
+        }
+        setInput(initialText ? `${initialText} ${currentTranscript.trim()}` : currentTranscript.trim());
+      };
+
+      recognition.onerror = (event: any) => {
+        console.warn("Speech recognition error:", event);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (e) {
+      console.error("Failed to start speech recognition", e);
+      setIsListening(false);
+    }
+  };
 
   // Auto-resize textarea
   useEffect(() => {
@@ -72,29 +159,57 @@ export const MessageInput: React.FC<MessageInputProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 pb-4">
-      {/* Quick Document Action Chips when Knowledge Base is Active */}
-      {hasDocuments && (
-        <div className="flex items-center gap-2 mb-2 px-1 flex-wrap text-xs">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20 backdrop-blur-md">
-            <FileText className="w-3.5 h-3.5 text-indigo-500" />
-            <span className="font-medium truncate max-w-[160px] sm:max-w-[240px]">
-              {activeDocumentName || "Knowledge Base Ready"}
-            </span>
-            <span className="text-[10px] px-1 py-0.2 rounded bg-indigo-500/25 font-bold uppercase">
-              RAG Active
-            </span>
-          </div>
+      {/* Quick Action Chips: Documents & AI Creative Studio */}
+      <div className="flex items-center gap-2 mb-2 px-1 flex-wrap text-xs">
+        {hasDocuments && (
+          <>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20 backdrop-blur-md">
+              <FileText className="w-3.5 h-3.5 text-indigo-500" />
+              <span className="font-medium truncate max-w-[160px] sm:max-w-[240px]">
+                {activeDocumentName || "Knowledge Base Ready"}
+              </span>
+              <span className="text-[10px] px-1 py-0.2 rounded bg-indigo-500/25 font-bold uppercase">
+                RAG Active
+              </span>
+            </div>
 
-          <button
-            type="button"
-            onClick={handleQuickSummarize}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/50 dark:bg-white/10 hover:bg-white/80 dark:hover:bg-white/15 text-foreground/80 border border-white/30 dark:border-white/10 backdrop-blur-md transition-all cursor-pointer font-medium text-xs active:scale-95 shadow-xs"
-          >
-            <Sparkles className="w-3 h-3 text-amber-500" />
-            <span>Summarize Document</span>
-          </button>
-        </div>
-      )}
+            <button
+              type="button"
+              onClick={handleQuickSummarize}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/50 dark:bg-white/10 hover:bg-white/80 dark:hover:bg-white/15 text-foreground/80 border border-white/30 dark:border-white/10 backdrop-blur-md transition-all cursor-pointer font-medium text-xs active:scale-95 shadow-xs"
+            >
+              <Sparkles className="w-3 h-3 text-amber-500" />
+              <span>Summarize Document</span>
+            </button>
+          </>
+        )}
+
+        <button
+          type="button"
+          onClick={() => {
+            setInput("/image a futuristic cybernetic metropolis in holographic neon lights, 8k cinematic");
+            if (textareaRef.current) textareaRef.current.focus();
+          }}
+          className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/20 backdrop-blur-md transition-all cursor-pointer font-medium text-xs active:scale-95 shadow-xs"
+          title="Create AI Art with DALL-E 3"
+        >
+          <ImageIcon className="w-3 h-3 text-purple-500" />
+          <span>🎨 /image</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setInput("/video cinematic aerial shot of rolling misty emerald hills at sunrise");
+            if (textareaRef.current) textareaRef.current.focus();
+          }}
+          className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-pink-500/10 hover:bg-pink-500/20 text-pink-700 dark:text-pink-300 border border-pink-500/20 backdrop-blur-md transition-all cursor-pointer font-medium text-xs active:scale-95 shadow-xs"
+          title="Create cinematic AI Video preview"
+        >
+          <Video className="w-3 h-3 text-pink-500" />
+          <span>🎬 /video</span>
+        </button>
+      </div>
 
       {/* Liquid Glass Floating Composer (overflow-visible to prevent clipping popups) */}
       <GlassCard
@@ -188,8 +303,31 @@ export const MessageInput: React.FC<MessageInputProps> = ({
             </button>
           </div>
 
-          {/* Right Control: Send or Stop Button */}
-          <div className="flex items-center">
+          {/* Right Control: Dictation Mic & Send/Stop Button */}
+          <div className="flex items-center gap-1.5">
+            {/* Voice Dictation (Speech-to-Text) Button */}
+            <button
+              type="button"
+              onClick={toggleListening}
+              className={cn(
+                "flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-2xl transition-all cursor-pointer",
+                isListening
+                  ? "bg-rose-500 text-white shadow-lg shadow-rose-500/40 animate-pulse border border-rose-400"
+                  : "bg-white/40 dark:bg-white/5 hover:bg-white/70 dark:hover:bg-white/10 text-foreground/70 border border-white/30 dark:border-white/10"
+              )}
+              title={
+                isListening
+                  ? "Listening... Click to stop (Speech-to-Text)"
+                  : "Dictate with voice (Speech-to-Text)"
+              }
+            >
+              {isListening ? (
+                <MicOff className="w-4 h-4 text-white" />
+              ) : (
+                <Mic className="w-4 h-4" />
+              )}
+            </button>
+
             {isStreaming ? (
               <button
                 type="button"

@@ -117,6 +117,106 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
     setMessages((prev) => [...prev, userMsg, initialAssistantMsg]);
     setIsStreaming(true);
 
+    // --- Specialized Command Routing: AI Image Generation ---
+    if (userText.startsWith("/image ") || userText.toLowerCase().startsWith("generate image: ")) {
+      const prompt = userText.startsWith("/image ")
+        ? userText.slice(7).trim()
+        : userText.slice(16).trim();
+
+      try {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMsgId
+              ? { ...msg, content: `🎨 *Generating AI artwork for "${prompt}" with DALL-E 3...*` }
+              : msg
+          )
+        );
+
+        let convId = activeConversation?.id;
+        if (!convId) {
+          try {
+            const createdConv = await api.createConversation(`Image: ${prompt.slice(0, 25)}`);
+            convId = createdConv.id;
+            onConversationCreated(createdConv);
+          } catch {
+            // fallback if offline
+          }
+        }
+
+        const imgRes = await api.generateImage(prompt);
+        const markdown = `### 🎨 AI Generated Artwork\n\n**Prompt:** "${imgRes.revised_prompt}"\n\n![${imgRes.revised_prompt}](${imgRes.url})\n\n*Resolution: ${imgRes.width}x${imgRes.height} • Provider: ${imgRes.provider}*`;
+
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMsgId
+              ? { ...msg, content: markdown, isStreaming: false, conversation_id: convId || msg.conversation_id }
+              : msg
+          )
+        );
+      } catch (err: any) {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMsgId
+              ? { ...msg, content: `❌ Image generation failed: ${err.message || err}`, isStreaming: false }
+              : msg
+          )
+        );
+      } finally {
+        setIsStreaming(false);
+      }
+      return;
+    }
+
+    // --- Specialized Command Routing: AI Video Generation ---
+    if (userText.startsWith("/video ") || userText.toLowerCase().startsWith("generate video: ")) {
+      const prompt = userText.startsWith("/video ")
+        ? userText.slice(7).trim()
+        : userText.slice(16).trim();
+
+      try {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMsgId
+              ? { ...msg, content: `🎬 *Rendering cinematic video scene for "${prompt}"...*` }
+              : msg
+          )
+        );
+
+        let convId = activeConversation?.id;
+        if (!convId) {
+          try {
+            const createdConv = await api.createConversation(`Video: ${prompt.slice(0, 25)}`);
+            convId = createdConv.id;
+            onConversationCreated(createdConv);
+          } catch {
+            // fallback if offline
+          }
+        }
+
+        const videoRes = await api.generateVideo(prompt);
+        const markdown = `### 🎬 AI Generated Video Scene\n\n**Scene Prompt:** "${videoRes.prompt}"\n\n[Watch Video Clip](${videoRes.video_url})\n\n*Format: ${videoRes.format.toUpperCase()} • Duration: ${videoRes.duration_seconds}s • Status: ${videoRes.status}*`;
+
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMsgId
+              ? { ...msg, content: markdown, isStreaming: false, conversation_id: convId || msg.conversation_id }
+              : msg
+          )
+        );
+      } catch (err: any) {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMsgId
+              ? { ...msg, content: `❌ Video generation failed: ${err.message || err}`, isStreaming: false }
+              : msg
+          )
+        );
+      } finally {
+        setIsStreaming(false);
+      }
+      return;
+    }
+
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
