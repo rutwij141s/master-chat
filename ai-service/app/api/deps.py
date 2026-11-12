@@ -9,18 +9,38 @@ from app.db.models import User
 
 async def get_current_user_id(
     x_user_id: Optional[str] = Header(None, alias="X-User-Id"),
+    x_user_email: Optional[str] = Header(None, alias="X-User-Email"),
+    db: AsyncSession = Depends(get_db),
 ) -> uuid.UUID:
     """Extract and validate the authenticated user ID passed by the Go Gateway."""
     if not x_user_id:
-        # Default mock user ID for direct API calls or development
-        return uuid.UUID("00000000-0000-0000-0000-000000000001")
+        uid = uuid.UUID("00000000-0000-0000-0000-000000000001")
+    else:
+        try:
+            uid = uuid.UUID(x_user_id)
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid X-User-Id header format",
+            )
+
+    # Ensure user exists in postgres users table to satisfy foreign key constraints
     try:
-        return uuid.UUID(x_user_id)
-    except ValueError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid X-User-Id header format",
-        )
+        stmt = select(User).where(User.id == uid)
+        result = await db.execute(stmt)
+        if not result.scalar_one_or_none():
+            user = User(
+                id=uid,
+                email=x_user_email or f"user_{str(uid)[:8]}@masterchat.ai",
+                password_hash="gateway_auth_managed",
+                full_name="MasterChat User",
+            )
+            db.add(user)
+            await db.commit()
+    except Exception:
+        await db.rollback()
+
+    return uid
 
 
 async def get_current_user(

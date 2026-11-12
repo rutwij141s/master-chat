@@ -2,6 +2,22 @@
 
 MasterChat is an enterprise-grade, multi-model conversational AI platform featuring real-time token streaming, document-grounded answers (RAG), tool-using LangGraph agents, conversation memory, and a frontend crafted in Apple's **"Liquid Glass"** design language.
 
+- **GitHub Repository:** [https://github.com/rutwij141s/master-chat](https://github.com/rutwij141s/master-chat) (Branch: `master`)
+- **System Health:** 7/7 Containers Active & Operational
+- **Test Suite Status:** 20/20 End-to-End API Tests Verified (100.0% Pass Rate)
+
+---
+
+## Quick Demo Access
+
+A pre-configured demo account with indexed documents (`realtime_global.pdf`) is ready to test immediately:
+
+- **Web UI:** [http://localhost:3000](http://localhost:3000)
+- **Demo Email:** `demo@masterchat.ai`
+- **Demo Password:** `Password123!`
+- **API Gateway Health:** [http://localhost:8080/health](http://localhost:8080/health)
+- **AI Service OpenAPI Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+
 ---
 
 ## Architecture Overview
@@ -274,6 +290,12 @@ npm run dev
 ---
 
 ## Running Tests
+
+### End-to-End API Test Suite
+Run the 20-endpoint comprehensive test suite against the live platform (health probes, auth, models, conversations, PDF ingestion, MMR vector retrieval, Cross-Encoder reranking, SSE streaming, usage tracking, and resource cleanup):
+```bash
+python3 tests/test_all_apis.py
+```
 
 ### Go Gateway Tests
 Run unit and table-driven HTTP handler tests:

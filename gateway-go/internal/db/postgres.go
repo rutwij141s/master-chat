@@ -36,16 +36,21 @@ func ConnectPostgres(databaseURL string) (*DB, error) {
 	sqlDB.SetMaxIdleConns(5)
 	sqlDB.SetConnMaxLifetime(5 * time.Minute)
 
-	if err := sqlDB.Ping(); err != nil {
-		// PostgreSQL not reachable yet (e.g. running outside docker compose without local db)
-		return newMockDB(), nil
+	var pingErr error
+	for i := 0; i < 5; i++ {
+		pingErr = sqlDB.Ping()
+		if pingErr == nil {
+			return &DB{
+				sqlDB:     sqlDB,
+				isMock:    false,
+				mockUsers: make(map[string]*User),
+			}, nil
+		}
+		time.Sleep(1 * time.Second)
 	}
 
-	return &DB{
-		sqlDB:     sqlDB,
-		isMock:    false,
-		mockUsers: make(map[string]*User),
-	}, nil
+	// PostgreSQL not reachable yet (e.g. running outside docker compose without local db)
+	return newMockDB(), pingErr
 }
 
 func newMockDB() *DB {
