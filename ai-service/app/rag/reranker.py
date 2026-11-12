@@ -20,10 +20,9 @@ class CrossEncoderReranker:
         if self._model is None:
             try:
                 from sentence_transformers import CrossEncoder
-                logger.info(f"Loading CrossEncoder: {self.model_name}")
-                self._model = CrossEncoder(self.model_name)
+                self._model = CrossEncoder(self.model_name, local_files_only=True)
             except Exception as e:
-                logger.warning(f"Could not load CrossEncoder '{self.model_name}': {e}. Using passthrough.")
+                logger.info(f"CrossEncoder not cached locally ({e}). Using passthrough.")
                 self._model = "passthrough"
         return self._model
 

@@ -48,6 +48,7 @@ async def stream_generator(
             "user_input": req.message,
             "model": req.model or "default",
             "use_rag": req.use_rag,
+            "use_web_search": req.use_web_search,
             "doc_ids": [str(d) for d in req.doc_ids] if req.doc_ids else None,
             "route": "direct",
             "retrieved_context": "",
@@ -78,9 +79,9 @@ async def stream_generator(
         )
         if final_state.get("retrieved_context"):
             system_instructions += (
-                "\n\nYou have direct access to reference documents in the <retrieved_context> tags.\n"
-                "Ground your answers thoroughly in these documents. If the user asks for a summary or questions about the file, "
-                "synthesize a detailed, well-structured response with key sections, bullet points, and main takeaways based strictly on the content."
+                "\n\nYou have direct access to reference documents and live retrieved information in the prompt context.\n"
+                "Ground your answers thoroughly in these references. Include hyperlinks or reference citations where helpful, "
+                "synthesize a detailed, well-structured response with key sections, bullet points, and main takeaways based strictly on the factual content provided."
             )
         if final_state.get("summary"):
             system_instructions += f"\n\nContext summary of earlier discussion:\n{final_state['summary']}"

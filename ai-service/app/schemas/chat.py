@@ -10,6 +10,7 @@ class ChatCitation(BaseModel):
     page: Optional[int] = None
     text: str
     score: Optional[float] = None
+    url: Optional[str] = None
 
 
 class ChatMessageRequest(BaseModel):
@@ -22,6 +23,7 @@ class ChatStreamRequest(BaseModel):
     message: str = Field(..., min_length=1, description="User input message")
     model: Optional[str] = Field(default=None, description="Model identifier (e.g., gpt-4o, claude-3-5-sonnet)")
     use_rag: bool = Field(default=False, description="Whether to ground response with RAG documents")
+    use_web_search: bool = Field(default=False, description="Whether to ground response with real-time web search")
     doc_ids: Optional[List[uuid.UUID]] = Field(default=None, description="Specific document IDs to restrict retrieval to")
     temperature: float = Field(default=0.7, ge=0.0, le=2.0)
     max_tokens: Optional[int] = Field(default=4096, ge=1)

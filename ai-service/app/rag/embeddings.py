@@ -18,10 +18,13 @@ class EmbeddingService:
     @property
     def model(self):
         if self._model is None:
+            if getattr(self.settings, "EMBEDDING_MODEL", "") == "mock":
+                self._model = "mock"
+                return self._model
             try:
                 from sentence_transformers import SentenceTransformer
                 logger.info(f"Loading local embedding model: {self.model_name}")
-                self._model = SentenceTransformer(self.model_name)
+                self._model = SentenceTransformer(self.model_name, local_files_only=True)
                 if hasattr(self._model, "get_embedding_dimension"):
                     self._dimension = self._model.get_embedding_dimension()
                 elif hasattr(self._model, "get_sentence_embedding_dimension"):
@@ -29,8 +32,9 @@ class EmbeddingService:
                 else:
                     self._dimension = 384
             except Exception as e:
-                logger.warning(f"Could not load SentenceTransformer '{self.model_name}': {e}. Using deterministic mock fallback.")
+                logger.info(f"SentenceTransformer not cached locally ({e}). Using deterministic 384-dim fallback.")
                 self._model = "mock"
+                self._dimension = 384
         return self._model
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:

@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { ArrowUp, Paperclip, Database, StopCircle, FileText, Sparkles } from "lucide-react";
+import { ArrowUp, Paperclip, Database, StopCircle, FileText, Sparkles, Globe } from "lucide-react";
 import { GlassCard } from "../ui/GlassCard";
 import { ModelSelector } from "./ModelSelector";
 import { cn } from "@/lib/utils";
 
 interface MessageInputProps {
-  onSend: (message: string, useRag: boolean, model: string) => void;
+  onSend: (message: string, useRag: boolean, model: string, useWebSearch?: boolean) => void;
   onStop?: () => void;
   onOpenDocuments: () => void;
   isStreaming: boolean;
@@ -29,6 +29,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
 }) => {
   const [input, setInput] = useState("");
   const [useRag, setUseRag] = useState(false);
+  const [useWebSearch, setUseWebSearch] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Automatically enable RAG when documents are detected
@@ -56,7 +57,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   const handleSend = (textToSend?: string) => {
     const text = (textToSend !== undefined ? textToSend : input).trim();
     if (!text || isStreaming) return;
-    onSend(text, useRag, selectedModel);
+    onSend(text, useRag, selectedModel, useWebSearch);
     setInput("");
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -109,6 +110,8 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           placeholder={
             hasDocuments
               ? "Ask questions or type 'summarize' to analyze your document..."
+              : useWebSearch
+              ? "Ask anything with live real-time web search..."
               : "Ask anything, evaluate expressions, search documents..."
           }
           rows={1}
@@ -117,8 +120,8 @@ export const MessageInput: React.FC<MessageInputProps> = ({
 
         {/* Action Controls Toolbar */}
         <div className="flex items-center justify-between pt-2 px-1 border-t border-black/5 dark:border-white/10 mt-1">
-          {/* Left Controls: Model Picker + RAG Toggle + File Attach */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Left Controls: Model Picker + RAG Toggle + Web Search Toggle + File Attach */}
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
             <ModelSelector
               selectedModel={selectedModel}
               onSelectModel={onSelectModel}
@@ -146,6 +149,30 @@ export const MessageInput: React.FC<MessageInputProps> = ({
                 )}
               >
                 {useRag ? "ON" : "OFF"}
+              </span>
+            </button>
+
+            {/* Web Search Toggle */}
+            <button
+              type="button"
+              onClick={() => setUseWebSearch(!useWebSearch)}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-medium transition-all select-none border cursor-pointer",
+                useWebSearch
+                  ? "bg-emerald-600/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/50 shadow-sm"
+                  : "bg-white/40 dark:bg-white/5 hover:bg-white/60 text-foreground/70 border-white/30 dark:border-white/10"
+              )}
+              title={useWebSearch ? "Web Search Grounding is ON" : "Turn ON to search the web for live real-time information"}
+            >
+              <Globe className="w-3.5 h-3.5 text-emerald-500" />
+              <span className="hidden sm:inline">Web</span>
+              <span
+                className={cn(
+                  "text-[10px] uppercase font-bold px-1 rounded",
+                  useWebSearch ? "bg-emerald-500/30 text-emerald-700 dark:text-emerald-300" : "opacity-60"
+                )}
+              >
+                {useWebSearch ? "ON" : "OFF"}
               </span>
             </button>
 

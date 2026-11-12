@@ -21,7 +21,12 @@ def router_node(state: AgentState) -> Dict[str, Any]:
     """Determines execution path: direct answer, RAG retrieval, tool call, or web search."""
     user_input = state.get("user_input", "")
     use_rag = state.get("use_rag", False)
+    use_web_search = state.get("use_web_search", False)
     doc_ids = state.get("doc_ids")
+
+    # Explicit web search toggle takes priority
+    if use_web_search:
+        return {"route": "web"}
 
     # Document intent detection: auto-route to RAG if user refers to documents or asks to summarize
     doc_keywords = [
@@ -41,8 +46,11 @@ def router_node(state: AgentState) -> Dict[str, Any]:
     if calc_match and any(op in calc_match.group(1) for op in ["+", "-", "*", "/", "^"]):
         return {"route": "tool"}
 
-    # Web search intent
-    search_keywords = ["search web", "look up", "current weather", "latest news", "stock price of", "search for"]
+    # Web search natural language intent detection
+    search_keywords = [
+        "search web", "look up", "current weather", "latest news", "stock price",
+        "search for", "google for", "live updates", "recent events", "today's news"
+    ]
     if any(k in user_input.lower() for k in search_keywords):
         return {"route": "web"}
 
@@ -119,12 +127,52 @@ def tool_node(state: AgentState) -> Dict[str, Any]:
 
 
 async def web_search_node(state: AgentState) -> Dict[str, Any]:
-    """Execute real-time web search."""
+    """Execute real-time web search and ground results with web citations."""
     user_input = state.get("user_input", "")
-    # Extract search query
-    clean_query = re.sub(r"(?i)(search web for|search for|look up|search web)", "", user_input).strip()
-    result = await AgentTools.web_search(clean_query or user_input)
-    return {"tool_result": f"Web Search Results for '{clean_query}':\n{result}"}
+    # Clean query by stripping search triggers
+    clean_query = re.sub(
+        r"(?i)\b(?:search (?:the )?web for|search for|look up|search web|google for|search)\b",
+        "",
+        user_input,
+    ).strip()
+    query_to_search = clean_query if len(clean_query) > 2 else user_input
+
+    results = await AgentTools.web_search_structured(query_to_search, max_results=4)
+
+    if not results:
+        return {
+            "retrieved_context": f"Live web search attempted for: '{query_to_search}', but no live results were returned. Answer using your general knowledge.",
+            "citations": [],
+            "tool_result": f"No web search results for '{query_to_search}'.",
+        }
+
+    citations = [
+        {
+            "chunk_id": f"web_{idx}",
+            "doc_id": "web",
+            "filename": r.get("title") or r.get("domain") or "Web Source",
+            "page": None,
+            "text": r.get("snippet", ""),
+            "score": 0.95,
+            "url": r.get("url"),
+        }
+        for idx, r in enumerate(results, 1)
+    ]
+
+    context_lines = [
+        f"Source [{r.get('title')}] ({r.get('url')}):\n{r.get('snippet')}"
+        for r in results
+    ]
+    delimited_context = (
+        f"Real-time web search results for query: '{query_to_search}':\n\n"
+        + "\n\n".join(context_lines)
+    )
+
+    return {
+        "retrieved_context": delimited_context,
+        "citations": citations,
+        "tool_result": f"Web Search retrieved {len(results)} live sources for '{query_to_search}'.",
+    }
 
 
 def synthesis_node(state: AgentState) -> Dict[str, Any]:

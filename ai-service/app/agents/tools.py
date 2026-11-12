@@ -3,6 +3,7 @@ import re
 import ast
 import operator
 import logging
+import urllib.parse
 from typing import Dict, Any, List, Optional
 import httpx
 from bs4 import BeautifulSoup
@@ -87,33 +88,61 @@ class AgentTools:
             return f"Calculation error: {str(e)}"
 
     @staticmethod
-    async def web_search(query: str, max_results: int = 3) -> str:
-        """Perform a web search using DuckDuckGo HTML search."""
+    async def web_search_structured(query: str, max_results: int = 4) -> List[Dict[str, Any]]:
+        """Perform a structured web search using DuckDuckGo HTML, extracting title, snippet, domain, and target URL."""
+        results: List[Dict[str, Any]] = []
         try:
             url = f"https://html.duckduckgo.com/html/?q={httpx.URL(query)}"
             headers = {
                 "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             }
-            async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
+            async with httpx.AsyncClient(timeout=8.0, follow_redirects=True) as client:
                 resp = await client.get(url, headers=headers)
                 if resp.status_code != 200:
-                    return f"Web search could not retrieve live results (HTTP {resp.status_code})."
+                    logger.warning(f"DuckDuckGo returned HTTP {resp.status_code}")
+                    return []
 
                 soup = BeautifulSoup(resp.text, "html.parser")
-                results = []
                 for item in soup.find_all("div", class_="result__body", limit=max_results):
-                    title_elem = item.find("a", class_="result__snippet") or item.find("a", class_="result__url")
+                    title_elem = item.find("a", class_="result__url") or item.find("h2")
                     snippet_elem = item.find("a", class_="result__snippet")
-                    snippet = snippet_elem.get_text().strip() if snippet_elem else ""
-                    if snippet:
-                        results.append(snippet)
+                    
+                    raw_title = title_elem.get_text().strip() if title_elem else "Web Result"
+                    raw_link = title_elem.get("href", "") if title_elem else ""
 
-                if not results:
-                    return f"No search results found for query: '{query}'"
-                return "\n\n".join(f"• {r}" for r in results)
+                    # Extract actual destination URL if wrapped in DuckDuckGo redirect
+                    if "uddg=" in raw_link:
+                        qs = urllib.parse.parse_qs(urllib.parse.urlparse(raw_link).query)
+                        raw_link = qs.get("uddg", [raw_link])[0]
+
+                    snippet = snippet_elem.get_text().strip() if snippet_elem else ""
+                    if not snippet:
+                        continue
+
+                    # Extract domain for cleaner title
+                    domain = ""
+                    if raw_link.startswith("http"):
+                        domain = urllib.parse.urlparse(raw_link).netloc.replace("www.", "")
+
+                    results.append({
+                        "title": domain or raw_title,
+                        "url": raw_link,
+                        "domain": domain,
+                        "snippet": snippet,
+                    })
+
         except Exception as e:
-            logger.warning(f"Web search error: {e}")
-            return f"Web search temporarily unavailable: {str(e)}"
+            logger.warning(f"Structured web search error: {e}")
+
+        return results
+
+    @staticmethod
+    async def web_search(query: str, max_results: int = 3) -> str:
+        """Perform a web search using DuckDuckGo HTML search."""
+        structured = await AgentTools.web_search_structured(query, max_results=max_results)
+        if not structured:
+            return f"No live search results found for query: '{query}'"
+        return "\n\n".join(f"• [{r['title']}] ({r['url']}): {r['snippet']}" for r in structured)
 
     @staticmethod
     def execute_python_sandboxed(code: str, enabled: bool = False) -> str:

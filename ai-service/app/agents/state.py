@@ -10,6 +10,7 @@ class AgentState(TypedDict):
     user_input: str
     model: str
     use_rag: bool
+    use_web_search: bool
     doc_ids: Optional[List[str]]
     route: str  # "direct" | "rag" | "tool" | "web"
     retrieved_context: str
