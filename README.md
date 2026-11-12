@@ -1,6 +1,6 @@
 # MasterChat: Production AI Chat Platform
 
-MasterChat is an enterprise-grade, multi-model conversational AI platform featuring real-time token streaming, document-grounded answers (RAG), tool-using LangGraph agents, conversation memory, and a frontend crafted in Apple's **"Liquid Glass"** design language.
+MasterChat is an enterprise-grade, multi-model conversational AI platform featuring real-time token streaming, document-grounded answers (RAG), live web search grounding, tool-using LangGraph agents, conversation memory, transcript export, and a frontend crafted in Apple's **"Liquid Glass"** design language.
 
 - **GitHub Repository:** [https://github.com/rutwij141s/master-chat](https://github.com/rutwij141s/master-chat) (Branch: `master`)
 - **System Health:** 7/7 Containers Active & Operational
@@ -34,8 +34,9 @@ graph TD
 
     subgraph AIService ["AI Service (Python 3.12 / FastAPI)"]
         Router["Model Router (OpenAI / Anthropic + Auto Fallback)"]
-        Agent["LangGraph Agent Workflow"]
-        RAG["RAG Engine (MMR + Cross-Encoder Rerank)"]
+        Agent["LangGraph Agent Workflow (StateGraph)"]
+        RAG["RAG Engine (MMR + Sequential Chunks + Cross-Encoder)"]
+        WebSearch["Live Web Search Grounding (DuckDuckGo Structured)"]
         Memory["Sliding Window + Rolling Summary Memory"]
     end
 
@@ -54,6 +55,7 @@ graph TD
     AIService --> Router
     Router --> Agent
     Agent --> RAG
+    Agent --> WebSearch
     Agent --> Memory
 
     Gateway -->|User Auth Checks| PG
@@ -110,10 +112,10 @@ MasterChat/
 │   │   │   ├── vectorstore.py
 │   │   │   └── reranker.py
 │   │   ├── agents/                    # LangGraph workflow, tools, and memory
-│   │   │   ├── tools.py
+│   │   │   ├── tools.py               # Calculator, structured web search, sandbox
 │   │   │   ├── state.py
 │   │   │   ├── memory.py
-│   │   │   └── graph.py
+│   │   │   └── graph.py               # Router, RAG, Web, Tool, Synthesis nodes
 │   │   └── api/v1/                    # REST & SSE streaming routers
 │   └── tests/                         # Pytest suite with mock providers
 ├── gateway-go/
@@ -139,7 +141,7 @@ MasterChat/
     │   │   └── register/page.tsx
     │   ├── components/
     │   │   ├── ui/                    # GlassCard, GlassButton, GlassModal
-    │   │   ├── chat/                  # MessageList, ChatMessage, MessageInput, ModelSelector, Popover
+    │   │   ├── chat/                  # MessageList, ChatMessage, MessageInput, ModelSelector, CitationPopover
     │   │   ├── sidebar/               # Sidebar, ConversationItem
     │   │   └── documents/             # DocumentManager
     │   └── lib/                       # API client, types, formatters
@@ -152,35 +154,45 @@ MasterChat/
 
 ### 1. Apple Liquid Glass UI Design
 - Layered translucent surfaces with `backdrop-filter: blur(28px) saturate(180%)` and 1px specular inner borders.
-- Floating glass message composer with model selector, RAG toggle, and auto-expanding input.
-- Markdown rendering with syntax highlighting, copy-code button, tables, and full **LaTeX math (KaTeX)** support.
-- Interactive citation chips that open a glass popover with source snippet and page numbers.
+- **Dual-Placement Model Selector**:
+  - **Top Navigation Bar**: Downward dropdown (`placement="bottom"`) alongside conversation title and active Knowledge Base indicator.
+  - **Message Composer**: Upward dropdown (`placement="top"`) with high-contrast backdrop, provider badges (OpenAI Emerald, Anthropic Amber), and model parameter summaries without overflow clipping.
+- **Live Grounding Citations**: Interactive citation chips supporting both indexed document chunks (`p.1`) and live web sources with clickable "Visit Source ↗" external links and a one-click "Copy text" action.
+- **One-Click Conversation Export**: Download complete chat transcripts directly from the header as formatted **Markdown (`.md`)** or **Plain Text (`.txt`)**.
+- Floating glass message composer with auto-expanding input, RAG toggle, and Web Search toggle.
+- Full Markdown rendering with syntax highlighting, copy-code button, tables, and **LaTeX math (KaTeX)** support.
 - Morphing glass sidebar with chat search, inline rename, delete confirmation, and dark/light mode toggle.
-- Vibrantly animated blurred mesh background orbs.
 
-### 2. Go API Gateway
-- **JWT Authentication:** Secure user registration, login, and token refresh with bcrypt hashing.
-- **Per-User Rate Limiting:** Sliding-window rate limiter backed by Redis.
-- **Zero-Buffering SSE Proxy:** Immediate chunk-by-chunk flushing (`c.Writer.Flush()`) from upstream Python AI service to the client.
-- **Middleware:** Structured `slog` JSON logging, automatic `X-Request-Id` generation, and CORS protection.
+### 2. Live Web Search Grounding
+- **Real-Time Web Intelligence**: Dedicated `Web` toggle in the composer triggers real-time web search for current events, stock prices, live news, and sports scores.
+- **Natural Language Intent Routing**: LangGraph `router_node` automatically detects search queries (*"latest"*, *"today"*, *"current stock price"*, *"news"*) and routes directly to the structured search node.
+- **Direct Domain Citations**: Extracts clean destination URLs and domains (e.g. `finance.yahoo.com`, `wikipedia.org`), grounding the assistant's reply with live reference links.
 
-### 3. Multi-Model AI Orchestration & Fallback
+### 3. Enterprise RAG Pipeline & Intelligent Summarization
+- Supports ingestion of PDF, DOCX, TXT, MD, and URLs.
+- Recursive character splitting (~800 characters with 100 overlap).
+- **Sequential Overview Chunk Retrieval**: When asking to summarize or provide an overview, the RAG engine automatically retrieves opening sequential chunks (`get_overview_chunks`) combined with MMR semantic chunks to ensure title, purpose, and structural context are provided to the LLM.
+- **Auto Document Routing**: Detects document-related queries (*"summarize"*, *"summary"*, *"document"*, *"pdf"*, *"file"*) and automatically routes to RAG even if the toggle was off.
+- **Quick-Action Summarize Chip**: Displays a one-click `[Summarize Document]` button whenever documents are indexed in the knowledge base.
+- Per-user metadata isolation in ChromaDB.
+- Maximal Marginal Relevance (MMR) retrieval for diverse, non-redundant chunk selection.
+- Local-first cached weights loading (`local_files_only=True`) for `BAAI/bge-small-en-v1.5` and `cross-encoder/ms-marco-MiniLM-L-6-v2` with deterministic 384-dim fallback.
+- **Prompt Injection Defense**: Strict XML boundary delimitation and sanitization of ingested content before LLM synthesis.
+
+### 4. Multi-Model AI Orchestration & Fallback
 - Adapter pattern supporting OpenAI (`gpt-4o`, `gpt-4o-mini`) and Anthropic (`claude-3-5-sonnet`, `claude-3-5-haiku`).
 - Automatic fallback failover: If the primary provider experiences a failure or timeout, the request seamlessly routes to the alternative model without crashing.
 
-### 4. Enterprise RAG Pipeline
-- Supports ingestion of PDF, DOCX, TXT, MD, and URLs.
-- Recursive character splitting (~800 characters with 100 overlap).
-- Local embeddings using Hugging Face `BAAI/bge-small-en-v1.5`.
-- Per-user metadata isolation in ChromaDB.
-- Maximal Marginal Relevance (MMR) retrieval for diverse, non-redundant chunk selection.
-- Optional Hugging Face Cross-Encoder reranker (`cross-encoder/ms-marco-MiniLM-L-6-v2`).
-- **Prompt Injection Defense:** Strict XML boundary delimitation and sanitization of ingested content before LLM synthesis.
+### 5. Go API Gateway
+- **JWT Authentication**: Secure user registration, login, and token refresh with bcrypt hashing.
+- **Per-User Rate Limiting**: Sliding-window rate limiter backed by Redis.
+- **Zero-Buffering SSE Proxy**: Immediate chunk-by-chunk flushing (`c.Writer.Flush()`) from upstream Python AI service to the client.
+- **Middleware**: Structured `slog` JSON logging, automatic `X-Request-Id` generation, and CORS protection.
 
-### 5. LangGraph Agent Workflow & Memory
-- StateGraph workflow: `router node -> (direct | rag | tool | web search) -> response synthesis -> memory update`.
-- Built-in tools: AST safe mathematical calculator, DuckDuckGo search, file Q&A, and sandboxed execution.
-- Conversation memory: Sliding window of recent turns + rolling summaries saved to Postgres.
+### 6. LangGraph Agent Workflow & Memory
+- StateGraph workflow: `router_node -> (direct_node | rag_node | tool_node | web_search_node) -> synthesis_node -> memory`.
+- Built-in tools: AST safe mathematical calculator, DuckDuckGo structured web search, file Q&A, and sandboxed execution.
+- Conversation memory: Sliding window of recent turns + rolling summaries saved to PostgreSQL.
 - Automatic conversation title generation after the first exchange.
 
 ---
@@ -205,6 +217,7 @@ Configure your environment variables in `.env`:
 | `ANTHROPIC_MODEL` | Default Anthropic model | `claude-3-5-sonnet-20241022` |
 | `DEFAULT_MODEL_PROVIDER`| Primary provider preference | `openai` |
 | `EMBEDDING_MODEL` | HuggingFace embedding model | `BAAI/bge-small-en-v1.5` |
+| `CROSS_ENCODER_MODEL` | HuggingFace cross-encoder model | `cross-encoder/ms-marco-MiniLM-L-6-v2` |
 | `RATE_LIMIT_PER_MINUTE` | Per-user rate limit limit | `60` |
 
 ---
@@ -269,9 +282,10 @@ npm run dev
   ```json
   {
     "conversation_id": "optional-uuid",
-    "message": "Explain how RAG MMR retrieval works",
+    "message": "What is the latest stock price of Apple?",
     "model": "gpt-4o",
-    "use_rag": true,
+    "use_rag": false,
+    "use_web_search": true,
     "temperature": 0.7
   }
   ```
@@ -282,7 +296,7 @@ npm run dev
 - `DELETE /documents/{id}`: Purge document and remove vector chunks from ChromaDB
 
 ### Metadata & Observability
-- `GET /models`: List available models and capabilities
+- `GET /models`: List available models and capabilities (`gpt-4o`, `gpt-4o-mini`, `claude-3-5-sonnet`, `claude-3-5-haiku`)
 - `GET /usage`: View user token and cost consumption
 - `GET /health`: Gateway and AI service liveness
 - `GET /ready`: Database, Redis, and Vector store readiness check
@@ -348,4 +362,3 @@ docker build -t masterchat/frontend:latest -f infra/docker/Dockerfile.frontend .
 - [x] Enable firewall isolation preventing public traffic from directly hitting PostgreSQL (5432), Redis (6379), or the AI Service (8000) — all external access must route strictly through the Go Gateway.
 - [x] Configure Prometheus alerts for HTTP 429 (rate limiting) and 5xx errors.
 - [x] Maintain separate ChromaDB collections per tenant/user for strict data privacy.
-
