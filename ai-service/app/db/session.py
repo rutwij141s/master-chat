@@ -30,16 +30,22 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 # Sync engine (useful for Alembic or sync utilities)
-sync_engine = create_engine(
-    sync_db_url,
-    pool_pre_ping=True,
-)
+if sync_db_url.startswith("postgresql://"):
+    sync_db_url = sync_db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
 
-SyncSessionLocal = sessionmaker(
-    bind=sync_engine,
-    autocommit=False,
-    autoflush=False,
-)
+try:
+    sync_engine = create_engine(
+        sync_db_url,
+        pool_pre_ping=True,
+    )
+    SyncSessionLocal = sessionmaker(
+        bind=sync_engine,
+        autocommit=False,
+        autoflush=False,
+    )
+except Exception:
+    sync_engine = None
+    SyncSessionLocal = None
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
