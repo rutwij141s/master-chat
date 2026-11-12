@@ -142,7 +142,7 @@ class ChromaManager:
             return []
 
         doc_embeddings = raw_results.get("embeddings", [[]])[0]
-        if not doc_embeddings or len(doc_embeddings) == 0:
+        if doc_embeddings is None or len(doc_embeddings) == 0:
             # Fall back to standard similarity if embeddings not returned
             return self.query_similarity(user_id, query_text, doc_ids, top_k)
 

@@ -98,13 +98,16 @@ func ProxyJSON(c *gin.Context, targetURL string) {
 	userID, _ := c.Get("userID")
 	email, _ := c.Get("email")
 
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 180*time.Second)
 	defer cancel()
 
 	proxyReq, err := http.NewRequestWithContext(ctx, c.Request.Method, targetURL, c.Request.Body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create proxy request"})
 		return
+	}
+	if c.Request.ContentLength > 0 {
+		proxyReq.ContentLength = c.Request.ContentLength
 	}
 
 	// Copy headers

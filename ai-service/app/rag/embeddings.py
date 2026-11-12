@@ -22,7 +22,12 @@ class EmbeddingService:
                 from sentence_transformers import SentenceTransformer
                 logger.info(f"Loading local embedding model: {self.model_name}")
                 self._model = SentenceTransformer(self.model_name)
-                self._dimension = self._model.get_sentence_embedding_dimension()
+                if hasattr(self._model, "get_embedding_dimension"):
+                    self._dimension = self._model.get_embedding_dimension()
+                elif hasattr(self._model, "get_sentence_embedding_dimension"):
+                    self._dimension = self._model.get_sentence_embedding_dimension()
+                else:
+                    self._dimension = 384
             except Exception as e:
                 logger.warning(f"Could not load SentenceTransformer '{self.model_name}': {e}. Using deterministic mock fallback.")
                 self._model = "mock"
@@ -50,6 +55,10 @@ class EmbeddingService:
         # Normalize
         norm = sum(x * x for x in vec) ** 0.5 or 1.0
         return [x / norm for x in vec]
+
+    def name(self) -> str:
+        """ChromaDB embedding function protocol compatibility."""
+        return "sentence_transformers_custom"
 
     def __call__(self, input: List[str]) -> List[List[float]]:
         """ChromaDB embedding function protocol compatibility."""
