@@ -46,8 +46,8 @@ class Settings(BaseSettings):
     ANTHROPIC_FALLBACK_MODEL: str = "claude-3-5-haiku-20241022"
 
     GEMINI_API_KEY: Optional[str] = None
-    GEMINI_MODEL: str = "gemini-2.0-flash"
-    GEMINI_FALLBACK_MODEL: str = "gemini-1.5-pro"
+    GEMINI_MODEL: str = "gemini-2.5-flash-lite"
+    GEMINI_FALLBACK_MODEL: str = "gemini-2.5-pro"
 
     XAI_API_KEY: Optional[str] = None
     XAI_MODEL: str = "grok-2"

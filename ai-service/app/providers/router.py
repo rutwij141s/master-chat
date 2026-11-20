@@ -139,6 +139,12 @@ class ModelRouter:
         actual_model = fallback.get_model_name()
         logger.info(f"Retrying with fallback provider {fallback.provider_name} ({actual_model})")
 
+        yield (
+            f"> ⚠️ **Model Fallback Notice:** *Selected model `{primary.get_model_name()}` was unavailable ({str(exc)[:90]}). "
+            f"Active backup responder: `{fallback.provider_name}` ({actual_model})*\n\n",
+            actual_model,
+        )
+
         try:
             stream = fallback.stream_chat(
                 messages=messages,
@@ -418,8 +424,8 @@ Strict Synthesis Rules:
                 ],
             },
             {
-                "id": "gemini-2.0-flash",
-                "name": "Gemini 2.0 Flash",
+                "id": "gemini-2.5-flash-lite",
+                "name": "Gemini 2.5 Flash Lite",
                 "provider": "gemini",
                 "description": "Google flagship next-gen multimodal AI with real-time speed and 1M token context window",
                 "context_window": 1048576,
@@ -441,8 +447,8 @@ Strict Synthesis Rules:
                 ],
             },
             {
-                "id": "gemini-1.5-pro",
-                "name": "Gemini 1.5 Pro",
+                "id": "gemini-2.5-pro",
+                "name": "Gemini 2.5 Pro",
                 "provider": "gemini",
                 "description": "Google premier high-intelligence model with 2M token context for massive document analysis",
                 "context_window": 2097152,

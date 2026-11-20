@@ -44,11 +44,11 @@ async def test_anthropic_mock_provider():
 
 @pytest.mark.asyncio
 async def test_gemini_mock_provider():
-    provider = GeminiProvider(api_key="mock-key", model="gemini-2.0-flash")
+    provider = GeminiProvider(api_key="mock-key", model="gemini-2.5-flash-lite")
     messages = [{"role": "user", "content": "Hello Gemini"}]
 
     text, usage = await provider.generate_chat(messages)
-    assert "gemini-2.0-flash" in text
+    assert "gemini-2.5-flash-lite" in text
     assert usage["total_tokens"] > 0
 
     tokens = []

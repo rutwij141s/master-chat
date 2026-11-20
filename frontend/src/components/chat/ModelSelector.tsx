@@ -65,6 +65,46 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       context_window: 200000,
       is_default: false,
     },
+    {
+      id: "gemini-2.5-flash-lite",
+      name: "Gemini 2.5 Flash",
+      provider: "gemini",
+      description: "Google flagship fast multimodal model with 1M context",
+      context_window: 1048576,
+      is_default: false,
+    },
+    {
+      id: "gemini-2.5-pro",
+      name: "Gemini 2.5 Pro",
+      provider: "gemini",
+      description: "Google frontier intelligence model with 2M context",
+      context_window: 2097152,
+      is_default: false,
+    },
+    {
+      id: "grok-2",
+      name: "Grok 2",
+      provider: "xai",
+      description: "xAI state-of-the-art frontier model with deep reasoning & coding",
+      context_window: 128000,
+      is_default: false,
+    },
+    {
+      id: "sonar-pro",
+      name: "Perplexity Sonar Pro",
+      provider: "perplexity",
+      description: "Real-time web search intelligence with cited research",
+      context_window: 200000,
+      is_default: false,
+    },
+    {
+      id: "sonar",
+      name: "Perplexity Sonar",
+      provider: "perplexity",
+      description: "Fast web-grounded search assistant",
+      context_window: 128000,
+      is_default: false,
+    },
   ]);
 
   useEffect(() => {
