@@ -113,8 +113,12 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
       {/* Assistant Avatar */}
       {!isUser && (
         <div className="flex-shrink-0 mt-1">
-          <div className="w-8 h-8 rounded-2xl flex items-center justify-center bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 shadow-md text-white">
-            <Sparkles className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-2xl flex items-center justify-center bg-white/70 border border-white/60 shadow-xs overflow-hidden backdrop-blur-md">
+            <img
+              src="/logo.png"
+              alt="MasterChat AI"
+              className="w-6 h-6 object-contain"
+            />
           </div>
         </div>
       )}

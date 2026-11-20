@@ -1,7 +1,12 @@
 # MasterChat: Production AI Chat Platform
 
+<p align="center">
+  <img src="docs/assets/banner.jpg" alt="MasterChat — Developed by Rutwij Sudke" width="100%" style="border-radius: 16px; max-width: 800px;" />
+</p>
+
 MasterChat is an enterprise-grade, multi-model conversational AI platform featuring real-time token streaming, document-grounded answers (RAG), live web search grounding, tool-using LangGraph agents, conversation memory, transcript export, and a frontend crafted in Apple's **"Liquid Glass"** design language.
 
+- **Developer:** Rutwij Sudke
 - **GitHub Repository:** [https://github.com/rutwij141s/master-chat](https://github.com/rutwij141s/master-chat) (Branch: `master`)
 - **System Health:** 7/7 Containers Active & Operational
 - **Test Suite Status:** 27/27 End-to-End API Tests Verified (100.0% Pass Rate)

@@ -203,17 +203,24 @@ export default function AdminDashboardPage() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight">MasterChat Admin Suite</h1>
-              <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 font-semibold border border-purple-500/20">
-                <ShieldCheck className="w-3 h-3" />
-                <span>Executive Telemetry</span>
-              </span>
+          <div className="flex items-center gap-3">
+            <img
+              src="/logo.png"
+              alt="MasterChat"
+              className="w-10 h-10 object-contain drop-shadow-xs"
+            />
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl md:text-2xl font-bold tracking-tight">MasterChat Admin Suite</h1>
+                <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 font-semibold border border-purple-500/20">
+                  <ShieldCheck className="w-3 h-3" />
+                  <span>Executive Telemetry</span>
+                </span>
+              </div>
+              <p className="text-xs text-foreground/60 mt-0.5">
+                Platform-wide financial audit, token volume, model distribution & user-level analytics • Developed by Rutwij Sudke
+              </p>
             </div>
-            <p className="text-xs text-foreground/60 mt-0.5">
-              Platform-wide financial audit, token volume, model distribution & user-level analytics
-            </p>
           </div>
         </div>
 

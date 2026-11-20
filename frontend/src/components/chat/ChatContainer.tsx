@@ -296,8 +296,13 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
       {/* Prominent Top Navigation Header Bar */}
       <header className="flex items-center justify-between px-4 sm:px-6 py-2.5 border-b border-black/5 dark:border-white/10 backdrop-blur-xl bg-white/40 dark:bg-[#121422]/60 z-20">
         <div className="flex items-center gap-3">
-          {/* Top Model Selector */}
+          {/* Top Logo & Model Selector */}
           <div className="flex items-center gap-2">
+            <img
+              src="/logo.png"
+              alt="MasterChat"
+              className="w-6 h-6 object-contain hidden xs:inline-block drop-shadow-xs"
+            />
             <span className="text-[11px] font-bold uppercase tracking-wider text-foreground/50 hidden sm:inline">
               Model:
             </span>

@@ -95,8 +95,12 @@ export const AuthGlassCard: React.FC<AuthGlassCardProps> = ({
             className="w-full h-full flex flex-col items-center justify-center px-6 sm:px-12 py-8 text-center"
           >
             {/* Top Logo Badge */}
-            <div className="w-11 h-11 rounded-2xl mb-3 flex items-center justify-center bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-purple-500/20">
-              <Sparkles className="w-5 h-5" />
+            <div className="mb-2 flex flex-col items-center">
+              <img
+                src="/logo.png"
+                alt="MasterChat Logo"
+                className="w-12 h-12 object-contain drop-shadow-md hover:scale-105 transition-transform"
+              />
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
@@ -223,8 +227,12 @@ export const AuthGlassCard: React.FC<AuthGlassCardProps> = ({
             className="w-full h-full flex flex-col items-center justify-center px-6 sm:px-12 py-8 text-center"
           >
             {/* Top Logo Badge */}
-            <div className="w-11 h-11 rounded-2xl mb-3 flex items-center justify-center bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-purple-500/20">
-              <Sparkles className="w-5 h-5" />
+            <div className="mb-2 flex flex-col items-center">
+              <img
+                src="/logo.png"
+                alt="MasterChat Logo"
+                className="w-12 h-12 object-contain drop-shadow-md hover:scale-105 transition-transform"
+              />
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
@@ -344,8 +352,12 @@ export const AuthGlassCard: React.FC<AuthGlassCardProps> = ({
           <div className="slide-panel">
             {/* Left Content (Displayed when panel is on the left / Sign Up active) */}
             <div className="panel-content panel-content-left">
-              <div className="w-14 h-14 rounded-2xl mb-4 flex items-center justify-center bg-white/20 text-white shadow-inner backdrop-blur-md border border-white/30">
-                <Sparkles className="w-7 h-7" />
+              <div className="w-16 h-16 rounded-2xl mb-4 flex items-center justify-center bg-white/20 p-2 shadow-inner backdrop-blur-md border border-white/40">
+                <img
+                  src="/logo.png"
+                  alt="MasterChat"
+                  className="w-full h-full object-contain filter drop-shadow-md"
+                />
               </div>
               <h1 className="text-3xl font-bold text-white drop-shadow-sm mb-2">
                 Welcome Back!
@@ -364,8 +376,12 @@ export const AuthGlassCard: React.FC<AuthGlassCardProps> = ({
 
             {/* Right Content (Displayed when panel is on the right / Sign In active) */}
             <div className="panel-content panel-content-right">
-              <div className="w-14 h-14 rounded-2xl mb-4 flex items-center justify-center bg-white/20 text-white shadow-inner backdrop-blur-md border border-white/30">
-                <Sparkles className="w-7 h-7" />
+              <div className="w-16 h-16 rounded-2xl mb-4 flex items-center justify-center bg-white/20 p-2 shadow-inner backdrop-blur-md border border-white/40">
+                <img
+                  src="/logo.png"
+                  alt="MasterChat"
+                  className="w-full h-full object-contain filter drop-shadow-md"
+                />
               </div>
               <h1 className="text-3xl font-bold text-white drop-shadow-sm mb-2">
                 Hey There!

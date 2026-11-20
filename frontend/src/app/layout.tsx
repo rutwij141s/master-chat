@@ -11,7 +11,11 @@ const montserratAlternates = Montserrat_Alternates({
 
 export const metadata: Metadata = {
   title: "MasterChat — Liquid Glass AI",
-  description: "Production AI Chat Platform featuring Apple Liquid Glass UI, Multi-Model LLM orchestration, RAG, and LangGraph Agents.",
+  description: "Production AI Chat Platform featuring Apple Liquid Glass UI, Multi-Model LLM orchestration, RAG, and LangGraph Agents. Developed by Rutwij Sudke.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -22,6 +26,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`light ${montserratAlternates.variable}`} suppressHydrationWarning>
       <head>
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

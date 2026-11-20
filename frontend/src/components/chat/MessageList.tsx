@@ -28,12 +28,20 @@ export const MessageList: React.FC<MessageListProps> = ({
   if (messages.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-        {/* Apple Glass Hero Icon */}
-        <div className="relative mb-6">
-          <div className="w-16 h-16 rounded-3xl flex items-center justify-center bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl">
-            <Sparkles className="w-8 h-8" />
+        {/* MasterChat Liquid Glass Hero Logo */}
+        <div className="relative mb-5 flex flex-col items-center">
+          <div className="relative group">
+            <img
+              src="/logo.png"
+              alt="MasterChat"
+              className="w-20 h-20 sm:w-24 sm:h-24 object-contain drop-shadow-xl transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-400 via-indigo-500 to-pink-500 blur-2xl opacity-25 -z-10 animate-pulse pointer-events-none" />
           </div>
-          <div className="absolute inset-0 rounded-3xl bg-indigo-500 blur-xl opacity-30 animate-pulse pointer-events-none" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-[11px] font-semibold text-foreground/70 mt-3 shadow-2xs">
+            <Sparkles className="w-3 h-3 text-indigo-500" />
+            <span>Developed by Rutwij Sudke</span>
+          </div>
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-3">

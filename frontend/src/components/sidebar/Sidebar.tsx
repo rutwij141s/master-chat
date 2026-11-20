@@ -104,15 +104,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
       >
         {/* Top Header */}
         <div className="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/5">
-          {!isCollapsed && (
+          {!isCollapsed ? (
             <div className="flex items-center gap-2.5 px-1">
-              <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center text-white shadow-sm font-bold text-xs">
-                MC
+              <img
+                src="/logo.png"
+                alt="MasterChat"
+                className="w-7 h-7 object-contain drop-shadow-xs transition-transform hover:scale-105"
+              />
+              <div className="flex flex-col">
+                <span className="font-bold text-base tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text leading-tight">
+                  MasterChat
+                </span>
+                <span className="text-[9px] font-medium text-foreground/45 leading-none">
+                  by Rutwij Sudke
+                </span>
               </div>
-              <span className="font-bold text-base tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-                MasterChat
-              </span>
             </div>
+          ) : (
+            <img
+              src="/logo.png"
+              alt="MasterChat"
+              className="w-6 h-6 object-contain mx-auto my-1 drop-shadow-xs cursor-pointer hover:scale-110 transition-transform"
+              onClick={() => setIsCollapsed(false)}
+              title="Expand MasterChat sidebar"
+            />
           )}
 
           {/* Collapse/Expand Toggle */}
