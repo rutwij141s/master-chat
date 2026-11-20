@@ -165,6 +165,7 @@ MasterChat/
   - **Lavender Mist**: Gentle Provence lavender fields with delicate lilac mist, violet petals, and crystal glass.
   - **Arctic Glacier**: Glacial polar light with frosted crystalline diamond reflections and silver-blue sheen.
   - **Champagne Gold**: Luminous Venetian palazzo with warm champagne bubbles, spun gold silk, and ivory pearl glass.
+- **Apple Liquid Glass Split Sliding Auth Panel**: Unified interactive authentication card combining **Sign In** and **Sign Up / Create Account** with hardware-accelerated 3D sliding glass overlays, frosted specular buttons, Google, LinkedIn & Facebook quick-login chips, and smooth client-side route sync (`/login` ↔ `/register`).
 - **Theme Palette Selector Modal**: 1-click modal with visual 3-dot color swatches, active indicators, and real-time ambient mesh background transitions (`liquid-mesh-bg`).
 - **Dual-Placement Model Selector**:
   - **Top Navigation Bar**: Downward dropdown (`placement="bottom"`) alongside conversation title and active Knowledge Base indicator.

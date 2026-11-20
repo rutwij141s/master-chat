@@ -248,3 +248,176 @@
 
 /* KaTeX styling */
 @import "katex/dist/katex.min.css";
+
+/* =========================================================================
+   Apple Liquid Glass Split Sliding Auth Panel
+   ========================================================================= */
+.auth-glass-container {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.72));
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.85));
+  box-shadow: 0 24px 64px -12px rgba(31, 38, 135, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  width: 880px;
+  max-width: 100%;
+  min-height: 580px;
+  transition: all 0.4s ease;
+}
+
+.auth-form-box {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.login-form-box {
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+.auth-glass-container.panel-active .login-form-box {
+  transform: translateX(100%);
+}
+
+.register-form-box {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+}
+
+.auth-glass-container.panel-active .register-form-box {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+  animation: authBoxShow 0.6s;
+}
+
+@keyframes authBoxShow {
+  0%, 49.99% {
+    opacity: 0;
+    z-index: 1;
+  }
+  50%, 100% {
+    opacity: 1;
+    z-index: 5;
+  }
+}
+
+.slide-panel-wrapper {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  z-index: 20;
+}
+
+.auth-glass-container.panel-active .slide-panel-wrapper {
+  transform: translateX(-100%);
+}
+
+.slide-panel {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.94) 0%, rgba(147, 51, 234, 0.94) 50%, rgba(236, 72, 153, 0.90) 100%);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.auth-glass-container.panel-active .slide-panel {
+  transform: translateX(50%);
+}
+
+.panel-content {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 45px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transform: translateX(0);
+  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.panel-content-left {
+  transform: translateX(-20%);
+}
+
+.auth-glass-container.panel-active .panel-content-left {
+  transform: translateX(0);
+}
+
+.panel-content-right {
+  right: 0;
+  transform: translateX(0);
+}
+
+.auth-glass-container.panel-active .panel-content-right {
+  transform: translateX(20%);
+}
+
+.mobile-switch {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .auth-glass-container {
+    min-height: auto;
+    width: 100%;
+    border-radius: 24px;
+  }
+
+  .auth-form-box {
+    position: static !important;
+    width: 100% !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .login-form-box,
+  .register-form-box {
+    position: static !important;
+    width: 100% !important;
+    left: 0 !important;
+    transform: none !important;
+    opacity: 1 !important;
+    z-index: 1 !important;
+  }
+
+  .register-form-box {
+    display: none;
+  }
+
+  .auth-glass-container.panel-active .login-form-box {
+    display: none;
+  }
+
+  .auth-glass-container.panel-active .register-form-box {
+    display: block;
+  }
+
+  .slide-panel-wrapper {
+    display: none !important;
+  }
+
+  .mobile-switch {
+    display: block;
+  }
+}
