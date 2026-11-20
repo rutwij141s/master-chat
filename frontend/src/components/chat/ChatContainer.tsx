@@ -143,8 +143,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
           }
         }
 
-        const imgRes = await api.generateImage(prompt);
-        const markdown = `### 🎨 AI Generated Artwork\n\n**Prompt:** "${imgRes.revised_prompt}"\n\n![${imgRes.revised_prompt}](${imgRes.url})\n\n*Resolution: ${imgRes.width}x${imgRes.height} • Provider: ${imgRes.provider}*`;
+        const imgRes = await api.generateImage(prompt, "1024x1024", "standard", "vivid", model);
+        const markdown = `### 🎨 AI Generated Artwork\n\n**Prompt:** "${imgRes.revised_prompt}"\n\n![${imgRes.revised_prompt}](${imgRes.url})\n\n*Resolution: ${imgRes.width}x${imgRes.height} • Provider: ${imgRes.provider} • Model: ${model}*`;
 
         setMessages((prev) =>
           prev.map((msg) =>
@@ -193,8 +193,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
           }
         }
 
-        const videoRes = await api.generateVideo(prompt);
-        const markdown = `### 🎬 AI Generated Video Scene\n\n**Scene Prompt:** "${videoRes.prompt}"\n\n[Watch Video Clip](${videoRes.video_url})\n\n*Format: ${videoRes.format.toUpperCase()} • Duration: ${videoRes.duration_seconds}s • Status: ${videoRes.status}*`;
+        const videoRes = await api.generateVideo(prompt, 5, "16:9", model);
+        const markdown = `### 🎬 AI Generated Video Scene\n\n**Scene Prompt:** "${videoRes.prompt}"\n\n[Watch Video Clip](${videoRes.video_url})\n\n*Format: ${videoRes.format.toUpperCase()} • Duration: ${videoRes.duration_seconds}s • Model: ${model}*`;
 
         setMessages((prev) =>
           prev.map((msg) =>

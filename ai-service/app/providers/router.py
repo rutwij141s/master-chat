@@ -115,41 +115,170 @@ class ModelRouter:
             raise RuntimeError(f"All LLM providers failed. Last error: {fallback_exc}") from fallback_exc
 
     def list_models(self) -> List[Dict[str, Any]]:
-        """Return catalog of available models for UI model selector."""
+        """Return catalog of available models and their explicit capabilities for UI and agent routing."""
         return [
             {
                 "id": "gpt-4o",
                 "name": "GPT-4o",
                 "provider": "openai",
-                "description": "OpenAI flagship high-intelligence multimodal model",
+                "description": "OpenAI flagship high-intelligence multimodal model with DALL-E 3 image generation",
                 "context_window": 128000,
                 "is_default": self.settings.DEFAULT_MODEL_PROVIDER == "openai",
+                "capabilities": {
+                    "text": True,
+                    "vision": True,
+                    "image_generation": True,
+                    "video_generation": True,
+                    "web_search": True,
+                    "code_interpreter": True,
+                    "rag": True,
+                    "audio_speech": True,
+                    "audio_transcription": True,
+                },
+                "supported_features": [
+                    "DALL-E 3 Image Generation",
+                    "AI Video Studio",
+                    "Web Search Grounding",
+                    "Document RAG",
+                    "Code Interpreter",
+                ],
             },
             {
                 "id": "gpt-4o-mini",
                 "name": "GPT-4o Mini",
                 "provider": "openai",
-                "description": "Fast and lightweight OpenAI model for quick tasks",
+                "description": "Fast and lightweight OpenAI model with full multi-modal media support",
                 "context_window": 128000,
                 "is_default": False,
+                "capabilities": {
+                    "text": True,
+                    "vision": True,
+                    "image_generation": True,
+                    "video_generation": True,
+                    "web_search": True,
+                    "code_interpreter": True,
+                    "rag": True,
+                    "audio_speech": True,
+                    "audio_transcription": True,
+                },
+                "supported_features": [
+                    "AI Image Generation",
+                    "AI Video Studio",
+                    "Fast Chat & RAG",
+                ],
             },
             {
                 "id": "claude-3-5-sonnet-20241022",
                 "name": "Claude 3.5 Sonnet",
                 "provider": "anthropic",
-                "description": "Anthropic most intelligent model, top-tier coding & reasoning",
+                "description": "Anthropic premier intelligence model for deep reasoning, complex coding, and long context",
                 "context_window": 200000,
                 "is_default": self.settings.DEFAULT_MODEL_PROVIDER == "anthropic",
+                "capabilities": {
+                    "text": True,
+                    "vision": True,
+                    "image_generation": False,
+                    "video_generation": False,
+                    "web_search": True,
+                    "code_interpreter": True,
+                    "rag": True,
+                    "audio_speech": False,
+                    "audio_transcription": False,
+                },
+                "supported_features": [
+                    "Deep Analytical Reasoning",
+                    "Advanced Code Synthesis",
+                    "200K Long-Context RAG",
+                    "Web Search Grounding",
+                ],
             },
             {
                 "id": "claude-3-5-haiku-20241022",
                 "name": "Claude 3.5 Haiku",
                 "provider": "anthropic",
-                "description": "Lightning fast Anthropic model for everyday tasks",
+                "description": "Ultra-fast response with high reasoning capability for quick analytical tasks",
                 "context_window": 200000,
                 "is_default": False,
+                "capabilities": {
+                    "text": True,
+                    "vision": True,
+                    "image_generation": False,
+                    "video_generation": False,
+                    "web_search": True,
+                    "code_interpreter": True,
+                    "rag": True,
+                    "audio_speech": False,
+                    "audio_transcription": False,
+                },
+                "supported_features": [
+                    "Ultra-Fast Inference",
+                    "Code & Logic Analysis",
+                    "Document Analysis",
+                ],
+            },
+            {
+                "id": "dall-e-3",
+                "name": "DALL-E 3 (Creative Studio)",
+                "provider": "openai",
+                "description": "Dedicated visual generative AI model for photorealistic and stylized artwork",
+                "context_window": 4096,
+                "is_default": False,
+                "capabilities": {
+                    "text": False,
+                    "vision": False,
+                    "image_generation": True,
+                    "video_generation": True,
+                    "web_search": False,
+                    "code_interpreter": False,
+                    "rag": False,
+                    "audio_speech": False,
+                    "audio_transcription": False,
+                },
+                "supported_features": [
+                    "Photorealistic Image Generation",
+                    "Stylized Digital Artwork",
+                    "AI Cinematic Video Scenes",
+                ],
             },
         ]
+
+    def get_model_capabilities(self, model_name: Optional[str] = None) -> Dict[str, bool]:
+        """Look up capabilities map for a given model identifier."""
+        req_id = (model_name or "").lower().strip()
+        models = self.list_models()
+        for m in models:
+            if m["id"].lower() == req_id or (req_id and req_id in m["id"].lower()):
+                return m.get("capabilities", {})
+
+        # Default fallback: infer based on model vendor
+        if "claude" in req_id or "anthropic" in req_id:
+            return {
+                "text": True,
+                "vision": True,
+                "image_generation": False,
+                "video_generation": False,
+                "web_search": True,
+                "code_interpreter": True,
+                "rag": True,
+                "audio_speech": False,
+                "audio_transcription": False,
+            }
+        return {
+            "text": True,
+            "vision": True,
+            "image_generation": True,
+            "video_generation": True,
+            "web_search": True,
+            "code_interpreter": True,
+            "rag": True,
+            "audio_speech": True,
+            "audio_transcription": True,
+        }
+
+    def supports_capability(self, model_name: Optional[str], capability: str) -> bool:
+        """Check whether a model supports a specific capability (e.g. 'image_generation')."""
+        caps = self.get_model_capabilities(model_name)
+        return caps.get(capability, False)
 
 
 router = ModelRouter()

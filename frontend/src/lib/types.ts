@@ -42,6 +42,18 @@ export interface Message {
   isStreaming?: boolean;
 }
 
+export interface ModelCapabilities {
+  text?: boolean;
+  vision?: boolean;
+  image_generation?: boolean;
+  video_generation?: boolean;
+  web_search?: boolean;
+  code_interpreter?: boolean;
+  rag?: boolean;
+  audio_speech?: boolean;
+  audio_transcription?: boolean;
+}
+
 export interface Model {
   id: string;
   name: string;
@@ -49,6 +61,8 @@ export interface Model {
   description: string;
   context_window: number;
   is_default: boolean;
+  capabilities?: ModelCapabilities;
+  supported_features?: string[];
 }
 
 export interface DocumentItem {
@@ -111,6 +125,7 @@ export interface ImageGenerateRequest {
   size?: string;
   quality?: string;
   style?: string;
+  model?: string;
 }
 
 export interface ImageGenerateResponse {
@@ -120,12 +135,14 @@ export interface ImageGenerateResponse {
   provider: string;
   width: number;
   height: number;
+  model_used?: string;
 }
 
 export interface VideoGenerateRequest {
   prompt: string;
   duration_seconds?: number;
   aspect_ratio?: string;
+  model?: string;
 }
 
 export interface VideoGenerateResponse {
@@ -135,6 +152,7 @@ export interface VideoGenerateResponse {
   prompt: string;
   duration_seconds: number;
   format: string;
+  model_used?: string;
 }
 
 export interface TextToSpeechRequest {

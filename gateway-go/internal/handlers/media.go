@@ -35,3 +35,9 @@ func (h *MediaHandler) TextToSpeech(c *gin.Context) {
 	targetURL := fmt.Sprintf("%s/api/v1/audio/speech", h.cfg.AIServiceURL)
 	proxy.ProxyJSON(c, targetURL)
 }
+
+func (h *MediaHandler) GetVideoFile(c *gin.Context) {
+	filename := c.Param("filename")
+	targetURL := fmt.Sprintf("%s/api/v1/media/video/file/%s", h.cfg.AIServiceURL, filename)
+	proxy.ProxyJSON(c, targetURL)
+}

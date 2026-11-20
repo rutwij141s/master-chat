@@ -191,10 +191,14 @@ export const MessageInput: React.FC<MessageInputProps> = ({
             if (textareaRef.current) textareaRef.current.focus();
           }}
           className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/20 backdrop-blur-md transition-all cursor-pointer font-medium text-xs active:scale-95 shadow-xs"
-          title="Create AI Art with DALL-E 3"
+          title={
+            selectedModel.includes("claude")
+              ? "Generate AI image (routes to DALL-E 3 Creative Engine)"
+              : "Generate AI Art with DALL-E 3"
+          }
         >
           <ImageIcon className="w-3 h-3 text-purple-500" />
-          <span>🎨 /image</span>
+          <span>🎨 /image {selectedModel.includes("claude") ? "(DALL-E 3)" : ""}</span>
         </button>
 
         <button

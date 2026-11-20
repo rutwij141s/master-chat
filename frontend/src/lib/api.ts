@@ -180,18 +180,20 @@ class ApiClient {
     prompt: string,
     size: string = "1024x1024",
     quality: string = "standard",
-    style: string = "vivid"
+    style: string = "vivid",
+    model?: string
   ): Promise<ImageGenerateResponse> {
     return this.request<ImageGenerateResponse>("/media/image/generate", {
       method: "POST",
-      body: JSON.stringify({ prompt, size, quality, style }),
+      body: JSON.stringify({ prompt, size, quality, style, model }),
     });
   }
 
   async generateVideo(
     prompt: string,
     durationSeconds: number = 5,
-    aspectRatio: string = "16:9"
+    aspectRatio: string = "16:9",
+    model?: string
   ): Promise<VideoGenerateResponse> {
     return this.request<VideoGenerateResponse>("/media/video/generate", {
       method: "POST",
@@ -199,6 +201,7 @@ class ApiClient {
         prompt,
         duration_seconds: durationSeconds,
         aspect_ratio: aspectRatio,
+        model,
       }),
     });
   }

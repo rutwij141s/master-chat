@@ -97,9 +97,14 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
           },
           // Custom Link & Video Embed Rendering
           a({ href, children }: any) {
+            const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || "http://localhost:8080";
+            const videoSrc = href && href.startsWith("/") ? `${GATEWAY_URL}${href}` : href;
+
             if (
               href &&
               (href.endsWith(".mp4") ||
+                href.includes("video/file/") ||
+                href.includes("media/video") ||
                 href.includes("gtv-videos-bucket") ||
                 href.includes("sample/"))
             ) {
@@ -110,13 +115,13 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
                     className="w-full max-h-[420px] rounded-2xl"
                     preload="metadata"
                   >
-                    <source src={href} type="video/mp4" />
+                    <source src={videoSrc} type="video/mp4" />
                     Your browser does not support video playback.
                   </video>
                   <div className="px-3 py-2 bg-black/70 text-xs text-white/90 flex items-center justify-between">
                     <span>🎬 AI Video Scene Preview</span>
                     <a
-                      href={href}
+                      href={videoSrc}
                       target="_blank"
                       rel="noopener noreferrer"
                       download

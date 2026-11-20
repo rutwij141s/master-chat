@@ -67,6 +67,7 @@ func main() {
 	// Public routes
 	r.GET("/health", healthHandler.Health)
 	r.GET("/ready", healthHandler.Ready)
+	r.GET("/media/video/file/:filename", mediaHandler.GetVideoFile)
 
 	authGroup := r.Group("/auth")
 	{

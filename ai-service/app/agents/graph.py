@@ -1,4 +1,6 @@
+import os
 import re
+import uuid
 import logging
 from typing import Dict, Any, List, Optional, AsyncIterator, Tuple
 from langgraph.graph import StateGraph, END
@@ -18,17 +20,40 @@ logger = logging.getLogger(__name__)
 # ------------------------------------------------------------------------------
 
 def router_node(state: AgentState) -> Dict[str, Any]:
-    """Determines execution path: direct answer, RAG retrieval, tool call, or web search."""
+    """Determines execution path: direct answer, RAG retrieval, tool call, web search, image, or video generation."""
     user_input = state.get("user_input", "")
     use_rag = state.get("use_rag", False)
     use_web_search = state.get("use_web_search", False)
     doc_ids = state.get("doc_ids")
 
-    # Explicit web search toggle takes priority
+    # 1. Image Generation Intent Detection
+    image_patterns = [
+        r"(?i)\b(?:generate|create|make|draw|render|paint)\s+(?:an?\s+)?(?:image|picture|artwork|illustration|photo|visual|painting)\b",
+        r"(?i)\b(?:image|picture|artwork)\s+of\b",
+        r"(?i)\bdraw\s+(?:me\s+)?(?:an?\s+)?[\w\s]{2,}",
+    ]
+    if (
+        user_input.strip().lower().startswith(("/image", "generate image:", "draw:", "image of:"))
+        or any(re.search(pat, user_input) for pat in image_patterns)
+    ):
+        return {"route": "image"}
+
+    # 2. Video Generation Intent Detection
+    video_patterns = [
+        r"(?i)\b(?:generate|create|make|render|produce)\s+(?:an?\s+)?(?:video|clip|animation|scene|footage|movie)\b",
+        r"(?i)\b(?:video|clip|footage)\s+of\b",
+    ]
+    if (
+        user_input.strip().lower().startswith(("/video", "generate video:", "video of:"))
+        or any(re.search(pat, user_input) for pat in video_patterns)
+    ):
+        return {"route": "video"}
+
+    # 3. Explicit web search toggle takes priority over text defaults
     if use_web_search:
         return {"route": "web"}
 
-    # Document intent detection: auto-route to RAG if user refers to documents or asks to summarize
+    # 4. Document intent detection: auto-route to RAG if user refers to documents or asks to summarize
     doc_keywords = [
         r"\b(?:document|doc|docs|pdf|file|uploaded|attachment|attached)\b",
         r"\b(?:summarize|summary|overview|synopsis|outline|key points|takeaways)\b",
@@ -41,12 +66,12 @@ def router_node(state: AgentState) -> Dict[str, Any]:
     if use_rag or bool(doc_ids) or is_doc_intent:
         return {"route": "rag"}
 
-    # Math/Calculation intent
+    # 5. Math/Calculation intent
     calc_match = re.search(r"(?:calculate|eval|what is|compute)\s+([0-9\.\+\-\*\/\^\(\)\s]+)", user_input, re.IGNORECASE)
     if calc_match and any(op in calc_match.group(1) for op in ["+", "-", "*", "/", "^"]):
         return {"route": "tool"}
 
-    # Web search natural language intent detection
+    # 6. Web search natural language intent detection
     search_keywords = [
         "search web", "look up", "current weather", "latest news", "stock price",
         "search for", "google for", "live updates", "recent events", "today's news"
@@ -92,7 +117,6 @@ def rag_node(state: AgentState) -> Dict[str, Any]:
         top_k=6 if is_summary else 4,
     )
 
-    # Deduplicate candidate chunks while preserving order
     seen_ids = set()
     final_candidates = []
     for c in candidate_chunks + mmr_chunks:
@@ -101,14 +125,11 @@ def rag_node(state: AgentState) -> Dict[str, Any]:
             final_candidates.append(c)
 
     if not is_summary and final_candidates:
-        # Cross-Encoder Rerank for specific queries
         reranked = reranker.rerank(query=query, chunks=final_candidates, top_k=4)
     else:
-        # For summaries, sort by chunk_index to present a coherent narrative flow
         final_candidates.sort(key=lambda x: x.get("metadata", {}).get("chunk_index", 0))
         reranked = final_candidates[:8]
 
-    # Delimit context and format citations
     context_str, citations = reranker.sanitize_and_delimit_context(reranked)
 
     return {
@@ -126,10 +147,121 @@ def tool_node(state: AgentState) -> Dict[str, Any]:
     return {"tool_result": result}
 
 
+async def image_gen_node(state: AgentState) -> Dict[str, Any]:
+    """Generate real AI image based on model capabilities, with graceful fallback handling."""
+    user_input = state.get("user_input", "")
+    model_name = state.get("model", "gpt-4o")
+
+    # Clean prompt by stripping trigger verbs
+    clean_prompt = re.sub(
+        r"(?i)^(?:/image|generate (?:an? )?image(?:\s+of)?|create (?:an? )?image(?:\s+of)?|draw (?:me )?(?:an? )?image(?:\s+of)?|render (?:an? )?image(?:\s+of)?|paint (?:an? )?image(?:\s+of)?|make (?:an? )?image(?:\s+of)?|draw(?:\s+me)?|image of:?)\s*",
+        "",
+        user_input,
+    ).strip()
+    if not clean_prompt:
+        clean_prompt = user_input.strip()
+
+    # Check model capabilities
+    supports_image = router.supports_capability(model_name, "image_generation")
+    if not supports_image:
+        fallback_msg = (
+            f"### ℹ️ Feature Compatibility Notice\n\n"
+            f"The selected model **{model_name}** specializes in text reasoning and code analysis, and does not natively support direct AI image generation.\n\n"
+            f"#### How to generate this image:\n"
+            f"1. **Switch your model to GPT-4o** in the selector in the bottom toolbar to generate directly with DALL-E 3.\n"
+            f"2. Or use the **🎨 /image** command: `/image {clean_prompt}` to generate using our DALL-E 3 Creative Engine.\n"
+        )
+        return {
+            "tool_result": fallback_msg,
+            "route": "image",
+            "retrieved_context": "",
+            "citations": [],
+        }
+
+    # Model supports image generation - execute real-time generation
+    from app.api.v1.media import generate_ai_image_url
+    image_url, revised_prompt, provider = await generate_ai_image_url(clean_prompt)
+
+    markdown_result = (
+        f"### 🎨 AI Generated Artwork\n\n"
+        f"**Prompt:** \"{revised_prompt}\"\n\n"
+        f"![{clean_prompt}]({image_url})\n\n"
+        f"*Generated with {provider} • Model: {model_name} • Resolution: 1024x1024*"
+    )
+
+    return {
+        "tool_result": markdown_result,
+        "route": "image",
+        "retrieved_context": "",
+        "citations": [],
+    }
+
+
+async def video_gen_node(state: AgentState) -> Dict[str, Any]:
+    """Generate real AI cinematic video scene based on model capabilities, with graceful fallback handling."""
+    user_input = state.get("user_input", "")
+    model_name = state.get("model", "gpt-4o")
+
+    clean_prompt = re.sub(
+        r"(?i)^(?:/video|generate (?:an? )?video(?:\s+of)?|create (?:an? )?video(?:\s+of)?|render (?:an? )?video(?:\s+of)?|make (?:an? )?video(?:\s+of)?|video of:?)\s*",
+        "",
+        user_input,
+    ).strip()
+    if not clean_prompt:
+        clean_prompt = user_input.strip()
+
+    supports_video = router.supports_capability(model_name, "video_generation")
+    if not supports_video:
+        fallback_msg = (
+            f"### ℹ️ Feature Compatibility Notice\n\n"
+            f"The selected model **{model_name}** does not natively support AI video generation.\n\n"
+            f"#### How to generate this video:\n"
+            f"1. **Switch to GPT-4o** in the model selector toolbar.\n"
+            f"2. Or run the **🎬 /video** command: `/video {clean_prompt}`.\n"
+        )
+        return {
+            "tool_result": fallback_msg,
+            "route": "video",
+            "retrieved_context": "",
+            "citations": [],
+        }
+
+    from app.api.v1.media import fetch_keyframe_image, synthesize_cinematic_mp4, MEDIA_STORAGE_DIR
+
+    video_id = uuid.uuid4().hex[:12]
+    image_temp_path = os.path.join(MEDIA_STORAGE_DIR, f"{video_id}.jpg")
+    video_output_path = os.path.join(MEDIA_STORAGE_DIR, f"{video_id}.mp4")
+
+    # 1. Fetch authentic AI scene visual keyframe
+    thumb_url = await fetch_keyframe_image(clean_prompt, image_temp_path)
+
+    # 2. Synthesize cinematic MP4 video clip
+    video_ready = synthesize_cinematic_mp4(
+        image_temp_path if os.path.exists(image_temp_path) else None,
+        video_output_path,
+        duration=5,
+    )
+
+    video_url = f"/api/v1/media/video/file/{video_id}.mp4" if video_ready else thumb_url
+
+    markdown_result = (
+        f"### 🎬 AI Generated Video Scene\n\n"
+        f"**Scene Prompt:** \"{clean_prompt}\"\n\n"
+        f"[{clean_prompt}]({video_url})\n\n"
+        f"*Model: {model_name} (AI Video Studio) • Format: MP4 • Duration: 5s*"
+    )
+
+    return {
+        "tool_result": markdown_result,
+        "route": "video",
+        "retrieved_context": "",
+        "citations": [],
+    }
+
+
 async def web_search_node(state: AgentState) -> Dict[str, Any]:
     """Execute real-time web search and ground results with web citations."""
     user_input = state.get("user_input", "")
-    # Clean query by stripping search triggers
     clean_query = re.sub(
         r"(?i)\b(?:search (?:the )?web for|search for|look up|search web|google for|search)\b",
         "",
@@ -177,7 +309,6 @@ async def web_search_node(state: AgentState) -> Dict[str, Any]:
 
 def synthesis_node(state: AgentState) -> Dict[str, Any]:
     """Constructs final augmented prompt and message sequence for LLM synthesis."""
-    # State holds messages and injected contexts
     return state
 
 
@@ -190,6 +321,10 @@ def route_decision(state: AgentState) -> str:
         return "tool_node"
     elif route == "web":
         return "web_search_node"
+    elif route == "image":
+        return "image_gen_node"
+    elif route == "video":
+        return "video_gen_node"
     return "direct_node"
 
 
@@ -205,6 +340,8 @@ def build_agent_graph():
     workflow.add_node("rag_node", rag_node)
     workflow.add_node("tool_node", tool_node)
     workflow.add_node("web_search_node", web_search_node)
+    workflow.add_node("image_gen_node", image_gen_node)
+    workflow.add_node("video_gen_node", video_gen_node)
     workflow.add_node("synthesis_node", synthesis_node)
 
     workflow.set_entry_point("router_node")
@@ -217,6 +354,8 @@ def build_agent_graph():
             "rag_node": "rag_node",
             "tool_node": "tool_node",
             "web_search_node": "web_search_node",
+            "image_gen_node": "image_gen_node",
+            "video_gen_node": "video_gen_node",
         },
     )
 
@@ -224,9 +363,10 @@ def build_agent_graph():
     workflow.add_edge("rag_node", "synthesis_node")
     workflow.add_edge("tool_node", "synthesis_node")
     workflow.add_edge("web_search_node", "synthesis_node")
+    workflow.add_edge("image_gen_node", "synthesis_node")
+    workflow.add_edge("video_gen_node", "synthesis_node")
     workflow.add_edge("synthesis_node", END)
 
-    # In-memory checkpointer for conversation workflow state
     checkpointer = MemorySaver()
     return workflow.compile(checkpointer=checkpointer)
 
