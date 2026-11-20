@@ -7,6 +7,7 @@ import { api } from "@/lib/api";
 import { Sidebar } from "@/components/sidebar/Sidebar";
 import { ChatContainer } from "@/components/chat/ChatContainer";
 import { DocumentManager } from "@/components/documents/DocumentManager";
+import { applyTheme, getStoredTheme } from "@/lib/theme";
 
 export default function ChatPage() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function ChatPage() {
 
   // Authentication check & initial load
   useEffect(() => {
+    applyTheme(getStoredTheme());
     const storedUser = localStorage.getItem("masterchat_user");
     const accessToken = localStorage.getItem("masterchat_access_token");
 

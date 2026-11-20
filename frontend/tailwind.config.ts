@@ -9,6 +9,15 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          "var(--font-montserrat-alternates)",
+          "'Montserrat Alternates'",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "sans-serif",
+        ],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",

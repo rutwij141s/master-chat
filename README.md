@@ -153,16 +153,29 @@ MasterChat/
 
 ## Key Features
 
-### 1. Apple Liquid Glass UI Design
+### 1. Apple Liquid Glass UI Design & Typography
+- **Montserrat Alternates Typography**: Primary font set to **Montserrat Alternates** with geometric character, graceful curves, and crisp legibility across all UI elements and chat bubbles.
 - Layered translucent surfaces with `backdrop-filter: blur(28px) saturate(180%)` and 1px specular inner borders.
+- **10 Liquid Glass Themes (Expanded Collection)**:
+  - **Midnight Obsidian**: Classic deep-space dark theme with indigo and magenta refractive highlights.
+  - **Opal Crisp**: Clean, high-contrast white opal glass with soft ultraviolet specular borders.
+  - **Cyber Aurora**: Bioluminescent cyan and emerald aurora reflections over cosmic navy.
+  - **Velvet Amethyst**: Royal imperial purple and fuchsia glass reflections over obsidian darkness.
+  - **Solar Amber**: Warm sunset bronze, golden topaz, and saffron specular glass accents.
+  - **Bioluminescent Jade**: Cybernetic jade, radiant mint, and forest obsidian glass reflections.
+  - **Neon Synthwave**: Electrifying 80s vaporwave hot pink, magenta, and cyan cyberpunk aura.
+  - **Oceanic Abyss**: Deep marine sapphire, oceanic azure, and cobalt trench glass reflections.
+  - **Rose Quartz**: Frosted champagne blush glass with delicate rose petals and warm gold.
+  - **Nordic Frost**: Arctic glacial ice crystal, polar silver, and diamond specular highlights.
+- **Theme Palette Selector Modal**: 1-click modal with visual 3-dot color swatches, active indicators, and real-time ambient mesh background transitions (`liquid-mesh-bg`).
 - **Dual-Placement Model Selector**:
   - **Top Navigation Bar**: Downward dropdown (`placement="bottom"`) alongside conversation title and active Knowledge Base indicator.
   - **Message Composer**: Upward dropdown (`placement="top"`) with high-contrast backdrop, provider badges (OpenAI Emerald, Anthropic Amber), and model parameter summaries without overflow clipping.
 - **Live Grounding Citations**: Interactive citation chips supporting both indexed document chunks (`p.1`) and live web sources with clickable "Visit Source ↗" external links and a one-click "Copy text" action.
 - **One-Click Conversation Export**: Download complete chat transcripts directly from the header as formatted **Markdown (`.md`)** or **Plain Text (`.txt`)**.
-- Floating glass message composer with auto-expanding input, RAG toggle, and Web Search toggle.
+- Floating glass message composer with auto-expanding input, RAG toggle, Web Search toggle, and Debate Council toggle.
 - Full Markdown rendering with syntax highlighting, copy-code button, tables, and **LaTeX math (KaTeX)** support.
-- Morphing glass sidebar with chat search, inline rename, delete confirmation, and dark/light mode toggle.
+- Morphing glass sidebar with chat search, inline rename, delete confirmation, theme selector, and admin access.
 
 ### 2. Live Web Search Grounding
 - **Real-Time Web Intelligence**: Dedicated `Web` toggle in the composer triggers real-time web search for current events, stock prices, live news, and sports scores.

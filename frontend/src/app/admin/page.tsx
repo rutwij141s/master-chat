@@ -22,7 +22,9 @@ import {
   UserCheck,
   UserMinus,
   AlertCircle,
+  Palette,
 } from "lucide-react";
+import { ThemeSelectorModal } from "@/components/ui/ThemeSelectorModal";
 import { api } from "@/lib/api";
 import {
   AdminOverview,
@@ -48,6 +50,7 @@ export default function AdminDashboardPage() {
   const [usersData, setUsersData] = useState<AdminUsersResponse | null>(null);
   const [selectedUserDetail, setSelectedUserDetail] = useState<UserDetailAnalytics | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
 
   // Filters & State
   const [timeframeDays, setTimeframeDays] = useState<number | undefined>(undefined);
@@ -255,6 +258,18 @@ export default function AdminDashboardPage() {
               All Time
             </button>
           </div>
+
+          {/* Theme Palette Button */}
+          <GlassButton
+            variant="secondary"
+            size="sm"
+            onClick={() => setIsThemeModalOpen(true)}
+            className="flex items-center gap-1.5"
+            title="Choose Theme (10 Liquid Glass Themes)"
+          >
+            <Palette className="w-3.5 h-3.5 text-purple-500" />
+            <span>Themes</span>
+          </GlassButton>
 
           {/* Refresh Button */}
           <GlassButton
@@ -751,6 +766,12 @@ export default function AdminDashboardPage() {
           </div>
         )}
       </GlassModal>
+
+      {/* Theme Selector Modal */}
+      <ThemeSelectorModal
+        isOpen={isThemeModalOpen}
+        onClose={() => setIsThemeModalOpen(false)}
+      />
     </div>
   );
 }

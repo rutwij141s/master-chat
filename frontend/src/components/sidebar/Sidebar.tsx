@@ -14,7 +14,10 @@ import {
   ChevronLeft,
   ChevronRight,
   ShieldCheck,
+  Palette,
 } from "lucide-react";
+import { THEMES, getStoredTheme } from "@/lib/theme";
+import { ThemeSelectorModal } from "../ui/ThemeSelectorModal";
 import { Conversation, User, UsageSummary } from "@/lib/types";
 import { api } from "@/lib/api";
 import { ConversationItem } from "./ConversationItem";
@@ -50,11 +53,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [usage, setUsage] = useState<UsageSummary | null>(null);
+  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
+  const [currentThemeId, setCurrentThemeId] = useState<string>("dark");
 
-  // Theme detection
+  // Theme detection & synchronization
   useEffect(() => {
+    setCurrentThemeId(getStoredTheme());
     const isDarkMode = document.documentElement.classList.contains("dark");
     setIsDark(isDarkMode);
+
+    const handleThemeChange = (e: any) => {
+      if (e.detail?.themeId) {
+        setCurrentThemeId(e.detail.themeId);
+        setIsDark(document.documentElement.classList.contains("dark"));
+      }
+    };
+    window.addEventListener("themechange", handleThemeChange);
+    return () => window.removeEventListener("themechange", handleThemeChange);
   }, []);
 
   const toggleTheme = () => {
@@ -227,11 +242,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* User Profile & Theme Row */}
           <div className="flex items-center justify-between pt-1 px-1">
             <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-foreground/70 hover:text-foreground transition-colors"
-              title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              onClick={() => setIsThemeModalOpen(true)}
+              className="p-2 rounded-xl hover:bg-purple-500/10 text-foreground/70 hover:text-purple-500 transition-colors"
+              title="Liquid Glass Theme Palette (10 Themes Available)"
             >
-              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
+              <Palette className="w-4 h-4 text-purple-500" />
             </button>
 
             {!isCollapsed && user && (
@@ -250,6 +265,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
       </GlassCard>
+
+      {/* Theme Selector Modal */}
+      <ThemeSelectorModal
+        isOpen={isThemeModalOpen}
+        onClose={() => setIsThemeModalOpen(false)}
+      />
     </aside>
   );
 };
