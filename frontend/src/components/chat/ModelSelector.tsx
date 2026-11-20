@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Sparkles, Cpu, Check, Layers, Brain, Code2, Users } from "lucide-react";
+import { ChevronDown, Sparkles, Cpu, Check, Layers, Brain, Code2, Users, Globe, Zap, Compass } from "lucide-react";
 import { Model } from "@/lib/types";
 import { api } from "@/lib/api";
 import { GlassCard } from "../ui/GlassCard";
@@ -79,8 +79,66 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   }, []);
 
   const current = models.find((m) => m.id === selectedModel) || models[0];
-  const isDebate = current?.id === "debate" || current?.provider === "multi";
-  const isAnthropic = !isDebate && (current?.provider === "anthropic" || current?.id?.includes("claude"));
+
+  const getProviderMeta = (m?: Model) => {
+    const prov = (m?.provider || "").toLowerCase();
+    const id = (m?.id || "").toLowerCase();
+
+    if (id === "debate" || prov === "multi") {
+      return {
+        label: "Council",
+        icon: <Users className="w-2.5 h-2.5" />,
+        badge: "bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/20",
+        accent: "text-purple-600 dark:text-purple-400",
+        bg: "bg-purple-500/20",
+      };
+    }
+    if (prov === "anthropic" || id.includes("claude")) {
+      return {
+        label: "Anthropic",
+        icon: <Cpu className="w-2.5 h-2.5" />,
+        badge: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/20",
+        accent: "text-amber-600 dark:text-amber-400",
+        bg: "bg-amber-500/20",
+      };
+    }
+    if (prov === "gemini" || id.includes("gemini")) {
+      return {
+        label: "Google",
+        icon: <Compass className="w-2.5 h-2.5" />,
+        badge: "bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-500/20",
+        accent: "text-blue-600 dark:text-blue-400",
+        bg: "bg-blue-500/20",
+      };
+    }
+    if (prov === "xai" || id.includes("grok")) {
+      return {
+        label: "xAI",
+        icon: <Zap className="w-2.5 h-2.5" />,
+        badge: "bg-zinc-500/15 text-zinc-700 dark:text-zinc-300 border border-zinc-500/20",
+        accent: "text-zinc-600 dark:text-zinc-400",
+        bg: "bg-zinc-500/20",
+      };
+    }
+    if (prov === "perplexity" || id.includes("sonar")) {
+      return {
+        label: "Perplexity",
+        icon: <Globe className="w-2.5 h-2.5" />,
+        badge: "bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/20",
+        accent: "text-teal-600 dark:text-teal-400",
+        bg: "bg-teal-500/20",
+      };
+    }
+    return {
+      label: "OpenAI",
+      icon: <Sparkles className="w-2.5 h-2.5" />,
+      badge: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20",
+      accent: "text-emerald-600 dark:text-emerald-400",
+      bg: "bg-emerald-500/20",
+    };
+  };
+
+  const currentMeta = getProviderMeta(current);
 
   const dropdownClasses =
     placement === "bottom"
@@ -103,34 +161,15 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           isOpen && "ring-2 ring-indigo-500/40 border-indigo-500/50"
         )}
       >
-        {isDebate ? (
-          <div className="flex items-center justify-center w-4 h-4 rounded-full bg-purple-500/20 text-purple-600 dark:text-purple-400">
-            <Users className="w-2.5 h-2.5" />
-          </div>
-        ) : isAnthropic ? (
-          <div className="flex items-center justify-center w-4 h-4 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400">
-            <Cpu className="w-2.5 h-2.5" />
-          </div>
-        ) : (
-          <div className="flex items-center justify-center w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
-            <Sparkles className="w-2.5 h-2.5" />
-          </div>
-        )}
+        <div className={cn("flex items-center justify-center w-4 h-4 rounded-full", currentMeta.bg, currentMeta.accent)}>
+          {currentMeta.icon}
+        </div>
 
         <div className="flex items-center gap-1.5">
           <span className="font-semibold text-foreground tracking-tight">{current?.name}</span>
           {!compact && (
-            <span
-              className={cn(
-                "text-[9px] uppercase font-mono px-1.5 py-0.5 rounded-md font-semibold",
-                isDebate
-                  ? "bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/20"
-                  : isAnthropic
-                  ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/20"
-                  : "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20"
-              )}
-            >
-              {isDebate ? "Council" : current?.provider}
+            <span className={cn("text-[9px] uppercase font-mono px-1.5 py-0.5 rounded-md font-semibold", currentMeta.badge)}>
+              {currentMeta.label}
             </span>
           )}
         </div>
@@ -174,8 +213,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                 <div className="flex flex-col gap-1 max-h-72 overflow-y-auto">
                   {models.map((m) => {
                     const isSelected = m.id === selectedModel;
-                    const isDebateM = m.id === "debate" || m.provider === "multi";
-                    const isMAnthropic = !isDebateM && (m.provider === "anthropic" || m.id.includes("claude"));
+                    const meta = getProviderMeta(m);
                     return (
                       <button
                         key={m.id}
@@ -193,47 +231,36 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                       >
                         <div className="flex flex-col pr-2">
                           <div className="flex items-center gap-1.5">
-                            {isDebateM ? (
-                              <Users className="w-3.5 h-3.5 text-purple-500 flex-shrink-0" />
-                            ) : isMAnthropic ? (
-                              <Cpu className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
-                            ) : (
-                              <Sparkles className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
-                            )}
+                            <span className={cn("flex-shrink-0", meta.accent)}>{meta.icon}</span>
                             <span className="text-xs font-semibold">{m.name}</span>
                             <span
                               className={cn(
                                 "text-[9px] uppercase px-1.5 py-0.2 rounded font-mono font-medium",
-                                isDebateM
-                                  ? "bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20"
-                                  : isMAnthropic
-                                  ? "bg-amber-500/10 text-amber-700 dark:text-amber-300"
-                                  : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                                meta.badge
                               )}
                             >
-                              {isDebateM ? "Council" : m.provider}
+                              {meta.label}
                             </span>
                           </div>
                           <span className="text-[11px] text-foreground/65 line-clamp-1 mt-0.5">
                             {m.description}
                           </span>
 
-                          {/* Model-Specific Capability Badges */}
-                          <div className="flex items-center gap-1 mt-1.5 flex-wrap">
-                            {isDebateM ? (
-                              <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-md bg-purple-500/15 text-purple-700 dark:text-purple-300 font-medium">
-                                <Users className="w-2.5 h-2.5" />
-                                <span>4-Model Consensus</span>
+                          {/* Model Context & Features */}
+                          <div className="flex items-center gap-1 mt-1.5 flex-wrap text-[9px] text-foreground/60 font-mono">
+                            {m.context_window && (
+                              <span className="px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/5">
+                                {(m.context_window / 1000).toFixed(0)}k ctx
                               </span>
-                            ) : isMAnthropic ? (
-                              <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-md bg-amber-500/15 text-amber-700 dark:text-amber-300 font-medium">
-                                <Brain className="w-2.5 h-2.5" />
-                                <span>200k Reasoning</span>
+                            )}
+                            {m.capabilities?.vision && (
+                              <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                                Vision
                               </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-medium">
-                                <Code2 className="w-2.5 h-2.5" />
-                                <span>Code & Math</span>
+                            )}
+                            {m.capabilities?.web_search && (
+                              <span className="px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-600 dark:text-teal-400">
+                                Web
                               </span>
                             )}
                           </div>

@@ -45,6 +45,18 @@ class Settings(BaseSettings):
     ANTHROPIC_MODEL: str = "claude-3-5-sonnet-20241022"
     ANTHROPIC_FALLBACK_MODEL: str = "claude-3-5-haiku-20241022"
 
+    GEMINI_API_KEY: Optional[str] = None
+    GEMINI_MODEL: str = "gemini-2.0-flash"
+    GEMINI_FALLBACK_MODEL: str = "gemini-1.5-pro"
+
+    XAI_API_KEY: Optional[str] = None
+    XAI_MODEL: str = "grok-2"
+    XAI_FALLBACK_MODEL: str = "grok-beta"
+
+    PERPLEXITY_API_KEY: Optional[str] = None
+    PERPLEXITY_MODEL: str = "sonar-pro"
+    PERPLEXITY_FALLBACK_MODEL: str = "sonar"
+
     DEFAULT_MODEL_PROVIDER: str = "openai"
 
     # RAG / Embeddings

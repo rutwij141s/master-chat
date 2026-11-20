@@ -106,10 +106,8 @@ MasterChat/
 │   │   │   └── session.py
 │   │   ├── schemas/                   # Pydantic v2 request/response contracts
 │   │   ├── providers/                 # Model provider adapters & failover router
-│   │   │   ├── base.py
-│   │   │   ├── openai_provider.py
-│   │   │   ├── anthropic_provider.py
-│   │   │   └── router.py
+│   │   │   ├── providers.py           # Unified provider adapter (OpenAI, Anthropic, Gemini, xAI, Perplexity)
+│   │   │   └── router.py              # Dynamic capability router, fallback & debate engine
 │   │   ├── rag/                       # Ingestion, chunking, embeddings & reranking
 │   │   │   ├── parser.py
 │   │   │   ├── chunker.py
@@ -198,16 +196,21 @@ MasterChat/
 - **Prompt Injection Defense**: Strict XML boundary delimitation and sanitization of ingested content before LLM synthesis.
 
 ### 4. Multi-Model AI Orchestration & Capability Matrix
-- **Adapter Pattern with Dynamic Model Routing**: Supporting OpenAI (`gpt-4o`, `gpt-4o-mini`) and Anthropic (`claude-3-5-sonnet-20241022`, `claude-3-5-haiku-20241022`).
+- **Unified Provider Adapter with Dynamic Model Routing**: Supporting OpenAI (`gpt-4o`, `gpt-4o-mini`), Anthropic (`claude-3-5-sonnet`, `claude-3-5-haiku`), Google Gemini (`gemini-2.0-flash`, `gemini-1.5-pro`), xAI (`grok-2`), and Perplexity (`sonar-pro`, `sonar`) through a single unified `providers.py` engine.
 - **Granular Capabilities Matrix**: Every model exposes structured capability flags (`text`, `vision`, `web_search`, `code_interpreter`, `rag`, `audio_speech`, `audio_transcription`).
 - **Model-Specific Capabilities**:
   | Model | Provider | Vision | Web Search | Deep Reasoning | Context Window |
   |---|---|---|---|---|---|
-  | `debate` | Multi (Council of 4) | ✅ | ✅ | 🏆 4-Model Consensus | 128k - 200k |
+  | `debate` | Multi (Council of 5) | ✅ | ✅ | 🏆 5-Frontier Consensus | 128k - 2M |
   | `gpt-4o` | OpenAI | ✅ | ✅ | ✅ | 128k |
   | `gpt-4o-mini` | OpenAI | ✅ | ✅ | ⚡ Fast | 128k |
   | `claude-3-5-sonnet-20241022` | Anthropic | ✅ | ✅ | 🧠 200k Benchmark | 200k |
   | `claude-3-5-haiku-20241022` | Anthropic | ✅ | ✅ | ⚡ Code & Speed | 200k |
+  | `gemini-2.0-flash` | Google | ✅ | ✅ | ⚡ 1M Real-Time Multimodal | 1,048,576 |
+  | `gemini-1.5-pro` | Google | ✅ | ✅ | 🧠 2M Ultra-Long Context | 2,097,152 |
+  | `grok-2` | xAI | ✅ | ✅ | ⚡ Truth-Seeking Frontier | 128k |
+  | `sonar-pro` | Perplexity | ❌ | ✅ | 🌐 Real-Time Web Synthesis | 200k |
+  | `sonar` | Perplexity | ❌ | ✅ | ⚡ Fast Web Grounding | 128k |
 - **Automatic Failover**: If the primary inference provider experiences a network timeout or upstream 5xx outage, requests automatically failover to an alternative model seamlessly.
 
 ### 5. Multi-Model Debate Chat (Council of 4)

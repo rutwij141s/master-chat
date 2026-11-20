@@ -2,9 +2,14 @@ import logging
 import asyncio
 from typing import AsyncIterator, List, Dict, Any, Tuple, Optional
 from app.config import get_settings
-from app.providers.base import BaseLLMProvider
-from app.providers.openai_provider import OpenAIProvider
-from app.providers.anthropic_provider import AnthropicProvider
+from app.providers.providers import (
+    BaseLLMProvider,
+    OpenAIProvider,
+    AnthropicProvider,
+    GeminiProvider,
+    XAIProvider,
+    PerplexityProvider,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +28,21 @@ class ModelRouter:
             return AnthropicProvider(
                 api_key=self.settings.ANTHROPIC_API_KEY,
                 model=model_name or self.settings.ANTHROPIC_MODEL,
+            )
+        elif "gemini" in requested or "google" in requested:
+            return GeminiProvider(
+                api_key=self.settings.GEMINI_API_KEY,
+                model=model_name or self.settings.GEMINI_MODEL,
+            )
+        elif "grok" in requested or "xai" in requested:
+            return XAIProvider(
+                api_key=self.settings.XAI_API_KEY,
+                model=model_name or self.settings.XAI_MODEL,
+            )
+        elif "sonar" in requested or "perplexity" in requested:
+            return PerplexityProvider(
+                api_key=self.settings.PERPLEXITY_API_KEY,
+                model=model_name or self.settings.PERPLEXITY_MODEL,
             )
         elif "gpt" in requested or "openai" in requested:
             return OpenAIProvider(
@@ -50,8 +70,26 @@ class ModelRouter:
                 api_key=self.settings.ANTHROPIC_API_KEY,
                 model=self.settings.ANTHROPIC_FALLBACK_MODEL,
             )
+        elif isinstance(failed_provider, AnthropicProvider):
+            logger.info("Failing over from Anthropic to Gemini fallback")
+            return GeminiProvider(
+                api_key=self.settings.GEMINI_API_KEY,
+                model=self.settings.GEMINI_FALLBACK_MODEL,
+            )
+        elif isinstance(failed_provider, GeminiProvider):
+            logger.info("Failing over from Gemini to OpenAI fallback")
+            return OpenAIProvider(
+                api_key=self.settings.OPENAI_API_KEY,
+                model=self.settings.OPENAI_FALLBACK_MODEL,
+            )
+        elif isinstance(failed_provider, XAIProvider):
+            logger.info("Failing over from xAI to OpenAI fallback")
+            return OpenAIProvider(
+                api_key=self.settings.OPENAI_API_KEY,
+                model=self.settings.OPENAI_FALLBACK_MODEL,
+            )
         else:
-            logger.info("Failing over from Anthropic to OpenAI fallback")
+            logger.info(f"Failing over from {failed_provider.provider_name} to OpenAI fallback")
             return OpenAIProvider(
                 api_key=self.settings.OPENAI_API_KEY,
                 model=self.settings.OPENAI_FALLBACK_MODEL,
@@ -379,6 +417,116 @@ Strict Synthesis Rules:
                     "Document Analysis",
                 ],
             },
+            {
+                "id": "gemini-2.0-flash",
+                "name": "Gemini 2.0 Flash",
+                "provider": "gemini",
+                "description": "Google flagship next-gen multimodal AI with real-time speed and 1M token context window",
+                "context_window": 1048576,
+                "is_default": False,
+                "capabilities": {
+                    "text": True,
+                    "vision": True,
+                    "web_search": True,
+                    "code_interpreter": True,
+                    "rag": True,
+                    "audio_speech": True,
+                    "audio_transcription": True,
+                },
+                "supported_features": [
+                    "1M Context Window",
+                    "Native Multimodal Vision",
+                    "Real-Time Speed",
+                    "Document RAG",
+                ],
+            },
+            {
+                "id": "gemini-1.5-pro",
+                "name": "Gemini 1.5 Pro",
+                "provider": "gemini",
+                "description": "Google premier high-intelligence model with 2M token context for massive document analysis",
+                "context_window": 2097152,
+                "is_default": False,
+                "capabilities": {
+                    "text": True,
+                    "vision": True,
+                    "web_search": True,
+                    "code_interpreter": True,
+                    "rag": True,
+                    "audio_speech": True,
+                    "audio_transcription": True,
+                },
+                "supported_features": [
+                    "2M Ultra-Long Context",
+                    "Deep Audio & Video Ingestion",
+                    "Complex Multimodal Reasoning",
+                ],
+            },
+            {
+                "id": "grok-2",
+                "name": "Grok 2",
+                "provider": "xai",
+                "description": "xAI flagship frontier model with state-of-the-art reasoning, truth-seeking analysis & coding",
+                "context_window": 128000,
+                "is_default": False,
+                "capabilities": {
+                    "text": True,
+                    "vision": True,
+                    "web_search": True,
+                    "code_interpreter": True,
+                    "rag": True,
+                    "audio_speech": False,
+                    "audio_transcription": False,
+                },
+                "supported_features": [
+                    "Frontier Reasoning",
+                    "Advanced Code Synthesis",
+                    "Truth-Seeking Direct Analysis",
+                ],
+            },
+            {
+                "id": "sonar-pro",
+                "name": "Perplexity Sonar Pro",
+                "provider": "perplexity",
+                "description": "Perplexity advanced online search model with multi-source factual verification and web synthesis",
+                "context_window": 200000,
+                "is_default": False,
+                "capabilities": {
+                    "text": True,
+                    "vision": False,
+                    "web_search": True,
+                    "code_interpreter": True,
+                    "rag": True,
+                    "audio_speech": False,
+                    "audio_transcription": False,
+                },
+                "supported_features": [
+                    "Real-Time Web Intelligence",
+                    "Live Citation Extraction",
+                    "Fact Verification",
+                ],
+            },
+            {
+                "id": "sonar",
+                "name": "Perplexity Sonar",
+                "provider": "perplexity",
+                "description": "Perplexity lightweight web-grounded search model for fast real-time factual inquiries",
+                "context_window": 128000,
+                "is_default": False,
+                "capabilities": {
+                    "text": True,
+                    "vision": False,
+                    "web_search": True,
+                    "code_interpreter": True,
+                    "rag": True,
+                    "audio_speech": False,
+                    "audio_transcription": False,
+                },
+                "supported_features": [
+                    "Fast Search Retrieval",
+                    "Web Grounding",
+                ],
+            },
         ]
 
     def get_model_capabilities(self, model_name: Optional[str] = None) -> Dict[str, bool]:
@@ -391,6 +539,26 @@ Strict Synthesis Rules:
 
         # Default fallback: infer based on model vendor
         if "claude" in req_id or "anthropic" in req_id:
+            return {
+                "text": True,
+                "vision": True,
+                "web_search": True,
+                "code_interpreter": True,
+                "rag": True,
+                "audio_speech": False,
+                "audio_transcription": False,
+            }
+        elif "sonar" in req_id or "perplexity" in req_id:
+            return {
+                "text": True,
+                "vision": False,
+                "web_search": True,
+                "code_interpreter": True,
+                "rag": True,
+                "audio_speech": False,
+                "audio_transcription": False,
+            }
+        elif "grok" in req_id or "xai" in req_id:
             return {
                 "text": True,
                 "vision": True,
