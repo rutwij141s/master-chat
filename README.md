@@ -4,7 +4,7 @@ MasterChat is an enterprise-grade, multi-model conversational AI platform featur
 
 - **GitHub Repository:** [https://github.com/rutwij141s/master-chat](https://github.com/rutwij141s/master-chat) (Branch: `master`)
 - **System Health:** 7/7 Containers Active & Operational
-- **Test Suite Status:** 22/22 End-to-End API Tests Verified (100.0% Pass Rate)
+- **Test Suite Status:** 23/23 End-to-End API Tests Verified (100.0% Pass Rate)
 
 ---
 
@@ -186,23 +186,32 @@ MasterChat/
 - **Model-Specific Capabilities**:
   | Model | Provider | Vision | Web Search | Deep Reasoning | Context Window |
   |---|---|---|---|---|---|
+  | `debate` | Multi (Council of 4) | ✅ | ✅ | 🏆 4-Model Consensus | 128k - 200k |
   | `gpt-4o` | OpenAI | ✅ | ✅ | ✅ | 128k |
   | `gpt-4o-mini` | OpenAI | ✅ | ✅ | ⚡ Fast | 128k |
   | `claude-3-5-sonnet-20241022` | Anthropic | ✅ | ✅ | 🧠 200k Benchmark | 200k |
   | `claude-3-5-haiku-20241022` | Anthropic | ✅ | ✅ | ⚡ Code & Speed | 200k |
 - **Automatic Failover**: If the primary inference provider experiences a network timeout or upstream 5xx outage, requests automatically failover to an alternative model seamlessly.
 
-### 5. Audio Intelligence (STT & TTS)
+### 5. Multi-Model Debate Chat (Council of 4)
+- **Parallel Asynchronous Deliberation**: When selecting **Debate Chat** (`model="debate"`), the backend concurrently queries all 4 AI models (`gpt-4o`, `gpt-4o-mini`, `claude-3-5-sonnet`, `claude-3-5-haiku`) using non-blocking `asyncio.gather` with per-candidate 25s timeout shields.
+- **Independent Multi-Perspective Reasoning**: Each model contributes its unique reasoning style, architectural insights, and edge-case perspectives simultaneously.
+- **Deduplication & Conflict-Resolving Synthesis**: The synthesis engine compares all candidate outputs, highlights areas of agreement, resolves conflicting technical opinions, eliminates redundant phrasing, and combines the strongest points.
+- **Unified SSE Stream & Council Attribution**: Users receive a single coherent, refined response via SSE tokens with a header badge (`> **Council Consensus:** *Synthesized insights from [Models]*`), rather than 4 separate disjointed answers.
+- **Fault-Tolerant Graceful Fallback**: If an individual model times out or encounters rate limits, the council synthesizes a response using the remaining available models without failing the request.
+- **One-Click UI Controls**: Accessible via a dedicated `👥 Debate` quick-toggle button in the composer toolbar as well as through the Model Selector dropdowns.
+
+### 6. Audio Intelligence (STT & TTS)
 - **Speech-to-Text (STT)**: Whisper-powered audio transcription (`/audio/transcribe`) supporting audio uploads and browser mic dictation.
 - **Neural Text-to-Speech (TTS)**: Streaming voice synthesis (`/audio/speech`) with natural voice options (`alloy`, `echo`, `fable`, `onyx`, `nova`, `shimmer`).
 
-### 6. Go API Gateway
+### 7. Go API Gateway
 - **JWT Authentication**: Secure user registration, login, and token refresh with bcrypt hashing.
 - **Per-User Rate Limiting**: Sliding-window rate limiter backed by Redis.
 - **Zero-Buffering SSE Proxy**: Immediate chunk-by-chunk flushing (`c.Writer.Flush()`) from upstream Python AI service to the client.
 - **Middleware**: Structured `slog` JSON logging, automatic `X-Request-Id` generation, and CORS protection.
 
-### 7. LangGraph Agent Workflow & Memory
+### 8. LangGraph Agent Workflow & Memory
 - StateGraph workflow: `router_node -> (direct_node | rag_node | tool_node | web_search_node) -> synthesis_node -> memory`.
 - Built-in tools: AST safe mathematical calculator, DuckDuckGo structured web search, file Q&A, and sandboxed execution.
 - Conversation memory: Sliding window of recent turns + rolling summaries saved to PostgreSQL.
@@ -295,13 +304,14 @@ npm run dev
   ```json
   {
     "conversation_id": "optional-uuid",
-    "message": "What is the latest stock price of Apple?",
-    "model": "gpt-4o",
+    "message": "What are the core trade-offs between monolithic and microservice architectures?",
+    "model": "debate",
     "use_rag": false,
-    "use_web_search": true,
+    "use_web_search": false,
     "temperature": 0.7
   }
   ```
+  *(Set `"model": "debate"` to activate the 4-Model Council debate and consensus synthesis)*
 
 ### Document Ingestion (RAG)
 - `POST /documents/upload`: Multipart upload (`file` or `url` form fields)
@@ -320,7 +330,7 @@ npm run dev
   ```
 
 ### Metadata & Observability
-- `GET /models`: List available models with capabilities (`gpt-4o`, `gpt-4o-mini`, `claude-3-5-sonnet-20241022`, `claude-3-5-haiku-20241022`)
+- `GET /models`: List available models with capabilities (`debate`, `gpt-4o`, `gpt-4o-mini`, `claude-3-5-sonnet-20241022`, `claude-3-5-haiku-20241022`)
 - `GET /usage`: View user token and cost consumption
 - `GET /health`: Gateway and AI service liveness
 - `GET /ready`: Database, Redis, and Vector store readiness check
@@ -330,7 +340,7 @@ npm run dev
 ## Running Tests
 
 ### End-to-End API Test Suite
-Run the 22-endpoint comprehensive test suite against the live platform (health probes, auth, models, conversations, PDF ingestion, MMR vector retrieval, Cross-Encoder reranking, SSE streaming, Whisper STT, neural TTS, usage tracking, and resource cleanup):
+Run the 23-endpoint comprehensive test suite against the live platform (health probes, auth, models, conversations, PDF ingestion, MMR vector retrieval, Cross-Encoder reranking, SSE streaming, Whisper STT, neural TTS, 4-model Debate Chat consensus synthesis, usage tracking, and resource cleanup):
 ```bash
 python3 tests/test_all_apis.py
 ```

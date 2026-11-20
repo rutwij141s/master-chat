@@ -55,7 +55,7 @@ export interface ModelCapabilities {
 export interface Model {
   id: string;
   name: string;
-  provider: "openai" | "anthropic";
+  provider: "openai" | "anthropic" | "multi" | string;
   description: string;
   context_window: number;
   is_default: boolean;

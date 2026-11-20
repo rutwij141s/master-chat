@@ -284,15 +284,43 @@ def main():
     tts_ok = status in (200, 503)
     record("20. Text-to-Speech Voice Synthesis (POST /audio/speech)", tts_ok, f"Status {status}, Audio stream bytes: {len(body)}", elapsed)
 
-    # 12. Document Cleanup
+    # 12. Multi-Model Debate Chat Stream (POST /chat/stream model=debate)
+    debate_payload = json.dumps({
+        "conversation_id": conv_id,
+        "message": "Compare monolithic vs microservices architectures for high-growth fintech systems.",
+        "model": "debate",
+        "use_rag": False,
+        "stream": True
+    }).encode("utf-8")
+    status, body, elapsed, _ = make_request(
+        f"{GATEWAY_URL}/chat/stream",
+        method="POST",
+        headers={**auth_header, "Content-Type": "application/json"},
+        data=debate_payload
+    )
+    lines = body.decode(errors="replace").split("\n")
+    debate_tokens = []
+    for line in lines:
+        if line.startswith("data: "):
+            try:
+                chunk = json.loads(line[6:])
+                if chunk.get("type") == "token":
+                    debate_tokens.append(chunk.get("token", ""))
+            except Exception:
+                pass
+    debate_response = "".join(debate_tokens)
+    debate_ok = status == 200 and len(debate_tokens) > 0
+    record("21. Multi-Model Debate Chat Stream (POST /chat/stream model=debate)", debate_ok, f"Synthesized {len(debate_tokens)} chunks: '{debate_response[:80]}...'", elapsed)
+
+    # 13. Document Cleanup
     if doc_id:
         status, body, elapsed, _ = make_request(f"{GATEWAY_URL}/documents/{doc_id}", method="DELETE", headers=auth_header)
-        record("21. Delete Document & Purge Vectors (DELETE /documents/:id)", status in (200, 204), f"Status {status}", elapsed)
+        record("22. Delete Document & Purge Vectors (DELETE /documents/:id)", status in (200, 204), f"Status {status}", elapsed)
 
-    # 13. Conversation Cleanup
+    # 14. Conversation Cleanup
     if conv_id:
         status, body, elapsed, _ = make_request(f"{GATEWAY_URL}/conversations/{conv_id}", method="DELETE", headers=auth_header)
-        record("22. Delete Conversation (DELETE /conversations/:id)", status in (200, 204), f"Status {status}", elapsed)
+        record("23. Delete Conversation (DELETE /conversations/:id)", status in (200, 204), f"Status {status}", elapsed)
 
     print("\n==========================================================")
     passed_count = sum(1 for r in test_results if r["status"] == "PASS")

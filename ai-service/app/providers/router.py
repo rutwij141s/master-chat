@@ -114,9 +114,183 @@ class ModelRouter:
             logger.error(f"Fallback provider {fallback.provider_name} also failed: {fallback_exc}")
             raise RuntimeError(f"All LLM providers failed. Last error: {fallback_exc}") from fallback_exc
 
+    async def stream_debate_response(
+        self,
+        messages: List[Dict[str, str]],
+        system_prompt: Optional[str] = None,
+        temperature: float = 0.7,
+        max_tokens: int = 4096,
+        timeout_seconds: float = 25.0,
+    ) -> AsyncIterator[Tuple[str, str]]:
+        """
+        Executes Multi-Model Debate Chat across all four AI models:
+        1. Queries GPT-4o, GPT-4o Mini, Claude 3.5 Sonnet, and Claude 3.5 Haiku concurrently.
+        2. Gathers their independent analyses and unique perspectives.
+        3. Identifies common points, resolves conflicting viewpoints, and eliminates redundancy.
+        4. Synthesizes a single, refined, consolidated final response streamed to the user.
+        5. Handles timeouts or provider failures gracefully using available model outputs.
+        """
+        debate_candidates = [
+            {
+                "id": "gpt-4o",
+                "name": "GPT-4o",
+                "provider": OpenAIProvider(api_key=self.settings.OPENAI_API_KEY, model="gpt-4o"),
+                "specialty": "Strategic Reasoning & In-Depth Multimodal Analysis",
+            },
+            {
+                "id": "gpt-4o-mini",
+                "name": "GPT-4o Mini",
+                "provider": OpenAIProvider(api_key=self.settings.OPENAI_API_KEY, model="gpt-4o-mini"),
+                "specialty": "Pragmatic Implementation & Efficiency",
+            },
+            {
+                "id": "claude-3-5-sonnet-20241022",
+                "name": "Claude 3.5 Sonnet",
+                "provider": AnthropicProvider(api_key=self.settings.ANTHROPIC_API_KEY, model="claude-3-5-sonnet-20241022"),
+                "specialty": "Advanced Architectural Design & Deep Logic",
+            },
+            {
+                "id": "claude-3-5-haiku-20241022",
+                "name": "Claude 3.5 Haiku",
+                "provider": AnthropicProvider(api_key=self.settings.ANTHROPIC_API_KEY, model="claude-3-5-haiku-20241022"),
+                "specialty": "Rapid Analytical Precision & Fact Checking",
+            },
+        ]
+
+        actual_model = "debate (4 models)"
+
+        # 1. Concurrently query all 4 models with timeout and error shielding
+        async def fetch_model_perspective(cand: Dict[str, Any]) -> Dict[str, Any]:
+            try:
+                text, _ = await asyncio.wait_for(
+                    cand["provider"].generate_chat(
+                        messages=messages,
+                        system_prompt=system_prompt,
+                        temperature=temperature,
+                        max_tokens=min(max_tokens, 2048),
+                    ),
+                    timeout=timeout_seconds,
+                )
+                if text and text.strip():
+                    return {
+                        "id": cand["id"],
+                        "name": cand["name"],
+                        "specialty": cand["specialty"],
+                        "text": text.strip(),
+                        "ok": True,
+                    }
+            except Exception as e:
+                logger.warning(f"Debate Chat: Candidate {cand['name']} ({cand['id']}) failed: {e}")
+            return {
+                "id": cand["id"],
+                "name": cand["name"],
+                "specialty": cand["specialty"],
+                "text": None,
+                "ok": False,
+            }
+
+        results = await asyncio.gather(*(fetch_model_perspective(c) for c in debate_candidates))
+        successful = [r for r in results if r["ok"] and r["text"]]
+
+        # 2. Fallback Handling: if no models responded, fall back to standard stream
+        if not successful:
+            logger.warning("Debate Chat: All models failed or timed out. Falling back to standard router.")
+            async for token, used_model in self.stream_with_fallback(
+                messages=messages,
+                model_name="gpt-4o",
+                system_prompt=system_prompt,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            ):
+                yield token, used_model
+            return
+
+        # If only 1 model responded, stream its perspective directly with attribution
+        if len(successful) == 1:
+            single = successful[0]
+            yield f"> **Council Notice:** *Solo active responder:* **{single['name']}**\n\n", actual_model
+            for chunk in single["text"].split(" "):
+                yield chunk + " ", actual_model
+            return
+
+        # 3. Construct Consensus Synthesis Prompt
+        perspectives_blocks = []
+        participating_names = []
+        for s in successful:
+            participating_names.append(s["name"])
+            perspectives_blocks.append(f"=== Perspective from {s['name']} (Specialty: {s['specialty']}) ===\n{s['text']}")
+
+        all_perspectives = "\n\n".join(perspectives_blocks)
+        user_query = messages[-1]["content"] if messages else "User question"
+
+        synthesis_prompt = f"""You are the MasterChat Synthesis Engine presiding over a 4-model AI Debate Council.
+The user asked:
+\"\"\"{user_query}\"\"\"
+
+The following {len(successful)} AI models independently debated this question and contributed their unique perspectives:
+{all_perspectives}
+
+YOUR MISSION:
+Produce a single, refined, consolidated, and authoritative final response that represents the combined intelligence of the council.
+
+Strict Synthesis Rules:
+1. **Consensus & Best Insights:** Identify common agreements and incorporate the strongest, most accurate points from each model.
+2. **Conflict Resolution:** If models disagree or present differing solutions, resolve the conflict logically, or clearly outline the nuanced trade-offs.
+3. **Deduplication:** Aggressively eliminate duplicate sentences, repeated examples, and redundant filler. Every paragraph must add new value.
+4. **Unified Voice:** Do NOT output separate sections like "Model 1 said... Model 2 said...". The response must read as ONE cohesive, polished, expertly reasoned response.
+5. **Attribution:** Start with a clean Markdown blockquote:
+> **Council Consensus:** *Synthesized insights from {', '.join(participating_names)}*
+
+6. **Formatting:** Use elegant Markdown with clear structure, bold highlights, concise bullet points, and code blocks if applicable."""
+
+        synthesis_messages = [
+            {"role": "user", "content": synthesis_prompt},
+        ]
+
+        # 4. Stream the synthesized consolidated response token-by-token
+        synthesizer_provider = self.get_provider("gpt-4o")
+        try:
+            stream = synthesizer_provider.stream_chat(
+                messages=synthesis_messages,
+                system_prompt="You are MasterChat, an enterprise AI synthesizing collective intelligence into clear, concise, actionable consensus.",
+                temperature=0.5,
+                max_tokens=max_tokens,
+            )
+            async for token in stream:
+                yield token, actual_model
+        except Exception as synth_err:
+            logger.warning(f"Debate Chat: Synthesizer failed, falling back to top candidate: {synth_err}")
+            best_candidate = successful[0]
+            yield f"> **Council Consensus (Direct from {best_candidate['name']}):**\n\n", actual_model
+            for chunk in best_candidate["text"].split(" "):
+                yield chunk + " ", actual_model
+
     def list_models(self) -> List[Dict[str, Any]]:
         """Return catalog of available models and their explicit capabilities for UI and agent routing."""
         return [
+            {
+                "id": "debate",
+                "name": "Debate Chat (4-Model Council)",
+                "provider": "multi",
+                "description": "Collaborative debate among all 4 AI models (GPT-4o, GPT-4o Mini, Claude 3.5 Sonnet, Claude 3.5 Haiku) consolidated into a single refined consensus response",
+                "context_window": 128000,
+                "is_default": False,
+                "capabilities": {
+                    "text": True,
+                    "vision": True,
+                    "web_search": True,
+                    "code_interpreter": True,
+                    "rag": True,
+                    "audio_speech": True,
+                    "audio_transcription": True,
+                },
+                "supported_features": [
+                    "4-Model Consensus Synthesis",
+                    "Multi-Perspective Analysis",
+                    "Conflict Resolution & Deduplication",
+                    "Document RAG & Web Search Grounding",
+                ],
+            },
             {
                 "id": "gpt-4o",
                 "name": "GPT-4o",

@@ -11,6 +11,7 @@ import {
   Globe,
   Mic,
   MicOff,
+  Users,
 } from "lucide-react";
 import { GlassCard } from "../ui/GlassCard";
 import { ModelSelector } from "./ModelSelector";
@@ -193,7 +194,9 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={
-            hasDocuments
+            selectedModel === "debate"
+              ? "Ask the 4-Model AI Council (GPT-4o, Mini, Claude Sonnet & Haiku)..."
+              : hasDocuments
               ? "Ask questions or type 'summarize' to analyze your document..."
               : useWebSearch
               ? "Ask anything with live real-time web search..."
@@ -205,13 +208,39 @@ export const MessageInput: React.FC<MessageInputProps> = ({
 
         {/* Action Controls Toolbar */}
         <div className="flex items-center justify-between pt-2 px-1 border-t border-black/5 dark:border-white/10 mt-1">
-          {/* Left Controls: Model Picker + RAG Toggle + Web Search Toggle + File Attach */}
+          {/* Left Controls: Model Picker + Debate Toggle + RAG Toggle + Web Search Toggle + File Attach */}
           <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
             <ModelSelector
               selectedModel={selectedModel}
               onSelectModel={onSelectModel}
               placement="top"
             />
+
+            {/* Debate Chat Mode Toggle */}
+            <button
+              type="button"
+              onClick={() => onSelectModel(selectedModel === "debate" ? "gpt-4o" : "debate")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-medium transition-all select-none border cursor-pointer",
+                selectedModel === "debate"
+                  ? "bg-purple-600/20 text-purple-700 dark:text-purple-300 border-purple-500/50 shadow-sm"
+                  : "bg-white/40 dark:bg-white/5 hover:bg-white/60 text-foreground/70 border-white/30 dark:border-white/10"
+              )}
+              title="Debate Chat: Consult all 4 AI models simultaneously and merge into a refined consensus"
+            >
+              <Users className="w-3.5 h-3.5 text-purple-500" />
+              <span className="hidden sm:inline">Debate</span>
+              <span
+                className={cn(
+                  "text-[10px] uppercase font-bold px-1 rounded",
+                  selectedModel === "debate"
+                    ? "bg-purple-500/30 text-purple-700 dark:text-purple-300"
+                    : "opacity-60"
+                )}
+              >
+                {selectedModel === "debate" ? "ON" : "OFF"}
+              </span>
+            </button>
 
             {/* RAG Toggle */}
             <button

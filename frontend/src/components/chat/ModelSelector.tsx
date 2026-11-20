@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Sparkles, Cpu, Check, Layers, Brain, Code2 } from "lucide-react";
+import { ChevronDown, Sparkles, Cpu, Check, Layers, Brain, Code2, Users } from "lucide-react";
 import { Model } from "@/lib/types";
 import { api } from "@/lib/api";
 import { GlassCard } from "../ui/GlassCard";
@@ -25,6 +25,14 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [models, setModels] = useState<Model[]>([
+    {
+      id: "debate",
+      name: "Debate Chat (4-Model Council)",
+      provider: "multi",
+      description: "Collaborative debate among all 4 models consolidated into a refined consensus",
+      context_window: 128000,
+      is_default: false,
+    },
     {
       id: "gpt-4o",
       name: "GPT-4o",
@@ -71,7 +79,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   }, []);
 
   const current = models.find((m) => m.id === selectedModel) || models[0];
-  const isAnthropic = current?.provider === "anthropic" || current?.id?.includes("claude");
+  const isDebate = current?.id === "debate" || current?.provider === "multi";
+  const isAnthropic = !isDebate && (current?.provider === "anthropic" || current?.id?.includes("claude"));
 
   const dropdownClasses =
     placement === "bottom"
@@ -94,7 +103,11 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           isOpen && "ring-2 ring-indigo-500/40 border-indigo-500/50"
         )}
       >
-        {isAnthropic ? (
+        {isDebate ? (
+          <div className="flex items-center justify-center w-4 h-4 rounded-full bg-purple-500/20 text-purple-600 dark:text-purple-400">
+            <Users className="w-2.5 h-2.5" />
+          </div>
+        ) : isAnthropic ? (
           <div className="flex items-center justify-center w-4 h-4 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400">
             <Cpu className="w-2.5 h-2.5" />
           </div>
@@ -110,12 +123,14 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
             <span
               className={cn(
                 "text-[9px] uppercase font-mono px-1.5 py-0.5 rounded-md font-semibold",
-                isAnthropic
+                isDebate
+                  ? "bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/20"
+                  : isAnthropic
                   ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/20"
                   : "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20"
               )}
             >
-              {current?.provider}
+              {isDebate ? "Council" : current?.provider}
             </span>
           )}
         </div>
@@ -159,7 +174,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                 <div className="flex flex-col gap-1 max-h-72 overflow-y-auto">
                   {models.map((m) => {
                     const isSelected = m.id === selectedModel;
-                    const isMAnthropic = m.provider === "anthropic" || m.id.includes("claude");
+                    const isDebateM = m.id === "debate" || m.provider === "multi";
+                    const isMAnthropic = !isDebateM && (m.provider === "anthropic" || m.id.includes("claude"));
                     return (
                       <button
                         key={m.id}
@@ -177,7 +193,9 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                       >
                         <div className="flex flex-col pr-2">
                           <div className="flex items-center gap-1.5">
-                            {isMAnthropic ? (
+                            {isDebateM ? (
+                              <Users className="w-3.5 h-3.5 text-purple-500 flex-shrink-0" />
+                            ) : isMAnthropic ? (
                               <Cpu className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
                             ) : (
                               <Sparkles className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
@@ -186,12 +204,14 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
                             <span
                               className={cn(
                                 "text-[9px] uppercase px-1.5 py-0.2 rounded font-mono font-medium",
-                                isMAnthropic
+                                isDebateM
+                                  ? "bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20"
+                                  : isMAnthropic
                                   ? "bg-amber-500/10 text-amber-700 dark:text-amber-300"
                                   : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
                               )}
                             >
-                              {m.provider}
+                              {isDebateM ? "Council" : m.provider}
                             </span>
                           </div>
                           <span className="text-[11px] text-foreground/65 line-clamp-1 mt-0.5">
@@ -200,7 +220,12 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
                           {/* Model-Specific Capability Badges */}
                           <div className="flex items-center gap-1 mt-1.5 flex-wrap">
-                            {isMAnthropic ? (
+                            {isDebateM ? (
+                              <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-md bg-purple-500/15 text-purple-700 dark:text-purple-300 font-medium">
+                                <Users className="w-2.5 h-2.5" />
+                                <span>4-Model Consensus</span>
+                              </span>
+                            ) : isMAnthropic ? (
                               <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-md bg-amber-500/15 text-amber-700 dark:text-amber-300 font-medium">
                                 <Brain className="w-2.5 h-2.5" />
                                 <span>200k Reasoning</span>

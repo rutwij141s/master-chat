@@ -105,23 +105,41 @@ async def stream_generator(
         # Estimate prompt tokens
         prompt_tokens = sum(len(m["content"]) // 4 for m in messages_for_llm)
 
-        # 3. Stream tokens (LLM Synthesis)
-        async for token, used_model in router.stream_with_fallback(
-            messages=messages_for_llm,
-            model_name=req.model,
-            system_prompt=augmented_system_prompt,
-            temperature=req.temperature,
-            max_tokens=req.max_tokens or 4096,
-        ):
-            actual_model_used = used_model
-            full_response_text += token
-            completion_tokens += 1
-            token_chunk = ChatStreamChunk(
-                type="token",
-                token=token,
-                model=used_model,
-            )
-            yield f"data: {json.dumps(token_chunk.model_dump())}\n\n"
+        # 3. Stream tokens (Debate Chat Council or Standard LLM Synthesis)
+        if (req.model or "").lower() == "debate":
+            actual_model_used = "debate (4 models)"
+            async for token, used_model in router.stream_debate_response(
+                messages=messages_for_llm,
+                system_prompt=augmented_system_prompt,
+                temperature=req.temperature,
+                max_tokens=req.max_tokens or 4096,
+            ):
+                actual_model_used = used_model
+                full_response_text += token
+                completion_tokens += 1
+                token_chunk = ChatStreamChunk(
+                    type="token",
+                    token=token,
+                    model=used_model,
+                )
+                yield f"data: {json.dumps(token_chunk.model_dump())}\n\n"
+        else:
+            async for token, used_model in router.stream_with_fallback(
+                messages=messages_for_llm,
+                model_name=req.model,
+                system_prompt=augmented_system_prompt,
+                temperature=req.temperature,
+                max_tokens=req.max_tokens or 4096,
+            ):
+                actual_model_used = used_model
+                full_response_text += token
+                completion_tokens += 1
+                token_chunk = ChatStreamChunk(
+                    type="token",
+                    token=token,
+                    model=used_model,
+                )
+                yield f"data: {json.dumps(token_chunk.model_dump())}\n\n"
 
         # 4. Save assistant response and update memory in DB
         async with AsyncSessionLocal() as db:
