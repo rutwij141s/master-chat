@@ -67,7 +67,6 @@ func main() {
 	// Public routes
 	r.GET("/health", healthHandler.Health)
 	r.GET("/ready", healthHandler.Ready)
-	r.GET("/media/video/file/:filename", mediaHandler.GetVideoFile)
 
 	authGroup := r.Group("/auth")
 	{
@@ -100,10 +99,6 @@ func main() {
 
 		// Usage
 		api.GET("/usage", usageHandler.GetUsage)
-
-		// Media & AI Generation (Image, Video)
-		api.POST("/media/image/generate", mediaHandler.GenerateImage)
-		api.POST("/media/video/generate", mediaHandler.GenerateVideo)
 
 		// Audio Capabilities (STT Whisper & TTS Speech)
 		api.POST("/audio/transcribe", mediaHandler.TranscribeAudio)

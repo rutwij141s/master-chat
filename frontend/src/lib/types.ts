@@ -45,8 +45,6 @@ export interface Message {
 export interface ModelCapabilities {
   text?: boolean;
   vision?: boolean;
-  image_generation?: boolean;
-  video_generation?: boolean;
   web_search?: boolean;
   code_interpreter?: boolean;
   rag?: boolean;
@@ -119,42 +117,7 @@ export interface StreamEvent {
   };
 }
 
-// Media & Audio Capabilities
-export interface ImageGenerateRequest {
-  prompt: string;
-  size?: string;
-  quality?: string;
-  style?: string;
-  model?: string;
-}
-
-export interface ImageGenerateResponse {
-  status: string;
-  url: string;
-  revised_prompt: string;
-  provider: string;
-  width: number;
-  height: number;
-  model_used?: string;
-}
-
-export interface VideoGenerateRequest {
-  prompt: string;
-  duration_seconds?: number;
-  aspect_ratio?: string;
-  model?: string;
-}
-
-export interface VideoGenerateResponse {
-  status: string;
-  video_url: string;
-  thumbnail_url: string;
-  prompt: string;
-  duration_seconds: number;
-  format: string;
-  model_used?: string;
-}
-
+// Audio Capabilities
 export interface TextToSpeechRequest {
   text: string;
   voice?: string;

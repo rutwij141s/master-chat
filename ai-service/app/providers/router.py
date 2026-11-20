@@ -127,8 +127,6 @@ class ModelRouter:
                 "capabilities": {
                     "text": True,
                     "vision": True,
-                    "image_generation": True,
-                    "video_generation": True,
                     "web_search": True,
                     "code_interpreter": True,
                     "rag": True,
@@ -136,8 +134,6 @@ class ModelRouter:
                     "audio_transcription": True,
                 },
                 "supported_features": [
-                    "DALL-E 3 Image Generation",
-                    "AI Video Studio",
                     "Web Search Grounding",
                     "Document RAG",
                     "Code Interpreter",
@@ -147,14 +143,12 @@ class ModelRouter:
                 "id": "gpt-4o-mini",
                 "name": "GPT-4o Mini",
                 "provider": "openai",
-                "description": "Fast and lightweight OpenAI model with full multi-modal media support",
+                "description": "Fast and lightweight OpenAI model with full multi-modal support",
                 "context_window": 128000,
                 "is_default": False,
                 "capabilities": {
                     "text": True,
                     "vision": True,
-                    "image_generation": True,
-                    "video_generation": True,
                     "web_search": True,
                     "code_interpreter": True,
                     "rag": True,
@@ -162,9 +156,8 @@ class ModelRouter:
                     "audio_transcription": True,
                 },
                 "supported_features": [
-                    "AI Image Generation",
-                    "AI Video Studio",
                     "Fast Chat & RAG",
+                    "Web Search Grounding",
                 ],
             },
             {
@@ -177,8 +170,6 @@ class ModelRouter:
                 "capabilities": {
                     "text": True,
                     "vision": True,
-                    "image_generation": False,
-                    "video_generation": False,
                     "web_search": True,
                     "code_interpreter": True,
                     "rag": True,
@@ -202,8 +193,6 @@ class ModelRouter:
                 "capabilities": {
                     "text": True,
                     "vision": True,
-                    "image_generation": False,
-                    "video_generation": False,
                     "web_search": True,
                     "code_interpreter": True,
                     "rag": True,
@@ -214,30 +203,6 @@ class ModelRouter:
                     "Ultra-Fast Inference",
                     "Code & Logic Analysis",
                     "Document Analysis",
-                ],
-            },
-            {
-                "id": "dall-e-3",
-                "name": "DALL-E 3 (Creative Studio)",
-                "provider": "openai",
-                "description": "Dedicated visual generative AI model for photorealistic and stylized artwork",
-                "context_window": 4096,
-                "is_default": False,
-                "capabilities": {
-                    "text": False,
-                    "vision": False,
-                    "image_generation": True,
-                    "video_generation": True,
-                    "web_search": False,
-                    "code_interpreter": False,
-                    "rag": False,
-                    "audio_speech": False,
-                    "audio_transcription": False,
-                },
-                "supported_features": [
-                    "Photorealistic Image Generation",
-                    "Stylized Digital Artwork",
-                    "AI Cinematic Video Scenes",
                 ],
             },
         ]
@@ -255,8 +220,6 @@ class ModelRouter:
             return {
                 "text": True,
                 "vision": True,
-                "image_generation": False,
-                "video_generation": False,
                 "web_search": True,
                 "code_interpreter": True,
                 "rag": True,
@@ -266,8 +229,6 @@ class ModelRouter:
         return {
             "text": True,
             "vision": True,
-            "image_generation": True,
-            "video_generation": True,
             "web_search": True,
             "code_interpreter": True,
             "rag": True,
@@ -276,7 +237,7 @@ class ModelRouter:
         }
 
     def supports_capability(self, model_name: Optional[str], capability: str) -> bool:
-        """Check whether a model supports a specific capability (e.g. 'image_generation')."""
+        """Check whether a model supports a specific capability."""
         caps = self.get_model_capabilities(model_name)
         return caps.get(capability, False)
 

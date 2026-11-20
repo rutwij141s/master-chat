@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Sparkles, Cpu, Check, Layers, Image as ImageIcon, Video, Brain, Code2 } from "lucide-react";
+import { ChevronDown, Sparkles, Cpu, Check, Layers, Brain, Code2 } from "lucide-react";
 import { Model } from "@/lib/types";
 import { api } from "@/lib/api";
 import { GlassCard } from "../ui/GlassCard";
@@ -200,18 +200,6 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
                           {/* Model-Specific Capability Badges */}
                           <div className="flex items-center gap-1 mt-1.5 flex-wrap">
-                            {m.capabilities?.image_generation && (
-                              <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-md bg-purple-500/15 text-purple-700 dark:text-purple-300 font-medium">
-                                <ImageIcon className="w-2.5 h-2.5" />
-                                <span>Image Gen</span>
-                              </span>
-                            )}
-                            {m.capabilities?.video_generation && (
-                              <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-md bg-pink-500/15 text-pink-700 dark:text-pink-300 font-medium">
-                                <Video className="w-2.5 h-2.5" />
-                                <span>AI Video</span>
-                              </span>
-                            )}
                             {isMAnthropic ? (
                               <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-md bg-amber-500/15 text-amber-700 dark:text-amber-300 font-medium">
                                 <Brain className="w-2.5 h-2.5" />

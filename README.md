@@ -4,7 +4,7 @@ MasterChat is an enterprise-grade, multi-model conversational AI platform featur
 
 - **GitHub Repository:** [https://github.com/rutwij141s/master-chat](https://github.com/rutwij141s/master-chat) (Branch: `master`)
 - **System Health:** 7/7 Containers Active & Operational
-- **Test Suite Status:** 24/24 End-to-End API Tests Verified (100.0% Pass Rate)
+- **Test Suite Status:** 22/22 End-to-End API Tests Verified (100.0% Pass Rate)
 
 ---
 
@@ -180,36 +180,30 @@ MasterChat/
 - Local-first cached weights loading (`local_files_only=True`) for `BAAI/bge-small-en-v1.5` and `cross-encoder/ms-marco-MiniLM-L-6-v2` with deterministic 384-dim fallback.
 - **Prompt Injection Defense**: Strict XML boundary delimitation and sanitization of ingested content before LLM synthesis.
 
-### 4. Multi-Model AI Orchestration & Capability-Based Routing
-- **Adapter Pattern with Dynamic Model Routing**: Supporting OpenAI (`gpt-4o`, `gpt-4o-mini`, `dall-e-3`) and Anthropic (`claude-3-5-sonnet`, `claude-3-5-haiku`).
-- **Granular Capabilities Matrix**: Every model exposes structured capability flags (`text`, `vision`, `image_generation`, `video_generation`, `web_search`, `code_interpreter`, `rag`, `audio_speech`, `audio_transcription`).
-- **Model-Specific Capability Matrix**:
-  | Model | Provider | Vision | Image Gen | Video Gen | Web Search | Deep Reasoning | Context Window |
-  |---|---|---|---|---|---|---|---|
-  | `gpt-4o` | OpenAI | ✅ | ✅ (DALL-E 3 / FLUX) | ✅ (Cinematic MP4) | ✅ | ✅ | 128k |
-  | `gpt-4o-mini` | OpenAI | ✅ | ✅ (DALL-E 3 / FLUX) | ✅ (Cinematic MP4) | ✅ | ⚡ Fast | 128k |
-  | `claude-3-5-sonnet-20241022` | Anthropic | ✅ | ℹ️ Notice & Switch | ℹ️ Notice & Switch | ✅ | 🧠 200k Benchmark | 200k |
-  | `claude-3-5-haiku-20241022` | Anthropic | ✅ | ℹ️ Notice & Switch | ℹ️ Notice & Switch | ✅ | ⚡ Code & Speed | 200k |
-  | `dall-e-3` | OpenAI | ❌ | ✅ (Primary Studio) | ❌ | ❌ | 🎨 1024x1024 Art | 4k |
-- **Graceful Capability Fallback Handling**: If a user prompts for image or video generation while on a model that does not natively support generative media (e.g., Claude 3.5 Sonnet), the system never hallucinates search links or generic stock assets. Instead, it returns a structured **Feature Compatibility Notice** explaining the model's core strength and offering instant 1-click guidance to switch to GPT-4o or use `/image` / `/video`.
+### 4. Multi-Model AI Orchestration & Capability Matrix
+- **Adapter Pattern with Dynamic Model Routing**: Supporting OpenAI (`gpt-4o`, `gpt-4o-mini`) and Anthropic (`claude-3-5-sonnet-20241022`, `claude-3-5-haiku-20241022`).
+- **Granular Capabilities Matrix**: Every model exposes structured capability flags (`text`, `vision`, `web_search`, `code_interpreter`, `rag`, `audio_speech`, `audio_transcription`).
+- **Model-Specific Capabilities**:
+  | Model | Provider | Vision | Web Search | Deep Reasoning | Context Window |
+  |---|---|---|---|---|---|
+  | `gpt-4o` | OpenAI | ✅ | ✅ | ✅ | 128k |
+  | `gpt-4o-mini` | OpenAI | ✅ | ✅ | ⚡ Fast | 128k |
+  | `claude-3-5-sonnet-20241022` | Anthropic | ✅ | ✅ | 🧠 200k Benchmark | 200k |
+  | `claude-3-5-haiku-20241022` | Anthropic | ✅ | ✅ | ⚡ Code & Speed | 200k |
 - **Automatic Failover**: If the primary inference provider experiences a network timeout or upstream 5xx outage, requests automatically failover to an alternative model seamlessly.
 
-### 5. Real-Time AI Image & Video Studio
-- **Authentic AI Image Generation**: Generates real AI artwork on demand using OpenAI DALL-E 3 with seamless fallback to the high-performance FLUX.1 neural diffusion engine. No static stock photos or placeholder images.
-- **Real-Time MP4 Video Synthesis**: Powered by an integrated FFmpeg rendering pipeline inside the `ai-service` container. Keyframes generated from the user's prompt are synthesized into high-definition 1280x720 25fps cinematic pan/zoom MP4 clips.
-- **Embedded HTML5 Video Player**: Videos stream directly through the Go Gateway at `/media/video/file/:filename`, automatically rendering inside the chat stream as native `<video controls>` elements with one-click MP4 downloading.
-- **Audio Intelligence (STT & TTS)**: Whisper-powered Speech-to-Text (`/audio/transcribe`) and neural Text-to-Speech voice synthesis (`/audio/speech`) with selectable natural voices (`alloy`, `echo`, `fable`, `onyx`, `nova`, `shimmer`).
+### 5. Audio Intelligence (STT & TTS)
+- **Speech-to-Text (STT)**: Whisper-powered audio transcription (`/audio/transcribe`) supporting audio uploads and browser mic dictation.
+- **Neural Text-to-Speech (TTS)**: Streaming voice synthesis (`/audio/speech`) with natural voice options (`alloy`, `echo`, `fable`, `onyx`, `nova`, `shimmer`).
 
 ### 6. Go API Gateway
 - **JWT Authentication**: Secure user registration, login, and token refresh with bcrypt hashing.
 - **Per-User Rate Limiting**: Sliding-window rate limiter backed by Redis.
 - **Zero-Buffering SSE Proxy**: Immediate chunk-by-chunk flushing (`c.Writer.Flush()`) from upstream Python AI service to the client.
-- **Public Media Streaming**: Dedicated zero-overhead proxy route for generated MP4 video files (`/media/video/file/:filename`).
 - **Middleware**: Structured `slog` JSON logging, automatic `X-Request-Id` generation, and CORS protection.
 
 ### 7. LangGraph Agent Workflow & Memory
-- StateGraph workflow: `router_node -> (direct_node | rag_node | tool_node | web_search_node | image_gen_node | video_gen_node) -> synthesis_node -> memory`.
-- **Dedicated Media Nodes**: `image_gen_node` and `video_gen_node` intercept creative generation requests before search keywords, preventing search engines from intercepting prompt art.
+- StateGraph workflow: `router_node -> (direct_node | rag_node | tool_node | web_search_node) -> synthesis_node -> memory`.
 - Built-in tools: AST safe mathematical calculator, DuckDuckGo structured web search, file Q&A, and sandboxed execution.
 - Conversation memory: Sliding window of recent turns + rolling summaries saved to PostgreSQL.
 - Automatic conversation title generation after the first exchange.
@@ -314,24 +308,7 @@ npm run dev
 - `GET /documents`: List user's indexed documents with chunk counts and statuses
 - `DELETE /documents/{id}`: Purge document and remove vector chunks from ChromaDB
 
-### AI Media Studio & Audio Capabilities
-- `POST /media/image/generate`: High-resolution real-time AI artwork generation using OpenAI DALL-E 3 with Pollinations FLUX.1 neural diffusion fallback:
-  ```json
-  {
-    "prompt": "Futuristic cyberpunk skyline with floating neon signs",
-    "size": "1024x1024",
-    "model": "gpt-4o"
-  }
-  ```
-- `POST /media/video/generate`: Real-time cinematic MP4 video synthesis with FFmpeg camera motion:
-  ```json
-  {
-    "prompt": "Aerial view of ocean waves crashing onto golden cliffs at sunset",
-    "duration_seconds": 5,
-    "model": "gpt-4o"
-  }
-  ```
-- `GET /media/video/file/{filename}`: Public streaming endpoint serving generated MP4 video files to browser `<video>` elements.
+### Audio Capabilities (STT & TTS)
 - `POST /audio/transcribe`: Speech-to-Text (STT) audio transcription using OpenAI Whisper (`multipart/form-data` with `file` upload)
 - `POST /audio/speech`: Text-to-Speech (TTS) natural voice streaming synthesis:
   ```json
@@ -343,7 +320,7 @@ npm run dev
   ```
 
 ### Metadata & Observability
-- `GET /models`: List available models with granular capabilities (`gpt-4o`, `gpt-4o-mini`, `claude-3-5-sonnet-20241022`, `claude-3-5-haiku-20241022`, `dall-e-3`)
+- `GET /models`: List available models with capabilities (`gpt-4o`, `gpt-4o-mini`, `claude-3-5-sonnet-20241022`, `claude-3-5-haiku-20241022`)
 - `GET /usage`: View user token and cost consumption
 - `GET /health`: Gateway and AI service liveness
 - `GET /ready`: Database, Redis, and Vector store readiness check
@@ -353,7 +330,7 @@ npm run dev
 ## Running Tests
 
 ### End-to-End API Test Suite
-Run the 24-endpoint comprehensive test suite against the live platform (health probes, auth, models, conversations, PDF ingestion, MMR vector retrieval, Cross-Encoder reranking, SSE streaming, AI image generation, AI video generation, Whisper STT, neural TTS, usage tracking, and resource cleanup):
+Run the 22-endpoint comprehensive test suite against the live platform (health probes, auth, models, conversations, PDF ingestion, MMR vector retrieval, Cross-Encoder reranking, SSE streaming, Whisper STT, neural TTS, usage tracking, and resource cleanup):
 ```bash
 python3 tests/test_all_apis.py
 ```
