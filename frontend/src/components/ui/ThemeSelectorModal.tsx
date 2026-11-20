@@ -15,7 +15,7 @@ export const ThemeSelectorModal: React.FC<ThemeSelectorModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [activeThemeId, setActiveThemeId] = useState<string>("dark");
+  const [activeThemeId, setActiveThemeId] = useState<string>("light");
 
   useEffect(() => {
     if (isOpen) {

@@ -12,17 +12,6 @@ export interface Theme {
 
 export const THEMES: Theme[] = [
   {
-    id: "dark",
-    name: "Midnight Obsidian",
-    description: "Original deep space dark theme with indigo & pink liquid glass reflections.",
-    type: "dark",
-    colors: {
-      bg: "#090a10",
-      accent: "#6366f1",
-      highlight: "#ec4899",
-    },
-  },
-  {
     id: "light",
     name: "Opal Crisp",
     description: "Luminous white opal glass with soft ultraviolet and sky blue highlights.",
@@ -126,14 +115,19 @@ export const THEMES: Theme[] = [
 const THEME_STORAGE_KEY = "masterchat_theme";
 
 export function getStoredTheme(): string {
-  if (typeof window === "undefined") return "dark";
-  return localStorage.getItem(THEME_STORAGE_KEY) || "dark";
+  if (typeof window === "undefined") return "light";
+  const stored = localStorage.getItem(THEME_STORAGE_KEY);
+  if (!stored || stored === "dark") {
+    return "light";
+  }
+  return stored;
 }
 
 export function applyTheme(themeId: string): void {
   if (typeof window === "undefined") return;
 
-  const theme = THEMES.find((t) => t.id === themeId) || THEMES[0];
+  const targetId = themeId === "dark" ? "light" : themeId;
+  const theme = THEMES.find((t) => t.id === targetId) || THEMES[0];
   const root = document.documentElement;
 
   // Remove existing theme classes
@@ -150,8 +144,8 @@ export function applyTheme(themeId: string): void {
     root.classList.add("light");
   }
 
-  // Apply specific theme class if not default dark/light
-  if (theme.id !== "dark" && theme.id !== "light") {
+  // Apply specific theme class if not default light
+  if (theme.id !== "light") {
     root.classList.add(`theme-${theme.id}`);
   }
 

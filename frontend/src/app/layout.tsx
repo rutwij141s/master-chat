@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`dark ${montserratAlternates.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`light ${montserratAlternates.variable}`} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -33,17 +33,19 @@ export default function RootLayout({
             __html: `
               try {
                 var storedTheme = localStorage.getItem('masterchat_theme');
-                if (storedTheme) {
-                  var root = document.documentElement;
-                  root.classList.remove('dark', 'light');
-                  if (storedTheme === 'light' || storedTheme === 'rose-quartz') {
-                    root.classList.add('light');
-                  } else {
-                    root.classList.add('dark');
-                  }
-                  if (storedTheme !== 'dark' && storedTheme !== 'light') {
-                    root.classList.add('theme-' + storedTheme);
-                  }
+                if (!storedTheme || storedTheme === 'dark') {
+                  storedTheme = 'light';
+                  localStorage.setItem('masterchat_theme', 'light');
+                }
+                var root = document.documentElement;
+                root.classList.remove('dark', 'light');
+                if (storedTheme === 'light' || storedTheme === 'rose-quartz') {
+                  root.classList.add('light');
+                } else {
+                  root.classList.add('dark');
+                }
+                if (storedTheme !== 'light') {
+                  root.classList.add('theme-' + storedTheme);
                 }
               } catch (e) {}
             `,

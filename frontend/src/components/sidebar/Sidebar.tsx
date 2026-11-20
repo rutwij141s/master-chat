@@ -54,7 +54,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [isDark, setIsDark] = useState(false);
   const [usage, setUsage] = useState<UsageSummary | null>(null);
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
-  const [currentThemeId, setCurrentThemeId] = useState<string>("dark");
+  const [currentThemeId, setCurrentThemeId] = useState<string>("light");
 
   // Theme detection & synchronization
   useEffect(() => {

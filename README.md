@@ -156,16 +156,15 @@ MasterChat/
 ### 1. Apple Liquid Glass UI Design & Typography
 - **Montserrat Alternates Typography**: Primary font set to **Montserrat Alternates** with geometric character, graceful curves, and crisp legibility across all UI elements and chat bubbles.
 - Layered translucent surfaces with `backdrop-filter: blur(28px) saturate(180%)` and 1px specular inner borders.
-- **10 Liquid Glass Themes (Expanded Collection)**:
-  - **Midnight Obsidian**: Classic deep-space dark theme with indigo and magenta refractive highlights.
-  - **Opal Crisp**: Clean, high-contrast white opal glass with soft ultraviolet specular borders.
+- **Liquid Glass Theme Collection**:
+  - **Opal Crisp (Default)**: Clean, high-contrast white opal glass with soft ultraviolet specular borders.
+  - **Rose Quartz**: Frosted champagne blush glass with delicate rose petals and warm gold.
   - **Cyber Aurora**: Bioluminescent cyan and emerald aurora reflections over cosmic navy.
   - **Velvet Amethyst**: Royal imperial purple and fuchsia glass reflections over obsidian darkness.
   - **Solar Amber**: Warm sunset bronze, golden topaz, and saffron specular glass accents.
   - **Bioluminescent Jade**: Cybernetic jade, radiant mint, and forest obsidian glass reflections.
   - **Neon Synthwave**: Electrifying 80s vaporwave hot pink, magenta, and cyan cyberpunk aura.
   - **Oceanic Abyss**: Deep marine sapphire, oceanic azure, and cobalt trench glass reflections.
-  - **Rose Quartz**: Frosted champagne blush glass with delicate rose petals and warm gold.
   - **Nordic Frost**: Arctic glacial ice crystal, polar silver, and diamond specular highlights.
 - **Theme Palette Selector Modal**: 1-click modal with visual 3-dot color swatches, active indicators, and real-time ambient mesh background transitions (`liquid-mesh-bg`).
 - **Dual-Placement Model Selector**:
