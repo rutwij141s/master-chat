@@ -55,6 +55,7 @@ func main() {
 	modelHandler := handlers.NewModelHandler(cfg)
 	usageHandler := handlers.NewUsageHandler(cfg)
 	mediaHandler := handlers.NewMediaHandler(cfg)
+	adminHandler := handlers.NewAdminHandler(cfg)
 	healthHandler := handlers.NewHealthHandler(database, redisClient)
 
 	// Router setup
@@ -103,6 +104,16 @@ func main() {
 		// Audio Capabilities (STT Whisper & TTS Speech)
 		api.POST("/audio/transcribe", mediaHandler.TranscribeAudio)
 		api.POST("/audio/speech", mediaHandler.TextToSpeech)
+
+		// Admin Platform Telemetry & User Analytics (Privilege: Admin required)
+		adminGroup := api.Group("/admin")
+		adminGroup.Use(middleware.AdminRequired())
+		{
+			adminGroup.GET("/overview", adminHandler.GetOverview)
+			adminGroup.GET("/users", adminHandler.ListUsers)
+			adminGroup.GET("/users/:id", adminHandler.GetUserDetail)
+			adminGroup.PUT("/users/:id/role", adminHandler.UpdateUserRole)
+		}
 	}
 
 	srv := &http.Server{

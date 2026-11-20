@@ -63,3 +63,18 @@ async def get_current_user(
         await db.commit()
         await db.refresh(user)
     return user
+
+
+async def admin_required(
+    x_user_role: Optional[str] = Header(None, alias="X-User-Role"),
+    x_user_email: Optional[str] = Header(None, alias="X-User-Email"),
+) -> None:
+    """Verify that the requesting user has administrator privileges."""
+    role = (x_user_role or "").lower()
+    email = (x_user_email or "").lower()
+    if role != "admin" and email != "demo@masterchat.ai" and not email.startswith("admin@"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin privileges required to access this resource",
+        )
+

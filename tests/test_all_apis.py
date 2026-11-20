@@ -312,15 +312,77 @@ def main():
     debate_ok = status == 200 and len(debate_tokens) > 0
     record("21. Multi-Model Debate Chat Stream (POST /chat/stream model=debate)", debate_ok, f"Synthesized {len(debate_tokens)} chunks: '{debate_response[:80]}...'", elapsed)
 
-    # 13. Document Cleanup
+    # 13. Admin Dashboard & Privacy Shield Tests
+    # Non-Admin RBAC Protection
+    status, _, elapsed, _ = make_request(f"{GATEWAY_URL}/admin/overview", headers=auth_header)
+    record("22. Admin RBAC: Non-Admin Access Forbidden (GET /admin/overview)", status == 403, f"Status {status} Forbidden (RBAC Protected)", elapsed)
+
+    # Admin Login / Retrieval
+    demo_login_payload = json.dumps({"email": "demo@masterchat.ai", "password": "Password123!"}).encode("utf-8")
+    status, body, elapsed, _ = make_request(
+        f"{GATEWAY_URL}/auth/login",
+        method="POST",
+        headers={"Content-Type": "application/json"},
+        data=demo_login_payload
+    )
+    admin_token = None
+    if status == 200:
+        admin_token = json.loads(body.decode()).get("access_token")
+    else:
+        # Register demo admin if not found
+        reg_adm = json.dumps({"email": "demo@masterchat.ai", "password": "Password123!", "full_name": "Demo Admin"}).encode("utf-8")
+        status, body, elapsed, _ = make_request(
+            f"{GATEWAY_URL}/auth/register",
+            method="POST",
+            headers={"Content-Type": "application/json"},
+            data=reg_adm
+        )
+        if status in (200, 201):
+            admin_token = json.loads(body.decode()).get("access_token")
+
+    admin_header = {"Authorization": f"Bearer {admin_token}"} if admin_token else auth_header
+
+    # Admin Platform Overview
+    status, body, elapsed, _ = make_request(f"{GATEWAY_URL}/admin/overview", headers=admin_header)
+    overview_data = json.loads(body.decode()) if status == 200 else {}
+    record(
+        "23. Admin Platform Overview & Telemetry (GET /admin/overview)",
+        status == 200 and "total_cost" in overview_data,
+        f"Platform Spend: ${overview_data.get('total_cost', 0):.4f}, Tokens: {overview_data.get('total_tokens', 0):,}",
+        elapsed
+    )
+
+    # Admin Users List
+    status, body, elapsed, _ = make_request(f"{GATEWAY_URL}/admin/users", headers=admin_header)
+    users_data = json.loads(body.decode()) if status == 200 else {}
+    user_list = users_data.get("users", [])
+    record(
+        "24. Admin User Analytics & Expenses (GET /admin/users)",
+        status == 200 and len(user_list) > 0,
+        f"Monitored Accounts: {users_data.get('total_count', 0)}, Sample User: {user_list[0].get('email') if user_list else 'none'}",
+        elapsed
+    )
+
+    # Admin User Detail & Privacy Shield Check
+    target_uid = user_list[0].get("id") if user_list else user_id
+    status, body, elapsed, _ = make_request(f"{GATEWAY_URL}/admin/users/{target_uid}", headers=admin_header)
+    detail_data = json.loads(body.decode()) if status == 200 else {}
+    record(
+        "25. Admin User Audit & Privacy Shield (GET /admin/users/:id)",
+        status == 200 and detail_data.get("privacy_shield") is True,
+        f"Privacy Shield: {detail_data.get('privacy_shield')}, Models Tracked: {len(detail_data.get('model_breakdown', []))}",
+        elapsed
+    )
+
+    # 14. Document Cleanup
     if doc_id:
         status, body, elapsed, _ = make_request(f"{GATEWAY_URL}/documents/{doc_id}", method="DELETE", headers=auth_header)
-        record("22. Delete Document & Purge Vectors (DELETE /documents/:id)", status in (200, 204), f"Status {status}", elapsed)
+        record("26. Delete Document & Purge Vectors (DELETE /documents/:id)", status in (200, 204), f"Status {status}", elapsed)
 
-    # 14. Conversation Cleanup
+    # 15. Conversation Cleanup
     if conv_id:
         status, body, elapsed, _ = make_request(f"{GATEWAY_URL}/conversations/{conv_id}", method="DELETE", headers=auth_header)
-        record("23. Delete Conversation (DELETE /conversations/:id)", status in (200, 204), f"Status {status}", elapsed)
+        record("27. Delete Conversation (DELETE /conversations/:id)", status in (200, 204), f"Status {status}", elapsed)
 
     print("\n==========================================================")
     passed_count = sum(1 for r in test_results if r["status"] == "PASS")

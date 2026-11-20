@@ -39,6 +39,31 @@ func AuthRequired(tm *auth.TokenManager) gin.HandlerFunc {
 
 		c.Set("userID", claims.UserID)
 		c.Set("email", claims.Email)
+		role := claims.Role
+		if role == "" {
+			if strings.EqualFold(claims.Email, "demo@masterchat.ai") || strings.HasPrefix(strings.ToLower(claims.Email), "admin@") {
+				role = "admin"
+			} else {
+				role = "user"
+			}
+		}
+		c.Set("role", role)
+		c.Next()
+	}
+}
+
+// AdminRequired enforces that the requesting user possesses administrative privileges.
+func AdminRequired() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		roleVal, exists := c.Get("role")
+		role, _ := roleVal.(string)
+		if !exists || role != "admin" {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"error":   "Forbidden",
+				"message": "Admin privileges required to access this resource",
+			})
+			return
+		}
 		c.Next()
 	}
 }

@@ -2,6 +2,7 @@ export interface User {
   id: string;
   email: string;
   full_name?: string;
+  role?: "admin" | "user" | string;
 }
 
 export interface AuthResponse {
@@ -128,5 +129,69 @@ export interface TranscriptionResponse {
   text: string;
   language?: string;
   duration?: number;
+}
+
+// Admin Telemetry & Expense Analytics
+export interface ModelUsageMetric {
+  model: string;
+  requests: number;
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+  estimated_cost: number;
+  cost_percentage?: number;
+}
+
+export interface DailyUsageTrend {
+  date: string;
+  requests: number;
+  tokens: number;
+  cost: number;
+}
+
+export interface AdminOverview {
+  total_cost: number;
+  total_tokens: number;
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_requests: number;
+  total_users: number;
+  active_users_30d: number;
+  total_documents: number;
+  total_conversations: number;
+  model_breakdown: ModelUsageMetric[];
+  daily_trends: DailyUsageTrend[];
+}
+
+export interface UserAnalyticsItem {
+  id: string;
+  email: string;
+  full_name: string | null;
+  role: string;
+  created_at: string;
+  last_active: string | null;
+  total_requests: number;
+  total_tokens: number;
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_estimated_cost: number;
+  top_model: string | null;
+  total_conversations: number; // Aggregate count only (no chat content access)
+  total_documents: number;     // Aggregate count only (no file content access)
+}
+
+export interface AdminUsersResponse {
+  users: UserAnalyticsItem[];
+  total_count: number;
+  page: number;
+  limit: number;
+}
+
+export interface UserDetailAnalytics {
+  user: UserAnalyticsItem;
+  model_breakdown: ModelUsageMetric[];
+  recent_logs: UsageLogItem[];
+  privacy_shield: boolean;
+  privacy_note?: string;
 }
 

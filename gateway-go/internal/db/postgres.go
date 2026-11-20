@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"errors"
+	"strings"
 	"sync"
 	"time"
 
@@ -15,6 +16,7 @@ type User struct {
 	Email        string    `json:"email"`
 	PasswordHash string    `json:"-"`
 	FullName     string    `json:"full_name"`
+	Role         string    `json:"role"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }
@@ -68,6 +70,11 @@ func (d *DB) Ping() error {
 }
 
 func (d *DB) CreateUser(email, passwordHash, fullName string) (*User, error) {
+	role := "user"
+	if strings.EqualFold(email, "demo@masterchat.ai") || strings.HasPrefix(strings.ToLower(email), "admin@") {
+		role = "admin"
+	}
+
 	if d.isMock {
 		d.mockMu.Lock()
 		defer d.mockMu.Unlock()
@@ -83,6 +90,7 @@ func (d *DB) CreateUser(email, passwordHash, fullName string) (*User, error) {
 			Email:        email,
 			PasswordHash: passwordHash,
 			FullName:     fullName,
+			Role:         role,
 			CreatedAt:    time.Now().UTC(),
 			UpdatedAt:    time.Now().UTC(),
 		}
@@ -93,16 +101,17 @@ func (d *DB) CreateUser(email, passwordHash, fullName string) (*User, error) {
 	id := uuid.New().String()
 	now := time.Now().UTC()
 	query := `
-		INSERT INTO users (id, email, password_hash, full_name, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6)
-		RETURNING id, email, password_hash, full_name, created_at, updated_at
+		INSERT INTO users (id, email, password_hash, full_name, role, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		RETURNING id, email, password_hash, full_name, role, created_at, updated_at
 	`
 	user := &User{}
-	err := d.sqlDB.QueryRow(query, id, email, passwordHash, fullName, now, now).Scan(
+	err := d.sqlDB.QueryRow(query, id, email, passwordHash, fullName, role, now, now).Scan(
 		&user.ID,
 		&user.Email,
 		&user.PasswordHash,
 		&user.FullName,
+		&user.Role,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)
@@ -124,13 +133,14 @@ func (d *DB) GetUserByEmail(email string) (*User, error) {
 		return nil, sql.ErrNoRows
 	}
 
-	query := `SELECT id, email, password_hash, full_name, created_at, updated_at FROM users WHERE email = $1`
+	query := `SELECT id, email, password_hash, full_name, COALESCE(role, 'user'), created_at, updated_at FROM users WHERE email = $1`
 	user := &User{}
 	err := d.sqlDB.QueryRow(query, email).Scan(
 		&user.ID,
 		&user.Email,
 		&user.PasswordHash,
 		&user.FullName,
+		&user.Role,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)
@@ -150,13 +160,14 @@ func (d *DB) GetUserByID(id string) (*User, error) {
 		return nil, sql.ErrNoRows
 	}
 
-	query := `SELECT id, email, password_hash, full_name, created_at, updated_at FROM users WHERE id = $1`
+	query := `SELECT id, email, password_hash, full_name, COALESCE(role, 'user'), created_at, updated_at FROM users WHERE id = $1`
 	user := &User{}
 	err := d.sqlDB.QueryRow(query, id).Scan(
 		&user.ID,
 		&user.Email,
 		&user.PasswordHash,
 		&user.FullName,
+		&user.Role,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)

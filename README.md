@@ -4,7 +4,7 @@ MasterChat is an enterprise-grade, multi-model conversational AI platform featur
 
 - **GitHub Repository:** [https://github.com/rutwij141s/master-chat](https://github.com/rutwij141s/master-chat) (Branch: `master`)
 - **System Health:** 7/7 Containers Active & Operational
-- **Test Suite Status:** 23/23 End-to-End API Tests Verified (100.0% Pass Rate)
+- **Test Suite Status:** 27/27 End-to-End API Tests Verified (100.0% Pass Rate)
 
 ---
 
@@ -217,6 +217,13 @@ MasterChat/
 - Conversation memory: Sliding window of recent turns + rolling summaries saved to PostgreSQL.
 - Automatic conversation title generation after the first exchange.
 
+### 9. Admin Dashboard & Privacy Architecture
+- **Executive Financial Audit & Telemetry**: Real-time platform expense tracking ($ USD), token consumption counters (prompt vs completion), and total API invocations.
+- **Model Cost & Volume Distribution**: Live breakdown of compute spend across all AI foundation models (`gpt-4o`, `gpt-4o-mini`, `claude-3-5-sonnet`, `claude-3-5-haiku`, `debate`) with percentage distributions and daily velocity trends.
+- **User-Level Detailed Analytics**: Comprehensive audit table with user account profiles, total queries, prompt and completion tokens, estimated dollar expenses, top utilized models, and activity counters.
+- **Strict User Privacy Shield**: User confidentiality is architecturally and mathematically preserved. Administrators can audit financial metrics, compute consumption, and aggregate conversation/document counts, but **cannot view private chat messages, message history, conversation text, or uploaded document content**.
+- **Role-Based Access Control (RBAC)**: Enforced via cryptographic JWT claims (`role: "admin"` vs `role: "user"`). Non-admin access to `/admin/*` routes is blocked with `403 Forbidden`.
+
 ---
 
 ## Environment Variables
@@ -335,12 +342,18 @@ npm run dev
 - `GET /health`: Gateway and AI service liveness
 - `GET /ready`: Database, Redis, and Vector store readiness check
 
+### Admin Analytics & Expense Audit (Role: Admin)
+- `GET /admin/overview`: Platform-wide financial expenditure ($ USD), total token throughput, active model distributions, and daily velocity trends.
+- `GET /admin/users`: User-level account analytics with invocations, token breakdowns, estimated spend, and aggregate chat/doc counts. *(Privacy Shield: Excludes conversation texts, message contents, and document bodies)*.
+- `GET /admin/users/{id}`: Detailed user audit with per-model consumption metrics and recent API invocation logs.
+- `PUT /admin/users/{id}/role`: Promote or demote user roles (`admin` / `user`).
+
 ---
 
 ## Running Tests
 
 ### End-to-End API Test Suite
-Run the 23-endpoint comprehensive test suite against the live platform (health probes, auth, models, conversations, PDF ingestion, MMR vector retrieval, Cross-Encoder reranking, SSE streaming, Whisper STT, neural TTS, 4-model Debate Chat consensus synthesis, usage tracking, and resource cleanup):
+Run the 27-endpoint comprehensive test suite against the live platform (health probes, auth, models, conversations, PDF ingestion, MMR vector retrieval, Cross-Encoder reranking, SSE streaming, Whisper STT, neural TTS, 4-model Debate Chat consensus synthesis, Admin RBAC protection, platform telemetry, user-level expense audit, privacy shield verification, and resource cleanup):
 ```bash
 python3 tests/test_all_apis.py
 ```

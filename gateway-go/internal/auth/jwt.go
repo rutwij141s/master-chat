@@ -17,6 +17,7 @@ const (
 type Claims struct {
 	UserID    string    `json:"user_id"`
 	Email     string    `json:"email"`
+	Role      string    `json:"role"`
 	TokenType TokenType `json:"token_type"`
 	jwt.RegisteredClaims
 }
@@ -35,13 +36,18 @@ func NewTokenManager(secret string, accessExpiry, refreshExpiry time.Duration) *
 	}
 }
 
-func (m *TokenManager) GeneratePair(userID, email string) (string, string, error) {
+func (m *TokenManager) GeneratePair(userID, email string, role ...string) (string, string, error) {
 	now := time.Now().UTC()
+	userRole := "user"
+	if len(role) > 0 && role[0] != "" {
+		userRole = role[0]
+	}
 
 	// Access Token
 	accessClaims := &Claims{
 		UserID:    userID,
 		Email:     email,
+		Role:      userRole,
 		TokenType: AccessToken,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(now.Add(m.accessExpiry)),
@@ -60,6 +66,7 @@ func (m *TokenManager) GeneratePair(userID, email string) (string, string, error
 	refreshClaims := &Claims{
 		UserID:    userID,
 		Email:     email,
+		Role:      userRole,
 		TokenType: RefreshToken,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(now.Add(m.refreshExpiry)),

@@ -9,6 +9,9 @@ import {
   UsageSummary,
   TextToSpeechRequest,
   TranscriptionResponse,
+  AdminOverview,
+  AdminUsersResponse,
+  UserDetailAnalytics,
 } from "./types";
 
 const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || "http://localhost:8080";
@@ -278,6 +281,40 @@ class ApiClient {
     } finally {
       reader.releaseLock();
     }
+  }
+
+  // --- Admin Analytics Endpoints ---
+  async getAdminOverview(days?: number): Promise<AdminOverview> {
+    const query = days ? `?days=${days}` : "";
+    return this.request<AdminOverview>(`/admin/overview${query}`);
+  }
+
+  async getAdminUsers(params: {
+    search?: string;
+    role?: string;
+    sort_by?: string;
+    page?: number;
+    limit?: number;
+  } = {}): Promise<AdminUsersResponse> {
+    const q = new URLSearchParams();
+    if (params.search) q.set("search", params.search);
+    if (params.role) q.set("role", params.role);
+    if (params.sort_by) q.set("sort_by", params.sort_by);
+    if (params.page) q.set("page", params.page.toString());
+    if (params.limit) q.set("limit", params.limit.toString());
+    const qs = q.toString() ? `?${q.toString()}` : "";
+    return this.request<AdminUsersResponse>(`/admin/users${qs}`);
+  }
+
+  async getAdminUserDetail(userId: string): Promise<UserDetailAnalytics> {
+    return this.request<UserDetailAnalytics>(`/admin/users/${userId}`);
+  }
+
+  async updateUserRole(userId: string, role: string): Promise<{ success: boolean; user_id: string; role: string }> {
+    return this.request<{ success: boolean; user_id: string; role: string }>(`/admin/users/${userId}/role`, {
+      method: "PUT",
+      body: JSON.stringify({ role }),
+    });
   }
 }
 

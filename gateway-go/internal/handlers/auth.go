@@ -59,7 +59,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 
-	accessToken, refreshToken, err := h.tm.GeneratePair(user.ID, user.Email)
+	accessToken, refreshToken, err := h.tm.GeneratePair(user.ID, user.Email, user.Role)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation failed"})
 		return
@@ -73,6 +73,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 			"id":        user.ID,
 			"email":     user.Email,
 			"full_name": user.FullName,
+			"role":      user.Role,
 		},
 	})
 }
@@ -99,7 +100,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	accessToken, refreshToken, err := h.tm.GeneratePair(user.ID, user.Email)
+	accessToken, refreshToken, err := h.tm.GeneratePair(user.ID, user.Email, user.Role)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation failed"})
 		return
@@ -113,6 +114,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 			"id":        user.ID,
 			"email":     user.Email,
 			"full_name": user.FullName,
+			"role":      user.Role,
 		},
 	})
 }
@@ -136,7 +138,7 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 		return
 	}
 
-	accessToken, refreshToken, err := h.tm.GeneratePair(user.ID, user.Email)
+	accessToken, refreshToken, err := h.tm.GeneratePair(user.ID, user.Email, user.Role)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation failed"})
 		return

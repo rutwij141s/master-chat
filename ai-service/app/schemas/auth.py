@@ -25,6 +25,7 @@ class UserResponse(BaseModel):
     id: uuid.UUID
     email: str
     full_name: Optional[str] = None
+    role: str = "user"
 
     class Config:
         from_attributes = True

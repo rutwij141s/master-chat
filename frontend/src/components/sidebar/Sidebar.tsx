@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Plus,
   Search,
@@ -12,6 +13,7 @@ import {
   Layers,
   ChevronLeft,
   ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 import { Conversation, User, UsageSummary } from "@/lib/types";
 import { api } from "@/lib/api";
@@ -43,6 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   user,
   onLogout,
 }) => {
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDark, setIsDark] = useState(false);
@@ -195,6 +198,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <FolderOpen className="w-4 h-4 text-indigo-500" />
             {!isCollapsed && <span>Document Library</span>}
           </button>
+
+          {/* Admin Dashboard Pill (Visible to Administrators) */}
+          {(user?.role === "admin" || user?.email === "demo@masterchat.ai" || user?.email?.startsWith("admin@")) && (
+            <button
+              onClick={() => router.push("/admin")}
+              className="flex items-center gap-2.5 px-3 py-2 rounded-2xl hover:bg-purple-500/15 dark:hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 transition-colors text-xs font-semibold"
+              title="Admin Dashboard (Platform Usage & Costs)"
+            >
+              <ShieldCheck className="w-4 h-4 text-purple-500" />
+              {!isCollapsed && <span>Admin Dashboard</span>}
+            </button>
+          )}
 
           {/* Usage Metrics Pill */}
           {usage && !isCollapsed && (

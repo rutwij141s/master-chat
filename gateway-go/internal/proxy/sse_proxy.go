@@ -19,12 +19,18 @@ func StreamProxySSE(c *gin.Context, targetURL string) {
 	reqID, _ := c.Get("requestID")
 	userID, _ := c.Get("userID")
 	email, _ := c.Get("email")
+	role, _ := c.Get("role")
 
 	// Create request with client context so disconnects cancel upstream
 	ctx, cancel := context.WithCancel(c.Request.Context())
 	defer cancel()
 
-	proxyReq, err := http.NewRequestWithContext(ctx, c.Request.Method, targetURL, c.Request.Body)
+	target := targetURL
+	if c.Request.URL.RawQuery != "" {
+		target = target + "?" + c.Request.URL.RawQuery
+	}
+
+	proxyReq, err := http.NewRequestWithContext(ctx, c.Request.Method, target, c.Request.Body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create proxy request", "message": err.Error()})
 		return
@@ -44,6 +50,9 @@ func StreamProxySSE(c *gin.Context, targetURL string) {
 	}
 	if email != nil {
 		proxyReq.Header.Set("X-User-Email", fmt.Sprintf("%v", email))
+	}
+	if role != nil {
+		proxyReq.Header.Set("X-User-Role", fmt.Sprintf("%v", role))
 	}
 
 	resp, err := httpClient.Do(proxyReq)
@@ -97,11 +106,17 @@ func ProxyJSON(c *gin.Context, targetURL string) {
 	reqID, _ := c.Get("requestID")
 	userID, _ := c.Get("userID")
 	email, _ := c.Get("email")
+	role, _ := c.Get("role")
 
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 180*time.Second)
 	defer cancel()
 
-	proxyReq, err := http.NewRequestWithContext(ctx, c.Request.Method, targetURL, c.Request.Body)
+	target := targetURL
+	if c.Request.URL.RawQuery != "" {
+		target = target + "?" + c.Request.URL.RawQuery
+	}
+
+	proxyReq, err := http.NewRequestWithContext(ctx, c.Request.Method, target, c.Request.Body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create proxy request"})
 		return
@@ -125,6 +140,9 @@ func ProxyJSON(c *gin.Context, targetURL string) {
 	}
 	if email != nil {
 		proxyReq.Header.Set("X-User-Email", fmt.Sprintf("%v", email))
+	}
+	if role != nil {
+		proxyReq.Header.Set("X-User-Role", fmt.Sprintf("%v", role))
 	}
 
 	resp, err := httpClient.Do(proxyReq)
