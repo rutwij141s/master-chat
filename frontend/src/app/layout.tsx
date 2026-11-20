@@ -32,19 +32,19 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
+                var validThemes = ['opal-crisp', 'rose-quartz', 'azure-breeze', 'mint-sage', 'sunset-peach', 'lavender-mist', 'arctic-glacier', 'champagne-gold'];
                 var storedTheme = localStorage.getItem('masterchat_theme');
-                if (!storedTheme || storedTheme === 'dark') {
-                  storedTheme = 'light';
-                  localStorage.setItem('masterchat_theme', 'light');
+                if (!storedTheme || validThemes.indexOf(storedTheme) === -1) {
+                  storedTheme = 'opal-crisp';
+                  localStorage.setItem('masterchat_theme', 'opal-crisp');
                 }
                 var root = document.documentElement;
-                root.classList.remove('dark', 'light');
-                if (storedTheme === 'light' || storedTheme === 'rose-quartz') {
-                  root.classList.add('light');
-                } else {
-                  root.classList.add('dark');
+                root.classList.remove('dark');
+                root.classList.add('light');
+                for (var i = 0; i < validThemes.length; i++) {
+                  root.classList.remove('theme-' + validThemes[i]);
                 }
-                if (storedTheme !== 'light') {
+                if (storedTheme !== 'opal-crisp') {
                   root.classList.add('theme-' + storedTheme);
                 }
               } catch (e) {}

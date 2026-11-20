@@ -156,16 +156,15 @@ MasterChat/
 ### 1. Apple Liquid Glass UI Design & Typography
 - **Montserrat Alternates Typography**: Primary font set to **Montserrat Alternates** with geometric character, graceful curves, and crisp legibility across all UI elements and chat bubbles.
 - Layered translucent surfaces with `backdrop-filter: blur(28px) saturate(180%)` and 1px specular inner borders.
-- **Liquid Glass Theme Collection**:
-  - **Opal Crisp (Default)**: Clean, high-contrast white opal glass with soft ultraviolet specular borders.
-  - **Rose Quartz**: Frosted champagne blush glass with delicate rose petals and warm gold.
-  - **Cyber Aurora**: Bioluminescent cyan and emerald aurora reflections over cosmic navy.
-  - **Velvet Amethyst**: Royal imperial purple and fuchsia glass reflections over obsidian darkness.
-  - **Solar Amber**: Warm sunset bronze, golden topaz, and saffron specular glass accents.
-  - **Bioluminescent Jade**: Cybernetic jade, radiant mint, and forest obsidian glass reflections.
-  - **Neon Synthwave**: Electrifying 80s vaporwave hot pink, magenta, and cyan cyberpunk aura.
-  - **Oceanic Abyss**: Deep marine sapphire, oceanic azure, and cobalt trench glass reflections.
-  - **Nordic Frost**: Arctic glacial ice crystal, polar silver, and diamond specular highlights.
+- **8 Pure Light Glass Themes Collection**:
+  - **Opal Crisp (Default)**: Pure white opal glass with soft ultraviolet & electric sky blue specular highlights.
+  - **Rose Quartz**: Frosted champagne blush glass with delicate rose petals and soft peony glows.
+  - **Azure Breeze**: Sun-drenched Mediterranean light glass with radiant ocean cyan and cerulean blue reflections.
+  - **Mint Sage**: Serene morning botanical garden with frosted mint dew, fresh sage, and eucalyptus leaf glass.
+  - **Sunset Peach**: Warm Tuscan terrace with golden apricot, sunlit peach nectar, and terracotta specular glass.
+  - **Lavender Mist**: Gentle Provence lavender fields with delicate lilac mist, violet petals, and crystal glass.
+  - **Arctic Glacier**: Glacial polar light with frosted crystalline diamond reflections and silver-blue sheen.
+  - **Champagne Gold**: Luminous Venetian palazzo with warm champagne bubbles, spun gold silk, and ivory pearl glass.
 - **Theme Palette Selector Modal**: 1-click modal with visual 3-dot color swatches, active indicators, and real-time ambient mesh background transitions (`liquid-mesh-bg`).
 - **Dual-Placement Model Selector**:
   - **Top Navigation Bar**: Downward dropdown (`placement="bottom"`) alongside conversation title and active Knowledge Base indicator.

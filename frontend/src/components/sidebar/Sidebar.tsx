@@ -51,36 +51,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isDark, setIsDark] = useState(false);
   const [usage, setUsage] = useState<UsageSummary | null>(null);
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
-  const [currentThemeId, setCurrentThemeId] = useState<string>("light");
+  const [currentThemeId, setCurrentThemeId] = useState<string>("opal-crisp");
 
   // Theme detection & synchronization
   useEffect(() => {
     setCurrentThemeId(getStoredTheme());
-    const isDarkMode = document.documentElement.classList.contains("dark");
-    setIsDark(isDarkMode);
 
     const handleThemeChange = (e: any) => {
       if (e.detail?.themeId) {
         setCurrentThemeId(e.detail.themeId);
-        setIsDark(document.documentElement.classList.contains("dark"));
       }
     };
     window.addEventListener("themechange", handleThemeChange);
     return () => window.removeEventListener("themechange", handleThemeChange);
   }, []);
-
-  const toggleTheme = () => {
-    if (isDark) {
-      document.documentElement.classList.remove("dark");
-      setIsDark(false);
-    } else {
-      document.documentElement.classList.add("dark");
-      setIsDark(true);
-    }
-  };
 
   // Load usage tracking
   useEffect(() => {
@@ -244,7 +230,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               onClick={() => setIsThemeModalOpen(true)}
               className="p-2 rounded-xl hover:bg-purple-500/10 text-foreground/70 hover:text-purple-500 transition-colors"
-              title="Liquid Glass Theme Palette (10 Themes Available)"
+              title="Liquid Glass Theme Palette (8 Light Themes Available)"
             >
               <Palette className="w-4 h-4 text-purple-500" />
             </button>

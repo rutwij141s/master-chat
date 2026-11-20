@@ -4,124 +4,111 @@
 
 @layer base {
   /* =========================================================================
-     10 Liquid Glass Design System Themes (2 Original + 8 New Themes)
+     8 Apple Liquid Glass Light Themes
      ========================================================================= */
 
-  /* 1. Default Light (Opal Crisp) */
+  /* 1. Opal Crisp (Default: Pure white opal glass with ultraviolet & sky blue highlights) */
   :root, .light {
-    --background: #f4f6fa;
-    --foreground: #111827;
-    --glass-bg: rgba(255, 255, 255, 0.65);
-    --glass-border: rgba(255, 255, 255, 0.50);
-    --glass-shadow: 0 12px 40px rgba(31, 38, 135, 0.08);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
-    --mesh-blob-1: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(168, 85, 247, 0.05) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(59, 130, 246, 0.06) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(236, 72, 153, 0.18) 0%, rgba(244, 63, 94, 0.04) 70%, transparent 100%);
+    --background: #f8fafc;
+    --foreground: #0f172a;
+    --glass-bg: rgba(255, 255, 255, 0.70);
+    --glass-border: rgba(255, 255, 255, 0.85);
+    --glass-shadow: 0 12px 40px rgba(99, 102, 241, 0.08);
+    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
+    --mesh-blob-1: radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(168, 85, 247, 0.05) 70%, transparent 100%);
+    --mesh-blob-2: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(59, 130, 246, 0.05) 70%, transparent 100%);
+    --mesh-blob-3: radial-gradient(circle, rgba(236, 72, 153, 0.16) 0%, rgba(244, 63, 94, 0.04) 70%, transparent 100%);
   }
 
-  /* 2. Cyber Aurora (Aurora Borealis / Celestial Cyan) */
-  .theme-cyber-aurora {
-    --background: #05131a;
-    --foreground: #ecfeff;
-    --glass-bg: rgba(8, 30, 42, 0.65);
-    --glass-border: rgba(45, 212, 191, 0.24);
-    --glass-shadow: 0 16px 48px rgba(0, 20, 28, 0.65);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(45, 212, 191, 0.25);
-    --mesh-blob-1: radial-gradient(circle, rgba(20, 184, 166, 0.40) 0%, rgba(6, 182, 212, 0.08) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(6, 182, 212, 0.36) 0%, rgba(16, 185, 129, 0.08) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(52, 211, 153, 0.28) 0%, rgba(14, 165, 233, 0.05) 70%, transparent 100%);
-  }
-
-  /* 4. Velvet Amethyst (Royal Imperial Purple) */
-  .theme-midnight-amethyst {
-    --background: #0d0819;
-    --foreground: #faf5ff;
-    --glass-bg: rgba(25, 14, 45, 0.65);
-    --glass-border: rgba(192, 132, 252, 0.22);
-    --glass-shadow: 0 16px 48px rgba(13, 8, 25, 0.65);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(192, 132, 252, 0.22);
-    --mesh-blob-1: radial-gradient(circle, rgba(168, 85, 247, 0.40) 0%, rgba(217, 70, 239, 0.08) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(217, 70, 239, 0.32) 0%, rgba(147, 51, 234, 0.08) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(99, 102, 241, 0.30) 0%, rgba(168, 85, 247, 0.05) 70%, transparent 100%);
-  }
-
-  /* 5. Solar Amber (Warm Obsidian Bronze & Topaz) */
-  .theme-solar-amber {
-    --background: #140d07;
-    --foreground: #fffbeb;
-    --glass-bg: rgba(35, 21, 10, 0.65);
-    --glass-border: rgba(251, 191, 36, 0.24);
-    --glass-shadow: 0 16px 48px rgba(20, 13, 7, 0.65);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(251, 191, 36, 0.22);
-    --mesh-blob-1: radial-gradient(circle, rgba(245, 158, 11, 0.40) 0%, rgba(234, 88, 12, 0.08) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(234, 88, 12, 0.32) 0%, rgba(245, 158, 11, 0.08) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(251, 191, 36, 0.25) 0%, rgba(217, 119, 6, 0.05) 70%, transparent 100%);
-  }
-
-  /* 6. Bioluminescent Jade (Emerald Matrix / Forest Obsidian) */
-  .theme-emerald-matrix {
-    --background: #05140d;
-    --foreground: #ecfdf5;
-    --glass-bg: rgba(9, 32, 20, 0.65);
-    --glass-border: rgba(52, 211, 153, 0.24);
-    --glass-shadow: 0 16px 48px rgba(5, 20, 13, 0.65);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(52, 211, 153, 0.22);
-    --mesh-blob-1: radial-gradient(circle, rgba(16, 185, 129, 0.40) 0%, rgba(52, 211, 153, 0.08) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(52, 211, 153, 0.32) 0%, rgba(16, 185, 129, 0.08) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(34, 197, 94, 0.25) 0%, rgba(5, 150, 105, 0.05) 70%, transparent 100%);
-  }
-
-  /* 7. Neon Synthwave (Cyberpunk 80s Hot Pink & Cyan) */
-  .theme-neon-synthwave {
-    --background: #0c0a1a;
-    --foreground: #fff1f2;
-    --glass-bg: rgba(28, 15, 48, 0.65);
-    --glass-border: rgba(244, 63, 94, 0.26);
-    --glass-shadow: 0 16px 48px rgba(12, 10, 26, 0.65);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(244, 63, 94, 0.25);
-    --mesh-blob-1: radial-gradient(circle, rgba(244, 63, 94, 0.42) 0%, rgba(217, 70, 239, 0.08) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(6, 182, 212, 0.38) 0%, rgba(99, 102, 241, 0.08) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(168, 85, 247, 0.28) 0%, rgba(244, 63, 94, 0.05) 70%, transparent 100%);
-  }
-
-  /* 8. Oceanic Abyss (Deep Mariana Trench & Cobalt Sapphire) */
-  .theme-oceanic-abyss {
-    --background: #040f1f;
-    --foreground: #f0f9ff;
-    --glass-bg: rgba(7, 24, 52, 0.65);
-    --glass-border: rgba(56, 189, 248, 0.24);
-    --glass-shadow: 0 16px 48px rgba(4, 15, 31, 0.65);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(56, 189, 248, 0.24);
-    --mesh-blob-1: radial-gradient(circle, rgba(14, 165, 233, 0.42) 0%, rgba(37, 99, 235, 0.08) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(37, 99, 235, 0.35) 0%, rgba(14, 165, 233, 0.08) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(20, 184, 166, 0.25) 0%, rgba(59, 130, 246, 0.05) 70%, transparent 100%);
-  }
-
-  /* 9. Rose Quartz (Champagne Blush & Frosted Petals) */
+  /* 2. Rose Quartz (Frosted champagne blush glass with rose petals & soft peony glow) */
   .theme-rose-quartz {
-    --background: #fbf6f7;
-    --foreground: #1f1619;
-    --glass-bg: rgba(255, 245, 248, 0.72);
-    --glass-border: rgba(244, 114, 182, 0.35);
-    --glass-shadow: 0 12px 40px rgba(244, 114, 182, 0.12);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.7);
-    --mesh-blob-1: radial-gradient(circle, rgba(244, 114, 182, 0.35) 0%, rgba(251, 113, 133, 0.08) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(251, 191, 36, 0.24) 0%, rgba(244, 114, 182, 0.06) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(251, 113, 133, 0.22) 0%, rgba(244, 63, 94, 0.04) 70%, transparent 100%);
+    --background: #fff5f7;
+    --foreground: #2d0c1e;
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(251, 207, 232, 0.80);
+    --glass-shadow: 0 12px 40px rgba(219, 39, 119, 0.08);
+    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+    --mesh-blob-1: radial-gradient(circle, rgba(244, 114, 182, 0.25) 0%, rgba(251, 113, 133, 0.06) 70%, transparent 100%);
+    --mesh-blob-2: radial-gradient(circle, rgba(251, 191, 36, 0.18) 0%, rgba(244, 114, 182, 0.04) 70%, transparent 100%);
+    --mesh-blob-3: radial-gradient(circle, rgba(244, 63, 94, 0.16) 0%, rgba(219, 39, 119, 0.03) 70%, transparent 100%);
   }
 
-  /* 10. Nordic Frost (Glacial Crystal & Polar Silver) */
-  .theme-nordic-frost {
-    --background: #08121a;
-    --foreground: #f1f5f9;
-    --glass-bg: rgba(16, 30, 42, 0.65);
-    --glass-border: rgba(148, 163, 184, 0.26);
-    --glass-shadow: 0 16px 48px rgba(8, 18, 26, 0.65);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(148, 163, 184, 0.25);
-    --mesh-blob-1: radial-gradient(circle, rgba(125, 211, 252, 0.40) 0%, rgba(56, 189, 248, 0.08) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(56, 189, 248, 0.30) 0%, rgba(148, 163, 184, 0.08) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(203, 213, 225, 0.24) 0%, rgba(125, 211, 252, 0.05) 70%, transparent 100%);
+  /* 3. Azure Breeze (Mediterranean sky cyan & cerulean reflections) */
+  .theme-azure-breeze {
+    --background: #f0f9ff;
+    --foreground: #082f49;
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(186, 230, 253, 0.85);
+    --glass-shadow: 0 12px 40px rgba(2, 132, 199, 0.08);
+    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+    --mesh-blob-1: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.06) 70%, transparent 100%);
+    --mesh-blob-2: radial-gradient(circle, rgba(96, 165, 250, 0.20) 0%, rgba(59, 130, 246, 0.05) 70%, transparent 100%);
+    --mesh-blob-3: radial-gradient(circle, rgba(45, 212, 191, 0.18) 0%, rgba(6, 182, 212, 0.04) 70%, transparent 100%);
+  }
+
+  /* 4. Mint Sage (Frosted morning botanical mint dew & fresh sage) */
+  .theme-mint-sage {
+    --background: #f2faf5;
+    --foreground: #062817;
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(167, 243, 208, 0.80);
+    --glass-shadow: 0 12px 40px rgba(5, 150, 105, 0.08);
+    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+    --mesh-blob-1: radial-gradient(circle, rgba(52, 211, 153, 0.25) 0%, rgba(16, 185, 129, 0.06) 70%, transparent 100%);
+    --mesh-blob-2: radial-gradient(circle, rgba(110, 231, 183, 0.22) 0%, rgba(5, 150, 105, 0.05) 70%, transparent 100%);
+    --mesh-blob-3: radial-gradient(circle, rgba(163, 230, 53, 0.16) 0%, rgba(101, 163, 13, 0.03) 70%, transparent 100%);
+  }
+
+  /* 5. Sunset Peach (Tuscan terrace apricot, peach nectar & terracotta specular glass) */
+  .theme-sunset-peach {
+    --background: #fff7ed;
+    --foreground: #431407;
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(254, 215, 170, 0.85);
+    --glass-shadow: 0 12px 40px rgba(234, 88, 12, 0.08);
+    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+    --mesh-blob-1: radial-gradient(circle, rgba(251, 146, 60, 0.24) 0%, rgba(249, 115, 22, 0.06) 70%, transparent 100%);
+    --mesh-blob-2: radial-gradient(circle, rgba(253, 186, 116, 0.22) 0%, rgba(234, 88, 12, 0.05) 70%, transparent 100%);
+    --mesh-blob-3: radial-gradient(circle, rgba(251, 113, 133, 0.16) 0%, rgba(244, 63, 94, 0.03) 70%, transparent 100%);
+  }
+
+  /* 6. Lavender Mist (Provence lilac mist, violet petals & crystal glass) */
+  .theme-lavender-mist {
+    --background: #faf5ff;
+    --foreground: #2e1065;
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(233, 213, 255, 0.85);
+    --glass-shadow: 0 12px 40px rgba(124, 58, 237, 0.08);
+    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+    --mesh-blob-1: radial-gradient(circle, rgba(192, 132, 252, 0.25) 0%, rgba(168, 85, 247, 0.06) 70%, transparent 100%);
+    --mesh-blob-2: radial-gradient(circle, rgba(216, 180, 254, 0.20) 0%, rgba(147, 51, 234, 0.05) 70%, transparent 100%);
+    --mesh-blob-3: radial-gradient(circle, rgba(167, 139, 250, 0.18) 0%, rgba(124, 58, 237, 0.04) 70%, transparent 100%);
+  }
+
+  /* 7. Arctic Glacier (Glacial polar light with frosted diamond reflections & silver sheen) */
+  .theme-arctic-glacier {
+    --background: #f1f5f9;
+    --foreground: #0f172a;
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(226, 232, 240, 0.90);
+    --glass-shadow: 0 12px 40px rgba(14, 165, 233, 0.07);
+    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
+    --mesh-blob-1: radial-gradient(circle, rgba(186, 230, 253, 0.32) 0%, rgba(56, 189, 248, 0.06) 70%, transparent 100%);
+    --mesh-blob-2: radial-gradient(circle, rgba(203, 213, 225, 0.28) 0%, rgba(148, 163, 184, 0.06) 70%, transparent 100%);
+    --mesh-blob-3: radial-gradient(circle, rgba(147, 197, 253, 0.20) 0%, rgba(96, 165, 250, 0.04) 70%, transparent 100%);
+  }
+
+  /* 8. Champagne Gold (Venetian palazzo champagne bubbles, spun gold & ivory pearl glass) */
+  .theme-champagne-gold {
+    --background: #fefce8;
+    --foreground: #3f2c06;
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(254, 240, 138, 0.85);
+    --glass-shadow: 0 12px 40px rgba(202, 138, 4, 0.08);
+    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+    --mesh-blob-1: radial-gradient(circle, rgba(253, 224, 71, 0.26) 0%, rgba(234, 179, 8, 0.06) 70%, transparent 100%);
+    --mesh-blob-2: radial-gradient(circle, rgba(254, 240, 138, 0.28) 0%, rgba(202, 138, 4, 0.05) 70%, transparent 100%);
+    --mesh-blob-3: radial-gradient(circle, rgba(251, 191, 36, 0.18) 0%, rgba(217, 119, 6, 0.04) 70%, transparent 100%);
   }
 
   body {
@@ -147,46 +134,20 @@
 }
 
 .liquid-glass-subtle {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
-}
-
-.dark .liquid-glass-subtle,
-.theme-cyber-aurora .liquid-glass-subtle,
-.theme-midnight-amethyst .liquid-glass-subtle,
-.theme-solar-amber .liquid-glass-subtle,
-.theme-emerald-matrix .liquid-glass-subtle,
-.theme-neon-synthwave .liquid-glass-subtle,
-.theme-oceanic-abyss .liquid-glass-subtle,
-.theme-nordic-frost .liquid-glass-subtle {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.75);
 }
 
 .liquid-glass-input {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.8);
   border-radius: 20px;
-}
-
-.dark .liquid-glass-input,
-.theme-cyber-aurora .liquid-glass-input,
-.theme-midnight-amethyst .liquid-glass-input,
-.theme-solar-amber .liquid-glass-input,
-.theme-emerald-matrix .liquid-glass-input,
-.theme-neon-synthwave .liquid-glass-input,
-.theme-oceanic-abyss .liquid-glass-input,
-.theme-nordic-frost .liquid-glass-input {
-  background: rgba(22, 24, 38, 0.5);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.08);
 }
 
 /* Fluid Mesh Gradients */
@@ -208,7 +169,7 @@
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: var(--mesh-blob-1, radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, rgba(168, 85, 247, 0.05) 70%, transparent 100%));
+  background: var(--mesh-blob-1, radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(168, 85, 247, 0.05) 70%, transparent 100%));
   filter: blur(80px);
   animation: floatOrb 22s ease-in-out infinite alternate;
   transition: background 0.6s ease;
@@ -221,7 +182,7 @@
   width: 700px;
   height: 700px;
   border-radius: 50%;
-  background: var(--mesh-blob-2, radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, rgba(59, 130, 246, 0.08) 70%, transparent 100%));
+  background: var(--mesh-blob-2, radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(59, 130, 246, 0.05) 70%, transparent 100%));
   filter: blur(90px);
   animation: floatOrb2 26s ease-in-out infinite alternate;
   transition: background 0.6s ease;
@@ -234,7 +195,7 @@
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background: var(--mesh-blob-3, radial-gradient(circle, rgba(236, 72, 153, 0.25) 0%, rgba(244, 63, 94, 0.05) 70%, transparent 100%));
+  background: var(--mesh-blob-3, radial-gradient(circle, rgba(236, 72, 153, 0.16) 0%, rgba(244, 63, 94, 0.04) 70%, transparent 100%));
   filter: blur(85px);
   animation: floatOrb3 18s ease-in-out infinite alternate;
   transition: background 0.6s ease;
@@ -277,8 +238,8 @@
 .prose pre {
   margin: 0.75rem 0;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6);
 }
 
 .prose code {
