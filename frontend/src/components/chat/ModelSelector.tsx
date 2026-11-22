@@ -1,11 +1,18 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Sparkles, Cpu, Check, Layers, Brain, Code2, Users, Globe, Zap, Compass } from "lucide-react";
+import {
+  ChevronDown,
+  Sparkles,
+  Cpu,
+  Users,
+  Compass,
+  Zap,
+  Globe,
+  Check,
+} from "lucide-react";
 import { Model } from "@/lib/types";
 import { api } from "@/lib/api";
-import { GlassCard } from "../ui/GlassCard";
 import { cn } from "@/lib/utils";
 
 interface ModelSelectorProps {
@@ -126,55 +133,43 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
     if (id === "debate" || prov === "multi") {
       return {
-        label: "Council",
-        icon: <Users className="w-2.5 h-2.5" />,
-        badge: "bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/20",
-        accent: "text-purple-600 dark:text-purple-400",
-        bg: "bg-purple-500/20",
+        label: "COUNCIL",
+        icon: <Users className="w-3 h-3 stroke-[2.5]" />,
+        badge: "bg-[#FFE600] text-black border border-black font-black",
       };
     }
     if (prov === "anthropic" || id.includes("claude")) {
       return {
-        label: "Anthropic",
-        icon: <Cpu className="w-2.5 h-2.5" />,
-        badge: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/20",
-        accent: "text-amber-600 dark:text-amber-400",
-        bg: "bg-amber-500/20",
+        label: "ANTHROPIC",
+        icon: <Cpu className="w-3 h-3 stroke-[2.5]" />,
+        badge: "bg-[#FFB800] text-black border border-black font-black",
       };
     }
     if (prov === "gemini" || id.includes("gemini")) {
       return {
-        label: "Google",
-        icon: <Compass className="w-2.5 h-2.5" />,
-        badge: "bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-500/20",
-        accent: "text-blue-600 dark:text-blue-400",
-        bg: "bg-blue-500/20",
+        label: "GOOGLE",
+        icon: <Compass className="w-3 h-3 stroke-[2.5]" />,
+        badge: "bg-[#00E5FF] text-black border border-black font-black",
       };
     }
     if (prov === "xai" || id.includes("grok")) {
       return {
-        label: "xAI",
-        icon: <Zap className="w-2.5 h-2.5" />,
-        badge: "bg-zinc-500/15 text-zinc-700 dark:text-zinc-300 border border-zinc-500/20",
-        accent: "text-zinc-600 dark:text-zinc-400",
-        bg: "bg-zinc-500/20",
+        label: "XAI",
+        icon: <Zap className="w-3 h-3 stroke-[2.5]" />,
+        badge: "bg-black text-white border border-black font-black",
       };
     }
     if (prov === "perplexity" || id.includes("sonar")) {
       return {
-        label: "Perplexity",
-        icon: <Globe className="w-2.5 h-2.5" />,
-        badge: "bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/20",
-        accent: "text-teal-600 dark:text-teal-400",
-        bg: "bg-teal-500/20",
+        label: "PERPLEXITY",
+        icon: <Globe className="w-3 h-3 stroke-[2.5]" />,
+        badge: "bg-[#00FF66] text-black border border-black font-black",
       };
     }
     return {
-      label: "OpenAI",
-      icon: <Sparkles className="w-2.5 h-2.5" />,
-      badge: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20",
-      accent: "text-emerald-600 dark:text-emerald-400",
-      bg: "bg-emerald-500/20",
+      label: "OPENAI",
+      icon: <Sparkles className="w-3 h-3 stroke-[2.5]" />,
+      badge: "bg-white text-black border border-black font-black",
     };
   };
 
@@ -182,8 +177,8 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
 
   const dropdownClasses =
     placement === "bottom"
-      ? "absolute left-0 top-full mt-2 z-50 w-80 max-w-[90vw]"
-      : "absolute left-0 bottom-full mb-2 z-50 w-80 max-w-[90vw]";
+      ? "absolute left-0 top-full mt-1.5 z-50 w-80 max-w-[90vw]"
+      : "absolute left-0 bottom-full mb-1.5 z-50 w-80 max-w-[90vw]";
 
   return (
     <div className={cn("relative inline-block", className)}>
@@ -194,130 +189,104 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         aria-label="Select AI Model"
         aria-expanded={isOpen}
         className={cn(
-          "flex items-center gap-2 px-3 py-1.5 rounded-2xl transition-all select-none shadow-sm cursor-pointer",
-          "bg-white/70 dark:bg-[#1a1d2e]/80 hover:bg-white/90 dark:hover:bg-[#23273e]/90",
-          "border border-white/50 dark:border-white/15 backdrop-blur-xl",
-          "text-xs font-medium text-foreground",
-          isOpen && "ring-2 ring-indigo-500/40 border-indigo-500/50"
+          "flex items-center gap-1.5 px-2.5 py-1 transition-all select-none cursor-pointer rounded-none border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:shadow-[3px_3px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 text-xs font-bold text-black uppercase",
+          isOpen && "bg-[#fffdf0]"
         )}
       >
-        <div className={cn("flex items-center justify-center w-4 h-4 rounded-full", currentMeta.bg, currentMeta.accent)}>
+        <span className="p-0.5 border border-black bg-[#f4f4f0]">
           {currentMeta.icon}
-        </div>
-
-        <div className="flex items-center gap-1.5">
-          <span className="font-semibold text-foreground tracking-tight">{current?.name}</span>
-          {!compact && (
-            <span className={cn("text-[9px] uppercase font-mono px-1.5 py-0.5 rounded-md font-semibold", currentMeta.badge)}>
-              {currentMeta.label}
-            </span>
-          )}
-        </div>
-
+        </span>
+        <span className="truncate max-w-[140px] tracking-tight">{current?.name || "Select Model"}</span>
         <ChevronDown
           className={cn(
-            "w-3.5 h-3.5 text-foreground/50 transition-transform duration-200",
-            isOpen && "rotate-180 text-foreground"
+            "w-3 h-3 stroke-[3] transition-transform duration-150 ml-0.5",
+            isOpen && "rotate-180"
           )}
         />
       </button>
 
-      {/* Dropdown Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Click-away backdrop */}
-            <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+      {/* Brutalist Dropdown Menu */}
+      {isOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => setIsOpen(false)}
+          />
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: placement === "bottom" ? -6 : 6 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: placement === "bottom" ? -6 : 6 }}
-              transition={{ type: "spring", stiffness: 450, damping: 30 }}
-              className={dropdownClasses}
-            >
-              <GlassCard
-                variant="floating"
-                className="p-2.5 bg-white/95 dark:bg-[#151726]/95 backdrop-blur-3xl border border-white/50 dark:border-white/15 shadow-2xl rounded-2xl overflow-visible"
-              >
-                <div className="flex items-center justify-between px-2 py-1 border-b border-black/5 dark:border-white/10 mb-1.5">
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-foreground/60 uppercase tracking-wider">
-                    <Layers className="w-3.5 h-3.5" />
-                    <span>Choose AI Model</span>
-                  </div>
-                  <span className="text-[10px] text-foreground/40 font-mono">
-                    {models.length} Available
-                  </span>
-                </div>
+          <div
+            className={cn(
+              dropdownClasses,
+              "bg-white border-3 border-black shadow-brutal-lg p-1.5 rounded-none animate-in fade-in zoom-in-95 duration-100"
+            )}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-2 py-1 text-[10px] font-mono font-black uppercase text-black bg-[#f4f4f0] border-b-2 border-black mb-1">
+              <span>// SELECT ENGINE [{models.length}]</span>
+              <span>CTX WINDOW</span>
+            </div>
 
-                <div className="flex flex-col gap-1 max-h-72 overflow-y-auto">
-                  {models.map((m) => {
-                    const isSelected = m.id === selectedModel;
-                    const meta = getProviderMeta(m);
-                    return (
-                      <button
-                        key={m.id}
-                        type="button"
-                        onClick={() => {
-                          onSelectModel(m.id);
-                          setIsOpen(false);
-                        }}
-                        className={cn(
-                          "flex items-start justify-between w-full p-2.5 rounded-xl text-left transition-all cursor-pointer",
-                          isSelected
-                            ? "bg-indigo-500/15 border border-indigo-500/40 text-indigo-700 dark:text-indigo-300 shadow-sm"
-                            : "hover:bg-black/5 dark:hover:bg-white/5 text-foreground border border-transparent"
-                        )}
-                      >
-                        <div className="flex flex-col pr-2">
-                          <div className="flex items-center gap-1.5">
-                            <span className={cn("flex-shrink-0", meta.accent)}>{meta.icon}</span>
-                            <span className="text-xs font-semibold">{m.name}</span>
-                            <span
-                              className={cn(
-                                "text-[9px] uppercase px-1.5 py-0.2 rounded font-mono font-medium",
-                                meta.badge
-                              )}
-                            >
-                              {meta.label}
-                            </span>
-                          </div>
-                          <span className="text-[11px] text-foreground/65 line-clamp-1 mt-0.5">
-                            {m.description}
+            {/* List */}
+            <div className="max-h-72 overflow-y-auto space-y-1 pr-0.5">
+              {models.map((model) => {
+                const isSelected = model.id === selectedModel;
+                const meta = getProviderMeta(model);
+                const ctxK = model.context_window
+                  ? model.context_window >= 1000000
+                    ? `${(model.context_window / 1000000).toFixed(0)}M`
+                    : `${Math.round(model.context_window / 1000)}k`
+                  : null;
+
+                return (
+                  <button
+                    key={model.id}
+                    type="button"
+                    onClick={() => {
+                      onSelectModel(model.id);
+                      setIsOpen(false);
+                    }}
+                    className={cn(
+                      "w-full flex items-start justify-between gap-2 p-2 text-left transition-all border border-black cursor-pointer rounded-none",
+                      isSelected
+                        ? "bg-brutal-accent text-black font-black shadow-[2px_2px_0px_0px_#000]"
+                        : "bg-white hover:bg-neutral-100 text-black"
+                    )}
+                  >
+                    <div className="flex items-start gap-2 overflow-hidden flex-1">
+                      <div className="p-1 border border-black bg-white shrink-0 mt-0.5">
+                        {meta.icon}
+                      </div>
+                      <div className="flex flex-col overflow-hidden min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-xs font-black uppercase tracking-tight truncate">
+                            {model.name}
                           </span>
-
-                          {/* Model Context & Features */}
-                          <div className="flex items-center gap-1 mt-1.5 flex-wrap text-[9px] text-foreground/60 font-mono">
-                            {m.context_window && (
-                              <span className="px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/5">
-                                {(m.context_window / 1000).toFixed(0)}k ctx
-                              </span>
-                            )}
-                            {m.capabilities?.vision && (
-                              <span className="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                                Vision
-                              </span>
-                            )}
-                            {m.capabilities?.web_search && (
-                              <span className="px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-600 dark:text-teal-400">
-                                Web
-                              </span>
-                            )}
-                          </div>
+                          <span className={cn("text-[9px] font-mono px-1 py-0.2", meta.badge)}>
+                            {meta.label}
+                          </span>
                         </div>
+                        <span className="text-[10px] text-black/65 font-medium line-clamp-1 mt-0.5">
+                          {model.description}
+                        </span>
+                      </div>
+                    </div>
 
-                        <div className="flex items-center gap-1.5 flex-shrink-0 mt-0.5">
-                          {isSelected && <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </GlassCard>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+                    <div className="flex flex-col items-end shrink-0 gap-1">
+                      {ctxK && (
+                        <span className="text-[9px] font-mono font-bold px-1 border border-black bg-[#f4f4f0] text-black">
+                          {ctxK}
+                        </span>
+                      )}
+                      {isSelected && (
+                        <Check className="w-3.5 h-3.5 stroke-[3] text-black" />
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

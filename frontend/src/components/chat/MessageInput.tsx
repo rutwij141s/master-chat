@@ -13,7 +13,6 @@ import {
   MicOff,
   Users,
 } from "lucide-react";
-import { GlassCard } from "../ui/GlassCard";
 import { ModelSelector } from "./ModelSelector";
 import { cn } from "@/lib/utils";
 
@@ -45,14 +44,12 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const recognitionRef = useRef<any>(null);
 
-  // Automatically enable RAG when documents are detected
   useEffect(() => {
     if (hasDocuments) {
       setUseRag(true);
     }
   }, [hasDocuments]);
 
-  // Clean up speech recognition on unmount
   useEffect(() => {
     return () => {
       if (recognitionRef.current) {
@@ -125,7 +122,6 @@ export const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
-  // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -157,36 +153,33 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 pb-4">
+    <div className="w-full max-w-4xl mx-auto px-2 sm:px-4 pb-3">
       {/* Quick Action Chips: Documents */}
       {hasDocuments && (
         <div className="flex items-center gap-2 mb-2 px-1 flex-wrap text-xs">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20 backdrop-blur-md">
-            <FileText className="w-3.5 h-3.5 text-indigo-500" />
-            <span className="font-medium truncate max-w-[160px] sm:max-w-[240px]">
-              {activeDocumentName || "Knowledge Base Ready"}
+          <div className="flex items-center gap-1.5 px-2.5 py-1 border-2 border-black bg-white text-black font-mono font-bold uppercase shadow-[2px_2px_0px_0px_#000]">
+            <FileText className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span className="truncate max-w-[160px] sm:max-w-[240px]">
+              {activeDocumentName || "KNOWLEDGE BASE READY"}
             </span>
-            <span className="text-[10px] px-1 py-0.2 rounded bg-indigo-500/25 font-bold uppercase">
-              RAG Active
+            <span className="text-[9px] px-1 bg-black text-white font-black">
+              RAG ACTIVE
             </span>
           </div>
 
           <button
             type="button"
             onClick={handleQuickSummarize}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/50 dark:bg-white/10 hover:bg-white/80 dark:hover:bg-white/15 text-foreground/80 border border-white/30 dark:border-white/10 backdrop-blur-md transition-all cursor-pointer font-medium text-xs active:scale-95 shadow-xs"
+            className="flex items-center gap-1 px-2.5 py-1 border-2 border-black bg-brutal-accent hover:bg-brutal-accentHover text-black font-black uppercase text-xs shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
           >
-            <Sparkles className="w-3 h-3 text-amber-500" />
-            <span>Summarize Document</span>
+            <Sparkles className="w-3 h-3 stroke-[2.5]" />
+            <span>SUMMARIZE DOC</span>
           </button>
         </div>
       )}
 
-      {/* Liquid Glass Floating Composer (overflow-visible to prevent clipping popups) */}
-      <GlassCard
-        variant="floating"
-        className="liquid-glass-input p-3 border border-white/50 dark:border-white/15 shadow-2xl rounded-3xl overflow-visible relative z-30"
-      >
+      {/* Brutalist Console Composer */}
+      <div className="bg-white border-3 border-black shadow-brutal-md p-2.5 sm:p-3 relative z-30 rounded-none">
         {/* Multiline Input Textarea */}
         <textarea
           ref={textareaRef}
@@ -195,21 +188,21 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           onKeyDown={handleKeyDown}
           placeholder={
             selectedModel === "debate"
-              ? "Ask the 4-Model AI Council (GPT-4o, Mini, Claude Sonnet & Haiku)..."
+              ? "COMMAND COUNCIL: Enter query for multi-model consensus synthesis..."
               : hasDocuments
-              ? "Ask questions or type 'summarize' to analyze your document..."
+              ? "ENTER QUERY OR 'SUMMARIZE' FOR DOCUMENT RAG ANALYSIS..."
               : useWebSearch
-              ? "Ask anything with live real-time web search..."
-              : "Ask anything, evaluate expressions, search documents..."
+              ? "QUERY ENGINE WITH REAL-TIME WEB GROUNDING..."
+              : "ENTER INSTRUCTION OR PROMPT TO DISPATCH TO AGENT..."
           }
           rows={1}
-          className="w-full bg-transparent px-3 py-1.5 text-sm sm:text-base text-foreground placeholder:text-foreground/45 resize-none focus:outline-none max-h-44 leading-relaxed"
+          className="w-full bg-white px-2 py-1 text-xs sm:text-sm font-mono font-bold text-black placeholder:text-black/40 resize-none focus:outline-none max-h-44 leading-relaxed rounded-none"
         />
 
         {/* Action Controls Toolbar */}
-        <div className="flex items-center justify-between pt-2 px-1 border-t border-black/5 dark:border-white/10 mt-1">
-          {/* Left Controls: Model Picker + Debate Toggle + RAG Toggle + Web Search Toggle + File Attach */}
-          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+        <div className="flex items-center justify-between pt-2 px-0.5 border-t-2 border-black mt-1 gap-2">
+          {/* Left Controls: Model Picker + Debate + RAG + Web + Docs */}
+          <div className="flex items-center gap-1.5 flex-wrap">
             <ModelSelector
               selectedModel={selectedModel}
               onSelectModel={onSelectModel}
@@ -221,23 +214,16 @@ export const MessageInput: React.FC<MessageInputProps> = ({
               type="button"
               onClick={() => onSelectModel(selectedModel === "debate" ? "gpt-4o" : "debate")}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-medium transition-all select-none border cursor-pointer",
+                "flex items-center gap-1 px-2 py-1 text-xs font-mono font-bold border-2 border-black transition-all cursor-pointer select-none rounded-none shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5",
                 selectedModel === "debate"
-                  ? "bg-purple-600/20 text-purple-700 dark:text-purple-300 border-purple-500/50 shadow-sm"
-                  : "bg-white/40 dark:bg-white/5 hover:bg-white/60 text-foreground/70 border-white/30 dark:border-white/10"
+                  ? "bg-[#FFE600] text-black font-black"
+                  : "bg-white text-black hover:bg-neutral-100"
               )}
-              title="Debate Chat: Consult all 4 AI models simultaneously and merge into a refined consensus"
+              title="Debate Chat: Consult 4 AI models simultaneously"
             >
-              <Users className="w-3.5 h-3.5 text-purple-500" />
-              <span className="hidden sm:inline">Debate</span>
-              <span
-                className={cn(
-                  "text-[10px] uppercase font-bold px-1 rounded",
-                  selectedModel === "debate"
-                    ? "bg-purple-500/30 text-purple-700 dark:text-purple-300"
-                    : "opacity-60"
-                )}
-              >
+              <Users className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span className="hidden sm:inline">COUNCIL</span>
+              <span className="text-[9px] font-black uppercase px-1 bg-black text-white">
                 {selectedModel === "debate" ? "ON" : "OFF"}
               </span>
             </button>
@@ -247,21 +233,19 @@ export const MessageInput: React.FC<MessageInputProps> = ({
               type="button"
               onClick={() => setUseRag(!useRag)}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-medium transition-all select-none border cursor-pointer",
+                "flex items-center gap-1 px-2 py-1 text-xs font-mono font-bold border-2 border-black transition-all cursor-pointer select-none rounded-none shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5",
                 useRag
-                  ? "bg-indigo-600/20 text-indigo-700 dark:text-indigo-300 border-indigo-500/50 shadow-sm"
-                  : "bg-white/40 dark:bg-white/5 hover:bg-white/60 text-foreground/70 border-white/30 dark:border-white/10"
+                  ? "bg-black text-white font-black"
+                  : "bg-white text-black hover:bg-neutral-100"
               )}
               title={useRag ? "Document Grounding is ON" : "Turn ON to ground with uploaded documents"}
             >
-              <Database className="w-3.5 h-3.5" />
+              <Database className="w-3.5 h-3.5 stroke-[2.5]" />
               <span className="hidden sm:inline">RAG</span>
-              <span
-                className={cn(
-                  "text-[10px] uppercase font-bold px-1 rounded",
-                  useRag ? "bg-indigo-500/30 text-indigo-700 dark:text-indigo-300" : "opacity-60"
-                )}
-              >
+              <span className={cn(
+                "text-[9px] font-black uppercase px-1",
+                useRag ? "bg-white text-black" : "bg-black text-white"
+              )}>
                 {useRag ? "ON" : "OFF"}
               </span>
             </button>
@@ -271,21 +255,16 @@ export const MessageInput: React.FC<MessageInputProps> = ({
               type="button"
               onClick={() => setUseWebSearch(!useWebSearch)}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-medium transition-all select-none border cursor-pointer",
+                "flex items-center gap-1 px-2 py-1 text-xs font-mono font-bold border-2 border-black transition-all cursor-pointer select-none rounded-none shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5",
                 useWebSearch
-                  ? "bg-emerald-600/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/50 shadow-sm"
-                  : "bg-white/40 dark:bg-white/5 hover:bg-white/60 text-foreground/70 border-white/30 dark:border-white/10"
+                  ? "bg-[#00FF66] text-black font-black"
+                  : "bg-white text-black hover:bg-neutral-100"
               )}
-              title={useWebSearch ? "Web Search Grounding is ON" : "Turn ON to search the web for live real-time information"}
+              title={useWebSearch ? "Web Search Grounding is ON" : "Turn ON to search the web live"}
             >
-              <Globe className="w-3.5 h-3.5 text-emerald-500" />
-              <span className="hidden sm:inline">Web</span>
-              <span
-                className={cn(
-                  "text-[10px] uppercase font-bold px-1 rounded",
-                  useWebSearch ? "bg-emerald-500/30 text-emerald-700 dark:text-emerald-300" : "opacity-60"
-                )}
-              >
+              <Globe className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span className="hidden sm:inline">WEB</span>
+              <span className="text-[9px] font-black uppercase px-1 bg-black text-white">
                 {useWebSearch ? "ON" : "OFF"}
               </span>
             </button>
@@ -294,25 +273,25 @@ export const MessageInput: React.FC<MessageInputProps> = ({
             <button
               type="button"
               onClick={onOpenDocuments}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl text-xs font-medium bg-white/40 dark:bg-white/5 hover:bg-white/60 dark:hover:bg-white/10 text-foreground/70 border border-white/30 dark:border-white/10 transition-all select-none cursor-pointer"
+              className="flex items-center gap-1 px-2 py-1 text-xs font-mono font-bold bg-white hover:bg-neutral-100 text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] transition-all select-none cursor-pointer rounded-none active:translate-x-0.5 active:translate-y-0.5"
               title="Manage knowledge documents"
             >
-              <Paperclip className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Docs</span>
+              <Paperclip className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span className="hidden md:inline">DOCS</span>
             </button>
           </div>
 
           {/* Right Control: Dictation Mic & Send/Stop Button */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 shrink-0">
             {/* Voice Dictation (Speech-to-Text) Button */}
             <button
               type="button"
               onClick={toggleListening}
               className={cn(
-                "flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-2xl transition-all cursor-pointer",
+                "w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center border-2 border-black transition-all cursor-pointer rounded-none shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5",
                 isListening
-                  ? "bg-rose-500 text-white shadow-lg shadow-rose-500/40 animate-pulse border border-rose-400"
-                  : "bg-white/40 dark:bg-white/5 hover:bg-white/70 dark:hover:bg-white/10 text-foreground/70 border border-white/30 dark:border-white/10"
+                  ? "bg-red-500 text-white animate-pulse"
+                  : "bg-white hover:bg-neutral-100 text-black"
               )}
               title={
                 isListening
@@ -321,9 +300,9 @@ export const MessageInput: React.FC<MessageInputProps> = ({
               }
             >
               {isListening ? (
-                <MicOff className="w-4 h-4 text-white" />
+                <MicOff className="w-4 h-4 stroke-[3]" />
               ) : (
-                <Mic className="w-4 h-4" />
+                <Mic className="w-4 h-4 stroke-[2.5]" />
               )}
             </button>
 
@@ -331,10 +310,10 @@ export const MessageInput: React.FC<MessageInputProps> = ({
               <button
                 type="button"
                 onClick={onStop}
-                className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white shadow-md transition-all active:scale-95 cursor-pointer"
+                className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center border-2 border-black bg-red-500 hover:bg-red-600 text-white shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer rounded-none"
                 title="Stop streaming"
               >
-                <StopCircle className="w-5 h-5" />
+                <StopCircle className="w-4 h-4 stroke-[3]" />
               </button>
             ) : (
               <button
@@ -342,19 +321,19 @@ export const MessageInput: React.FC<MessageInputProps> = ({
                 onClick={() => handleSend()}
                 disabled={!input.trim()}
                 className={cn(
-                  "flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-2xl text-white shadow-md transition-all active:scale-95",
+                  "w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center border-2 border-black transition-all rounded-none shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5",
                   input.trim()
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 cursor-pointer"
-                    : "bg-black/20 dark:bg-white/10 opacity-40 cursor-not-allowed"
+                    ? "bg-brutal-accent hover:bg-brutal-accentHover text-black cursor-pointer"
+                    : "bg-neutral-200 text-black/40 cursor-not-allowed"
                 )}
                 title="Send message (Enter)"
               >
-                <ArrowUp className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ArrowUp className="w-4 h-4 sm:w-5 sm:h-5 stroke-[3]" />
               </button>
             )}
           </div>
         </div>
-      </GlassCard>
+      </div>
     </div>
   );
 };

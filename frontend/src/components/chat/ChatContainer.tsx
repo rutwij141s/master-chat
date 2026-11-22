@@ -32,7 +32,6 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
   const abortControllerRef = useRef<AbortController | null>(null);
   const exportRef = useRef<HTMLDivElement>(null);
 
-  // Close export menu on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (exportRef.current && !exportRef.current.contains(e.target as Node)) {
@@ -43,7 +42,6 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Check document availability for RAG
   const refreshDocuments = async () => {
     try {
       const res = await api.getDocuments();
@@ -56,7 +54,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
         }
       }
     } catch {
-      // ignore in offline/unauthorized cases
+      // ignore
     }
   };
 
@@ -64,7 +62,6 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
     refreshDocuments();
   }, []);
 
-  // Load conversation messages when activeConversation changes
   useEffect(() => {
     if (activeConversation) {
       api
@@ -92,7 +89,6 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
   ) => {
     if (!userText.trim() || isStreaming) return;
 
-    // 1. Optimistic User Message
     const userMsg: Message = {
       id: `user-${Date.now()}`,
       conversation_id: activeConversation?.id || "",
@@ -101,7 +97,6 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
       created_at: new Date().toISOString(),
     };
 
-    // 2. Empty Streaming Assistant Message
     const assistantMsgId = `asst-${Date.now()}`;
     const initialAssistantMsg: Message = {
       id: assistantMsgId,
@@ -225,7 +220,6 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
     }
   };
 
-  // --- Export Chat Conversation ---
   const exportAsMarkdown = () => {
     const title = activeConversation?.title || "MasterChat Transcript";
     const dateStr = new Date().toLocaleString();
@@ -257,7 +251,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
     a.click();
     URL.revokeObjectURL(url);
     setShowExportMenu(false);
-    setExportSuccess("Markdown exported!");
+    setExportSuccess("EXPORTED MD");
     setTimeout(() => setExportSuccess(null), 2500);
   };
 
@@ -287,24 +281,19 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
     a.click();
     URL.revokeObjectURL(url);
     setShowExportMenu(false);
-    setExportSuccess("Plain text exported!");
+    setExportSuccess("EXPORTED TXT");
     setTimeout(() => setExportSuccess(null), 2500);
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-      {/* Prominent Top Navigation Header Bar */}
-      <header className="flex items-center justify-between px-4 sm:px-6 py-2.5 border-b border-black/5 dark:border-white/10 backdrop-blur-xl bg-white/40 dark:bg-[#121422]/60 z-20">
-        <div className="flex items-center gap-3">
-          {/* Top Logo & Model Selector */}
+    <div className="flex-1 flex flex-col h-full overflow-hidden relative bg-white border-3 border-black shadow-brutal-lg rounded-none">
+      {/* Prominent Brutalist Top Navigation Header Bar */}
+      <header className="flex items-center justify-between px-3 sm:px-5 py-2 bg-[#f4f4f0] border-b-3 border-black z-20 select-none">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Model Selector Section */}
           <div className="flex items-center gap-2">
-            <img
-              src="/logo.png"
-              alt="MasterChat"
-              className="w-6 h-6 object-contain hidden xs:inline-block drop-shadow-xs"
-            />
-            <span className="text-[11px] font-bold uppercase tracking-wider text-foreground/50 hidden sm:inline">
-              Model:
+            <span className="text-[10px] font-mono font-black uppercase text-black hidden sm:inline px-1 bg-black text-white">
+              MODEL
             </span>
             <ModelSelector
               selectedModel={selectedModel}
@@ -314,8 +303,9 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
           </div>
 
           {/* Active Conversation Title */}
-          <div className="hidden md:flex items-center gap-2 pl-3 border-l border-black/10 dark:border-white/10 text-xs font-medium text-foreground/70 truncate max-w-[260px]">
-            <span>{activeConversation?.title || "New Chat"}</span>
+          <div className="hidden md:flex items-center gap-1.5 pl-3 border-l-2 border-black text-xs font-mono font-bold text-black truncate max-w-[260px]">
+            <span className="text-black/50">//</span>
+            <span className="truncate uppercase">{activeConversation?.title || "NEW SESSION"}</span>
           </div>
         </div>
 
@@ -327,44 +317,42 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
               <button
                 type="button"
                 onClick={() => setShowExportMenu(!showExportMenu)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl bg-white/40 dark:bg-white/5 hover:bg-white/60 dark:hover:bg-white/10 text-foreground/75 border border-white/20 text-xs font-medium transition-all cursor-pointer shadow-xs"
+                className="flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-[#FFE600] text-black font-black text-xs uppercase border-2 border-black shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer rounded-none"
                 title="Export conversation transcript"
               >
                 {exportSuccess ? (
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <Check className="w-3.5 h-3.5 stroke-[3]" />
                 ) : (
-                  <Download className="w-3.5 h-3.5 text-foreground/60" />
+                  <Download className="w-3.5 h-3.5 stroke-[2.5]" />
                 )}
-                <span className="hidden sm:inline">
-                  {exportSuccess || "Export"}
-                </span>
+                <span>{exportSuccess || "EXPORT"}</span>
               </button>
 
               {showExportMenu && (
-                <div className="absolute right-0 top-full mt-1.5 w-52 p-1.5 rounded-2xl bg-white/95 dark:bg-[#181a29]/95 backdrop-blur-3xl border border-white/50 dark:border-white/15 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150">
-                  <div className="px-2.5 py-1 text-[10px] font-bold uppercase text-foreground/45 border-b border-black/5 dark:border-white/10 mb-1">
-                    Export Chat
+                <div className="absolute right-0 top-full mt-1.5 w-56 p-1.5 bg-white border-3 border-black shadow-brutal-lg z-50 rounded-none">
+                  <div className="px-2 py-1 text-[10px] font-mono font-black uppercase text-black bg-[#f4f4f0] border-b-2 border-black mb-1">
+                    EXPORT ARCHIVE
                   </div>
                   <button
                     type="button"
                     onClick={exportAsMarkdown}
-                    className="w-full text-left px-2.5 py-2 rounded-xl text-xs hover:bg-black/5 dark:hover:bg-white/10 flex items-center gap-2 text-foreground cursor-pointer transition-colors"
+                    className="w-full text-left px-2 py-1.5 text-xs font-bold hover:bg-[#FFE600] flex items-center gap-2 text-black cursor-pointer transition-colors border border-black mb-1"
                   >
-                    <FileDown className="w-4 h-4 text-indigo-500 flex-shrink-0" />
+                    <FileDown className="w-4 h-4 stroke-[2.5] flex-shrink-0" />
                     <div>
-                      <div className="font-semibold">Markdown (.md)</div>
-                      <div className="text-[10px] text-foreground/50">With formatted sources & code</div>
+                      <div className="font-black text-xs">MARKDOWN (.MD)</div>
+                      <div className="text-[10px] font-mono text-black/60">Formatted citations & code</div>
                     </div>
                   </button>
                   <button
                     type="button"
                     onClick={exportAsText}
-                    className="w-full text-left px-2.5 py-2 rounded-xl text-xs hover:bg-black/5 dark:hover:bg-white/10 flex items-center gap-2 text-foreground cursor-pointer transition-colors mt-0.5"
+                    className="w-full text-left px-2 py-1.5 text-xs font-bold hover:bg-[#FFE600] flex items-center gap-2 text-black cursor-pointer transition-colors border border-black"
                   >
-                    <FileText className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                    <FileText className="w-4 h-4 stroke-[2.5] flex-shrink-0" />
                     <div>
-                      <div className="font-semibold">Plain Text (.txt)</div>
-                      <div className="text-[10px] text-foreground/50">Clean raw conversation log</div>
+                      <div className="font-black text-xs">PLAIN TEXT (.TXT)</div>
+                      <div className="text-[10px] font-mono text-black/60">Raw conversation dump</div>
                     </div>
                   </button>
                 </div>
@@ -377,25 +365,25 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
             <button
               type="button"
               onClick={onOpenDocuments}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20 text-xs font-medium transition-all cursor-pointer shadow-xs"
+              className="flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-[#FFE600] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 text-xs font-bold uppercase transition-all cursor-pointer rounded-none"
               title="Click to view Knowledge Base documents"
             >
-              <FileText className="w-3.5 h-3.5 text-indigo-500" />
-              <span className="font-semibold truncate max-w-[130px] sm:max-w-[200px]">
-                {activeDocumentName || `${documentCount} docs`}
+              <FileText className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span className="font-black truncate max-w-[120px] sm:max-w-[180px]">
+                {activeDocumentName || `${documentCount} DOCS`}
               </span>
-              <span className="text-[9px] font-bold uppercase px-1 rounded bg-indigo-500/20">
-                RAG Ready
+              <span className="text-[9px] font-mono font-black uppercase px-1 bg-black text-white">
+                RAG ON
               </span>
             </button>
           ) : (
             <button
               type="button"
               onClick={onOpenDocuments}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-white/40 dark:bg-white/5 hover:bg-white/60 text-foreground/70 border border-white/20 text-xs font-medium transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-neutral-100 text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] text-xs font-black uppercase transition-all cursor-pointer rounded-none"
             >
-              <Database className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Knowledge Base</span>
+              <Database className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span className="hidden sm:inline">KNOWLEDGE BASE</span>
             </button>
           )}
         </div>
@@ -409,7 +397,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
         onSelectPrompt={(prompt) => handleSend(prompt, documentCount > 0, selectedModel)}
       />
 
-      {/* Floating Glass Message Composer */}
+      {/* Brutalist Message Console */}
       <MessageInput
         onSend={handleSend}
         onStop={handleStopStream}

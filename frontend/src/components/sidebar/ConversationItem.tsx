@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { MessageSquare, MoreVertical, Trash2, Edit3, Check, X } from "lucide-react";
+import { MessageSquare, Trash2, Edit3, Check, X } from "lucide-react";
 import { Conversation } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -38,17 +38,17 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
       onMouseLeave={() => setIsHovered(false)}
       onClick={onSelect}
       className={cn(
-        "group relative flex items-center justify-between px-3 py-2.5 rounded-2xl cursor-pointer transition-all duration-150 select-none",
+        "group relative flex items-center justify-between px-2.5 py-2 cursor-pointer transition-all duration-100 select-none border-2 rounded-none",
         isActive
-          ? "bg-white/60 dark:bg-white/15 text-foreground font-semibold shadow-sm border border-white/40 dark:border-white/10"
-          : "hover:bg-white/30 dark:hover:bg-white/5 text-foreground/75 hover:text-foreground"
+          ? "bg-brutal-accent border-black text-black font-black shadow-[3px_3px_0px_0px_#000000] -translate-x-0.5 -translate-y-0.5"
+          : "bg-white border-black/30 hover:border-black text-black/85 hover:text-black hover:shadow-[2px_2px_0px_0px_#000000] hover:-translate-x-0.5"
       )}
     >
-      <div className="flex items-center gap-2.5 overflow-hidden flex-1 mr-2">
+      <div className="flex items-center gap-2 overflow-hidden flex-1 mr-2">
         <MessageSquare
           className={cn(
-            "w-4 h-4 flex-shrink-0 transition-colors",
-            isActive ? "text-indigo-600 dark:text-indigo-400" : "text-foreground/45 group-hover:text-foreground/70"
+            "w-3.5 h-3.5 flex-shrink-0 stroke-[2.5]",
+            isActive ? "text-black" : "text-black/50 group-hover:text-black"
           )}
         />
 
@@ -63,10 +63,12 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
               if (e.key === "Escape") setIsEditing(false);
             }}
             autoFocus
-            className="w-full bg-white/50 dark:bg-black/30 px-1.5 py-0.5 rounded-md text-xs focus:outline-none border border-indigo-500"
+            className="w-full bg-white px-1.5 py-0.5 text-xs font-mono font-bold focus:outline-none border-2 border-black"
           />
         ) : (
-          <span className="truncate text-xs tracking-tight">{conversation.title || "Untitled Conversation"}</span>
+          <span className="truncate text-xs font-bold tracking-tight">
+            {conversation.title || "UNTITLED SESSION"}
+          </span>
         )}
       </div>
 
@@ -76,42 +78,46 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
           <div className="flex items-center gap-1">
             <button
               onClick={handleSaveRename}
-              className="p-1 rounded-md hover:bg-emerald-500/20 text-emerald-600"
+              className="p-1 border border-black bg-white hover:bg-black hover:text-white transition-colors text-black"
+              title="Save"
             >
-              <Check className="w-3.5 h-3.5" />
+              <Check className="w-3 h-3 stroke-[3]" />
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setIsEditing(false);
               }}
-              className="p-1 rounded-md hover:bg-rose-500/20 text-rose-600"
+              className="p-1 border border-black bg-white hover:bg-red-500 hover:text-white transition-colors text-black"
+              title="Cancel"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3 h-3 stroke-[3]" />
             </button>
           </div>
         ) : (
           (isHovered || isActive) && (
-            <div className="flex items-center gap-0.5">
+            <div className="flex items-center gap-1">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsEditing(true);
                 }}
-                className="p-1 rounded-md hover:bg-black/10 dark:hover:bg-white/10 text-foreground/50 hover:text-foreground"
+                className="p-1 border border-black bg-white text-black hover:bg-black hover:text-white shadow-[1px_1px_0px_0px_#000] transition-colors"
                 title="Rename chat"
               >
-                <Edit3 className="w-3.5 h-3.5" />
+                <Edit3 className="w-3 h-3 stroke-[2.5]" />
               </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onDelete(conversation.id);
+                  if (confirm("Delete this conversation?")) {
+                    onDelete(conversation.id);
+                  }
                 }}
-                className="p-1 rounded-md hover:bg-rose-500/15 text-foreground/50 hover:text-rose-500"
+                className="p-1 border border-black bg-white text-black hover:bg-red-500 hover:text-white shadow-[1px_1px_0px_0px_#000] transition-colors"
                 title="Delete chat"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash2 className="w-3 h-3 stroke-[2.5]" />
               </button>
             </div>
           )

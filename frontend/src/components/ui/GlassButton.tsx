@@ -21,37 +21,37 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    "relative inline-flex items-center justify-center font-medium transition-all select-none focus:outline-none disabled:opacity-40 disabled:pointer-events-none";
+    "relative inline-flex items-center justify-center font-bold uppercase tracking-wider select-none focus:outline-none disabled:opacity-40 disabled:pointer-events-none rounded-none transition-all duration-100 border-2 border-black";
 
   const sizeStyles = {
-    sm: "px-3 py-1.5 text-xs rounded-xl gap-1.5",
-    md: "px-4 py-2 text-sm rounded-2xl gap-2",
-    lg: "px-6 py-3 text-base rounded-2xl gap-2.5",
-    icon: "h-9 w-9 p-0 rounded-2xl items-center justify-center",
+    sm: "px-2.5 py-1 text-xs gap-1.5 shadow-[2px_2px_0px_0px_#000000]",
+    md: "px-3.5 py-1.5 text-xs sm:text-sm gap-2 shadow-[3px_3px_0px_0px_#000000]",
+    lg: "px-5 py-2.5 text-sm sm:text-base gap-2.5 shadow-[4px_4px_0px_0px_#000000]",
+    icon: "h-9 w-9 p-0 items-center justify-center shadow-[3px_3px_0px_0px_#000000]",
   };
 
   const variantStyles = {
     primary:
-      "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] border border-white/20",
+      "bg-brutal-accent text-black font-extrabold hover:bg-brutal-accentHover hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-[1px_1px_0px_0px_#000000]",
     glass:
-      "bg-white/40 dark:bg-white/10 hover:bg-white/60 dark:hover:bg-white/15 text-foreground backdrop-blur-md border border-white/30 dark:border-white/10 shadow-sm active:scale-[0.98]",
+      "bg-white text-black hover:bg-neutral-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#000000]",
     ghost:
-      "hover:bg-black/5 dark:hover:bg-white/5 text-foreground/80 hover:text-foreground active:scale-[0.98]",
+      "bg-transparent border-transparent hover:border-black hover:bg-black/5 text-black active:translate-x-0.5 active:translate-y-0.5 shadow-none hover:shadow-[2px_2px_0px_0px_#000000]",
     danger:
-      "bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 active:scale-[0.98]",
+      "bg-red-500 text-white font-extrabold hover:bg-red-600 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-[1px_1px_0px_0px_#000000]",
   };
 
   return (
     <motion.button
-      whileTap={{ scale: disabled ? 1 : 0.96 }}
-      transition={{ type: "spring", stiffness: 450, damping: 25 }}
+      whileTap={{ scale: disabled ? 1 : 0.98 }}
+      transition={{ type: "spring", stiffness: 500, damping: 20 }}
       disabled={disabled}
       className={cn(baseStyles, sizeStyles[size], variantStyles[variant], className)}
       {...props}
     >
-      {/* Specular top highlight */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-t-[inherit]" />
       {children}
     </motion.button>
   );
 };
+
+export const BrutalButton = GlassButton;

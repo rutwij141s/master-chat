@@ -163,14 +163,12 @@ export default function AdminDashboardPage() {
     try {
       await api.updateUserRole(userId, nextRole);
       setFeedbackMessage(`User role successfully updated to ${nextRole.toUpperCase()}`);
-      // Refresh current detail modal if open
       if (selectedUserDetail && selectedUserDetail.user.id === userId) {
         setSelectedUserDetail({
           ...selectedUserDetail,
           user: { ...selectedUserDetail.user, role: nextRole },
         });
       }
-      // Refresh tables
       loadUsers();
       loadOverview();
     } catch (err: any) {
@@ -182,23 +180,25 @@ export default function AdminDashboardPage() {
 
   if (isAuthLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <RefreshCw className="w-6 h-6 animate-spin text-purple-600" />
-          <span className="text-sm font-medium text-foreground/70">Authenticating Admin Access...</span>
+      <div className="min-h-screen brutal-grid-bg flex items-center justify-center p-4">
+        <div className="border-3 border-black bg-white p-6 shadow-brutal-md flex flex-col items-center gap-3">
+          <RefreshCw className="w-8 h-8 animate-spin text-black" />
+          <span className="text-xs font-black uppercase font-mono tracking-wider">
+            AUTHENTICATING ADMIN ACCESS...
+          </span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col p-4 md:p-8 space-y-6">
+    <div className="min-h-screen brutal-grid-bg text-black flex flex-col p-4 md:p-8 space-y-6 font-sans">
       {/* Top Header Navigation */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-black/5 dark:border-white/5">
+      <header className="border-3 border-black bg-white p-4 shadow-brutal-md flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push("/")}
-            className="p-2 rounded-2xl hover:bg-black/5 dark:hover:bg-white/10 text-foreground/70 hover:text-foreground transition-colors border border-black/5 dark:border-white/10"
+            className="p-2 border-2 border-black bg-white hover:bg-black hover:text-white transition-all shadow-brutal-xs"
             title="Return to Chat"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -207,18 +207,20 @@ export default function AdminDashboardPage() {
             <img
               src="/logo.png"
               alt="MasterChat"
-              className="w-10 h-10 object-contain drop-shadow-xs"
+              className="w-10 h-10 object-contain border border-black shadow-brutal-xs bg-black"
             />
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl md:text-2xl font-bold tracking-tight">MasterChat Admin Suite</h1>
-                <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 font-semibold border border-purple-500/20">
+                <h1 className="text-xl md:text-2xl font-black uppercase tracking-tight">
+                  MasterChat Admin Suite
+                </h1>
+                <span className="inline-flex items-center gap-1 text-[10px] font-mono font-black uppercase px-2 py-0.5 border-2 border-black bg-[#ffe600] text-black shadow-brutal-xs">
                   <ShieldCheck className="w-3 h-3" />
-                  <span>Executive Telemetry</span>
+                  <span>Telemetry</span>
                 </span>
               </div>
-              <p className="text-xs text-foreground/60 mt-0.5">
-                Platform-wide financial audit, token volume, model distribution & user-level analytics • Developed by Rutwij Sudke
+              <p className="text-[11px] font-mono text-neutral-600 mt-0.5">
+                Financial audit, token volume, model distribution & user-level analytics • Rutwij Sudke
               </p>
             </div>
           </div>
@@ -227,12 +229,12 @@ export default function AdminDashboardPage() {
         {/* Global Action & Filter Controls */}
         <div className="flex items-center gap-2 flex-wrap">
           {/* Timeframe Filter Pills */}
-          <div className="flex items-center bg-black/5 dark:bg-white/5 p-1 rounded-2xl border border-black/5 dark:border-white/10 text-xs">
+          <div className="flex items-center border-2 border-black bg-neutral-100 p-0.5 shadow-brutal-xs text-xs font-mono font-bold uppercase">
             <button
               onClick={() => setTimeframeDays(1)}
               className={cn(
-                "px-2.5 py-1 rounded-xl transition-all font-medium",
-                timeframeDays === 1 ? "bg-white dark:bg-white/20 shadow-sm text-foreground" : "text-foreground/60 hover:text-foreground"
+                "px-2.5 py-1 transition-all",
+                timeframeDays === 1 ? "bg-black text-white" : "text-black hover:bg-neutral-200"
               )}
             >
               24h
@@ -240,8 +242,8 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => setTimeframeDays(7)}
               className={cn(
-                "px-2.5 py-1 rounded-xl transition-all font-medium",
-                timeframeDays === 7 ? "bg-white dark:bg-white/20 shadow-sm text-foreground" : "text-foreground/60 hover:text-foreground"
+                "px-2.5 py-1 transition-all",
+                timeframeDays === 7 ? "bg-black text-white" : "text-black hover:bg-neutral-200"
               )}
             >
               7d
@@ -249,8 +251,8 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => setTimeframeDays(30)}
               className={cn(
-                "px-2.5 py-1 rounded-xl transition-all font-medium",
-                timeframeDays === 30 ? "bg-white dark:bg-white/20 shadow-sm text-foreground" : "text-foreground/60 hover:text-foreground"
+                "px-2.5 py-1 transition-all",
+                timeframeDays === 30 ? "bg-black text-white" : "text-black hover:bg-neutral-200"
               )}
             >
               30d
@@ -258,8 +260,8 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => setTimeframeDays(undefined)}
               className={cn(
-                "px-2.5 py-1 rounded-xl transition-all font-medium",
-                timeframeDays === undefined ? "bg-white dark:bg-white/20 shadow-sm text-foreground" : "text-foreground/60 hover:text-foreground"
+                "px-2.5 py-1 transition-all",
+                timeframeDays === undefined ? "bg-black text-white" : "text-black hover:bg-neutral-200"
               )}
             >
               All Time
@@ -267,53 +269,52 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Theme Palette Button */}
-          <GlassButton
-            variant="secondary"
-            size="sm"
+          <button
             onClick={() => setIsThemeModalOpen(true)}
-            className="flex items-center gap-1.5"
-            title="Choose Theme (10 Liquid Glass Themes)"
+            className="flex items-center gap-1.5 px-3 py-1.5 border-2 border-black bg-white hover:bg-[#ffe600] text-xs font-black uppercase font-mono shadow-brutal-xs transition-all"
+            title="Choose Brutalist Theme"
           >
-            <Palette className="w-3.5 h-3.5 text-purple-500" />
+            <Palette className="w-3.5 h-3.5" />
             <span>Themes</span>
-          </GlassButton>
+          </button>
 
           {/* Refresh Button */}
-          <GlassButton
-            variant="secondary"
-            size="sm"
+          <button
             onClick={() => {
               loadOverview();
               loadUsers();
             }}
             disabled={isLoadingOverview || isLoadingUsers}
-            className="flex items-center gap-1.5"
+            className="flex items-center gap-1.5 px-3 py-1.5 border-2 border-black bg-black text-white hover:bg-neutral-800 disabled:opacity-50 text-xs font-black uppercase font-mono shadow-brutal-xs transition-all"
           >
             <RefreshCw className={cn("w-3.5 h-3.5", (isLoadingOverview || isLoadingUsers) && "animate-spin")} />
             <span>Refresh</span>
-          </GlassButton>
+          </button>
         </div>
       </header>
 
       {/* User Privacy Guarantee Alert */}
-      <GlassCard
-        variant="surface"
-        className="p-3.5 border-emerald-500/30 bg-emerald-500/5 dark:bg-emerald-500/10 rounded-2xl flex items-start gap-3"
-      >
-        <Lock className="w-4 h-4 text-emerald-600 dark:text-emerald-400 mt-0.5 shrink-0" />
-        <div className="text-xs leading-relaxed text-foreground/80">
-          <strong className="text-emerald-700 dark:text-emerald-300 font-semibold">Strict Privacy Shield Active:</strong>{" "}
-          Administrators can monitor aggregate financial expenses, model token distributions, and user-level consumption statistics.
-          <span className="font-semibold text-foreground"> In accordance with privacy policy, users&apos; private chat messages, conversation contents, and document texts are strictly isolated and non-accessible to administrators.</span>
+      <div className="border-3 border-black bg-[#22c55e]/15 p-4 shadow-brutal-sm flex items-start gap-3 text-xs leading-relaxed font-mono">
+        <div className="w-6 h-6 border-2 border-black bg-black text-[#22c55e] flex items-center justify-center shrink-0 shadow-brutal-xs mt-0.5">
+          <Lock className="w-3.5 h-3.5" />
         </div>
-      </GlassCard>
+        <div className="text-black">
+          <strong className="font-black uppercase tracking-wider bg-black text-white px-1 py-0.5 mr-1.5">
+            Privacy Shield Active:
+          </strong>
+          Administrators can monitor aggregate financial expenses, model token distributions, and user-level consumption statistics.
+          <span className="font-bold underline ml-1">
+            In accordance with privacy policy, users&apos; private chat messages, conversation contents, and document texts are strictly isolated and non-accessible to administrators.
+          </span>
+        </div>
+      </div>
 
       {/* Feedback banner */}
       {feedbackMessage && (
-        <div className="flex items-center justify-between p-3 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-xs text-purple-800 dark:text-purple-300">
+        <div className="flex items-center justify-between p-3 border-2 border-black bg-[#ffe600] shadow-brutal-xs text-xs font-mono font-bold uppercase text-black">
           <span>{feedbackMessage}</span>
-          <button onClick={() => setFeedbackMessage(null)} className="p-1 hover:opacity-75">
-            <X className="w-3.5 h-3.5" />
+          <button onClick={() => setFeedbackMessage(null)} className="p-1 hover:bg-black hover:text-white transition-all">
+            <X className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -321,204 +322,223 @@ export default function AdminDashboardPage() {
       {/* 4 Executive KPI Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1: Estimated Dollar Cost */}
-        <GlassCard variant="surface" className="p-4 rounded-3xl relative overflow-hidden border border-black/5 dark:border-white/10 shadow-lg">
+        <div className="border-3 border-black bg-white p-4 shadow-brutal-md relative">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-foreground/60 uppercase tracking-wider">Total Platform Spend</span>
-            <div className="w-8 h-8 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-emerald-600">
-              <DollarSign className="w-4 h-4" />
+            <span className="text-xs font-black uppercase tracking-wider font-mono text-neutral-600">Total Platform Spend</span>
+            <div className="w-8 h-8 border-2 border-black bg-[#22c55e] text-black flex items-center justify-center shadow-brutal-xs">
+              <DollarSign className="w-4 h-4 stroke-[3]" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-bold tracking-tight font-mono text-emerald-600 dark:text-emerald-400">
+            <div className="text-3xl font-black tracking-tight font-mono text-black">
               ${overview ? overview.total_cost.toFixed(4) : "0.0000"}
             </div>
-            <div className="text-[11px] text-foreground/50 mt-1 flex items-center gap-1">
+            <div className="text-[11px] font-mono text-neutral-600 mt-1 flex items-center gap-1">
               <span>Avg per query:</span>
-              <span className="font-mono font-medium text-foreground/70">
+              <span className="font-bold text-black">
                 ${overview && overview.total_requests > 0 ? (overview.total_cost / overview.total_requests).toFixed(4) : "0.0000"}
               </span>
             </div>
           </div>
-        </GlassCard>
+        </div>
 
         {/* KPI 2: Total Tokens Processed */}
-        <GlassCard variant="surface" className="p-4 rounded-3xl relative overflow-hidden border border-black/5 dark:border-white/10 shadow-lg">
+        <div className="border-3 border-black bg-white p-4 shadow-brutal-md relative">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-foreground/60 uppercase tracking-wider">Tokens Processed</span>
-            <div className="w-8 h-8 rounded-2xl bg-indigo-500/15 flex items-center justify-center text-indigo-600">
-              <Cpu className="w-4 h-4" />
+            <span className="text-xs font-black uppercase tracking-wider font-mono text-neutral-600">Tokens Processed</span>
+            <div className="w-8 h-8 border-2 border-black bg-[#00f0ff] text-black flex items-center justify-center shadow-brutal-xs">
+              <Cpu className="w-4 h-4 stroke-[3]" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-bold tracking-tight font-mono">
+            <div className="text-3xl font-black tracking-tight font-mono text-black">
               {overview ? overview.total_tokens.toLocaleString() : "0"}
             </div>
-            <div className="text-[11px] text-foreground/50 mt-1 flex items-center gap-1.5 font-mono">
-              <span className="text-indigo-600 dark:text-indigo-400 font-medium">{overview ? overview.prompt_tokens.toLocaleString() : "0"} prompt</span>
+            <div className="text-[11px] font-mono text-neutral-600 mt-1 flex items-center gap-1.5">
+              <span>{overview ? overview.prompt_tokens.toLocaleString() : "0"} p</span>
               <span>/</span>
-              <span className="text-purple-600 dark:text-purple-400 font-medium">{overview ? overview.completion_tokens.toLocaleString() : "0"} compl</span>
+              <span>{overview ? overview.completion_tokens.toLocaleString() : "0"} c</span>
             </div>
           </div>
-        </GlassCard>
+        </div>
 
         {/* KPI 3: Total API Invocations */}
-        <GlassCard variant="surface" className="p-4 rounded-3xl relative overflow-hidden border border-black/5 dark:border-white/10 shadow-lg">
+        <div className="border-3 border-black bg-white p-4 shadow-brutal-md relative">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-foreground/60 uppercase tracking-wider">Total Invocations</span>
-            <div className="w-8 h-8 rounded-2xl bg-amber-500/15 flex items-center justify-center text-amber-600">
-              <Activity className="w-4 h-4" />
+            <span className="text-xs font-black uppercase tracking-wider font-mono text-neutral-600">Total Invocations</span>
+            <div className="w-8 h-8 border-2 border-black bg-[#ffe600] text-black flex items-center justify-center shadow-brutal-xs">
+              <Activity className="w-4 h-4 stroke-[3]" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-bold tracking-tight font-mono">
+            <div className="text-3xl font-black tracking-tight font-mono text-black">
               {overview ? overview.total_requests.toLocaleString() : "0"}
             </div>
-            <div className="text-[11px] text-foreground/50 mt-1 flex items-center gap-1">
-              <span>Models active:</span>
-              <span className="font-semibold text-foreground/80">{overview ? overview.model_breakdown.length : 0} models</span>
+            <div className="text-[11px] font-mono text-neutral-600 mt-1 flex items-center gap-1">
+              <span>Active engines:</span>
+              <span className="font-bold text-black">{overview ? overview.model_breakdown.length : 0} models</span>
             </div>
           </div>
-        </GlassCard>
+        </div>
 
         {/* KPI 4: User Accounts & Engagement */}
-        <GlassCard variant="surface" className="p-4 rounded-3xl relative overflow-hidden border border-black/5 dark:border-white/10 shadow-lg">
+        <div className="border-3 border-black bg-white p-4 shadow-brutal-md relative">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-foreground/60 uppercase tracking-wider">Platform Accounts</span>
-            <div className="w-8 h-8 rounded-2xl bg-purple-500/15 flex items-center justify-center text-purple-600">
-              <Users className="w-4 h-4" />
+            <span className="text-xs font-black uppercase tracking-wider font-mono text-neutral-600">Platform Accounts</span>
+            <div className="w-8 h-8 border-2 border-black bg-[#ff0055] text-white flex items-center justify-center shadow-brutal-xs">
+              <Users className="w-4 h-4 stroke-[3]" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-bold tracking-tight font-mono">
+            <div className="text-3xl font-black tracking-tight font-mono text-black">
               {overview ? overview.total_users.toLocaleString() : "0"}
             </div>
-            <div className="text-[11px] text-foreground/50 mt-1 flex items-center gap-1.5">
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{overview ? overview.active_users_30d : 0} active (30d)</span>
+            <div className="text-[11px] font-mono text-neutral-600 mt-1 flex items-center gap-1.5">
+              <span className="font-bold text-black">{overview ? overview.active_users_30d : 0} active (30d)</span>
               <span>•</span>
               <span>{overview ? overview.total_documents : 0} docs</span>
             </div>
           </div>
-        </GlassCard>
+        </div>
       </div>
 
       {/* Model Distribution & Daily Telemetry Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Model Breakdown (2 Cols) */}
-        <GlassCard variant="surface" className="p-5 rounded-3xl border border-black/5 dark:border-white/10 lg:col-span-2 shadow-lg">
-          <div className="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/5">
+        <div className="border-3 border-black bg-white p-5 shadow-brutal-md lg:col-span-2">
+          <div className="flex items-center justify-between pb-3 border-b-2 border-black">
             <div>
-              <h2 className="text-sm font-bold tracking-tight">AI Model Expense & Token Distribution</h2>
-              <p className="text-[11px] text-foreground/50">Volume breakdown by underlying LLM inference provider</p>
+              <h2 className="text-sm font-black uppercase tracking-tight font-mono">
+                AI Model Expense & Token Distribution
+              </h2>
+              <p className="text-[11px] font-mono text-neutral-600">Volume breakdown by underlying LLM inference provider</p>
             </div>
-            <span className="text-xs font-mono font-medium text-foreground/60">
+            <span className="border-2 border-black bg-black text-white text-[10px] font-mono font-black uppercase px-2 py-0.5 shadow-brutal-xs">
               {overview ? overview.model_breakdown.length : 0} Models Active
             </span>
           </div>
 
-          <div className="mt-4 space-y-3.5">
+          <div className="mt-4 space-y-3">
             {overview && overview.model_breakdown.length > 0 ? (
               overview.model_breakdown.map((m) => {
                 const isAnthropic = m.model.includes("claude");
                 const isDebate = m.model.toLowerCase().includes("debate");
+                const isXai = m.model.toLowerCase().includes("grok");
+                const isGemini = m.model.toLowerCase().includes("gemini");
+                const isPerplexity = m.model.toLowerCase().includes("sonar") || m.model.toLowerCase().includes("perplexity");
+                
+                let providerBadge = "OpenAI";
+                let badgeColor = "bg-neutral-200 text-black";
+                if (isDebate) {
+                  providerBadge = "Council";
+                  badgeColor = "bg-[#ffe600] text-black";
+                } else if (isAnthropic) {
+                  providerBadge = "Anthropic";
+                  badgeColor = "bg-[#ff9900] text-black";
+                } else if (isXai) {
+                  providerBadge = "xAI";
+                  badgeColor = "bg-black text-white";
+                } else if (isGemini) {
+                  providerBadge = "Gemini";
+                  badgeColor = "bg-[#00f0ff] text-black";
+                } else if (isPerplexity) {
+                  providerBadge = "Perplexity";
+                  badgeColor = "bg-[#22c55e] text-black";
+                }
+
                 return (
-                  <div key={m.model} className="p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 space-y-2">
+                  <div key={m.model} className="p-3 border-2 border-black bg-neutral-50 shadow-brutal-xs space-y-2">
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-semibold text-foreground/90">{m.model}</span>
-                        <span
-                          className={cn(
-                            "text-[9px] px-1.5 py-0.5 rounded-md font-medium",
-                            isDebate
-                              ? "bg-purple-500/15 text-purple-700 dark:text-purple-300"
-                              : isAnthropic
-                              ? "bg-amber-500/15 text-amber-700 dark:text-amber-300"
-                              : "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"
-                          )}
-                        >
-                          {isDebate ? "Council" : isAnthropic ? "Anthropic" : "OpenAI"}
+                        <span className="font-mono font-black text-black">{m.model}</span>
+                        <span className={cn("border border-black text-[9px] px-1.5 py-0.5 font-mono font-black uppercase", badgeColor)}>
+                          {providerBadge}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 font-mono text-xs">
-                        <span className="text-foreground/60">{m.requests} calls</span>
-                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">${m.estimated_cost.toFixed(4)}</span>
-                        <span className="text-[10px] text-foreground/45">({m.cost_percentage || 0}%)</span>
+                        <span className="text-neutral-600">{m.requests} calls</span>
+                        <span className="font-black text-black">${m.estimated_cost.toFixed(4)}</span>
+                        <span className="text-[10px] font-bold text-neutral-500">({m.cost_percentage || 0}%)</span>
                       </div>
                     </div>
 
                     {/* Progress Bar */}
-                    <div className="w-full h-1.5 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
+                    <div className="w-full h-2.5 border-2 border-black bg-white p-0.5 overflow-hidden">
                       <div
-                        className={cn(
-                          "h-full rounded-full transition-all duration-500",
-                          isDebate ? "bg-purple-500" : isAnthropic ? "bg-amber-500" : "bg-emerald-500"
-                        )}
+                        className="h-full bg-black transition-all duration-300"
                         style={{ width: `${Math.max(m.cost_percentage || 0, 3)}%` }}
                       />
                     </div>
 
-                    <div className="flex items-center justify-between text-[10px] text-foreground/50 font-mono">
-                      <span>Tokens: {m.total_tokens.toLocaleString()} ({m.prompt_tokens.toLocaleString()} prompt / {m.completion_tokens.toLocaleString()} compl)</span>
+                    <div className="flex items-center justify-between text-[10px] text-neutral-600 font-mono">
+                      <span>Tokens: {m.total_tokens.toLocaleString()} ({m.prompt_tokens.toLocaleString()} p / {m.completion_tokens.toLocaleString()} c)</span>
                     </div>
                   </div>
                 );
               })
             ) : (
-              <div className="p-8 text-center text-xs text-foreground/40">No model usage recorded for this timeframe.</div>
+              <div className="p-8 text-center text-xs font-mono text-neutral-500 border-2 border-dashed border-black/20">
+                No model usage recorded for this timeframe.
+              </div>
             )}
           </div>
-        </GlassCard>
+        </div>
 
         {/* Daily Velocity & Trends (1 Col) */}
-        <GlassCard variant="surface" className="p-5 rounded-3xl border border-black/5 dark:border-white/10 shadow-lg flex flex-col">
-          <div className="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/5">
+        <div className="border-3 border-black bg-white p-5 shadow-brutal-md flex flex-col">
+          <div className="flex items-center justify-between pb-3 border-b-2 border-black">
             <div>
-              <h2 className="text-sm font-bold tracking-tight">Daily Volume & Velocity</h2>
-              <p className="text-[11px] text-foreground/50">Recent daily platform throughput</p>
+              <h2 className="text-sm font-black uppercase tracking-tight font-mono">Daily Velocity</h2>
+              <p className="text-[11px] font-mono text-neutral-600">Platform daily throughput</p>
             </div>
-            <TrendingUp className="w-4 h-4 text-indigo-500" />
+            <TrendingUp className="w-4 h-4 text-black stroke-[3]" />
           </div>
 
           <div className="mt-4 flex-1 overflow-y-auto space-y-2 pr-1 max-h-[340px]">
             {overview && overview.daily_trends.length > 0 ? (
               overview.daily_trends.map((t) => (
-                <div key={t.date} className="flex items-center justify-between p-2.5 rounded-xl bg-black/5 dark:bg-white/5 text-xs">
+                <div key={t.date} className="flex items-center justify-between p-2.5 border-2 border-black bg-white shadow-brutal-xs text-xs font-mono">
                   <div>
-                    <span className="font-medium text-foreground/80">{t.date}</span>
-                    <div className="text-[10px] text-foreground/50">{t.requests} requests • {t.tokens.toLocaleString()} tokens</div>
+                    <span className="font-black text-black">{t.date}</span>
+                    <div className="text-[10px] text-neutral-600">{t.requests} requests • {t.tokens.toLocaleString()} tokens</div>
                   </div>
-                  <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                  <span className="font-black text-black">
                     ${t.cost.toFixed(4)}
                   </span>
                 </div>
               ))
             ) : (
-              <div className="p-8 text-center text-xs text-foreground/40">No daily telemetry records found.</div>
+              <div className="p-8 text-center text-xs font-mono text-neutral-500 border-2 border-dashed border-black/20">
+                No daily telemetry records found.
+              </div>
             )}
           </div>
-        </GlassCard>
+        </div>
       </div>
 
       {/* User-Level Detailed Analytics Table */}
-      <GlassCard variant="surface" className="p-5 rounded-3xl border border-black/5 dark:border-white/10 shadow-lg space-y-4">
+      <div className="border-3 border-black bg-white p-5 shadow-brutal-md space-y-4">
         {/* Table Filter Controls */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-black/5 dark:border-white/5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b-2 border-black">
           <div>
-            <h2 className="text-sm font-bold tracking-tight">User Account Analytics & Consumption Audit</h2>
-            <p className="text-[11px] text-foreground/50">
-              Aggregated per-user financial spend and token throughput. Conversations and messages remain encrypted.
+            <h2 className="text-sm font-black uppercase tracking-tight font-mono">
+              User Account Analytics & Consumption Audit
+            </h2>
+            <p className="text-[11px] font-mono text-neutral-600">
+              Per-user financial spend and token throughput. Conversations and messages remain encrypted.
             </p>
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
             {/* Search Input */}
             <div className="relative">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/45 pointer-events-none" />
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search email or name..."
-                className="pl-8 pr-3 py-1.5 rounded-xl text-xs bg-white/40 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:outline-none focus:border-purple-500/50 text-foreground placeholder:text-foreground/40 w-48 sm:w-60"
+                className="pl-8 pr-3 py-1.5 border-2 border-black bg-white text-xs font-mono shadow-brutal-xs focus:outline-none w-48 sm:w-60 text-black placeholder:text-neutral-400"
               />
             </div>
 
@@ -526,7 +546,7 @@ export default function AdminDashboardPage() {
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="py-1.5 px-2.5 rounded-xl text-xs bg-white/40 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:outline-none text-foreground"
+              className="py-1.5 px-2.5 border-2 border-black bg-white text-xs font-mono font-bold uppercase shadow-brutal-xs focus:outline-none cursor-pointer text-black"
             >
               <option value="all">All Roles</option>
               <option value="admin">Admins Only</option>
@@ -537,7 +557,7 @@ export default function AdminDashboardPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="py-1.5 px-2.5 rounded-xl text-xs bg-white/40 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:outline-none text-foreground"
+              className="py-1.5 px-2.5 border-2 border-black bg-white text-xs font-mono font-bold uppercase shadow-brutal-xs focus:outline-none cursor-pointer text-black"
             >
               <option value="cost">Highest Spend ($)</option>
               <option value="tokens">Most Tokens</option>
@@ -548,10 +568,10 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Table Content */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto border-2 border-black">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-black/5 dark:border-white/5 text-[11px] text-foreground/50 uppercase tracking-wider font-semibold">
+              <tr className="bg-black text-white text-[11px] font-mono font-black uppercase tracking-wider">
                 <th className="py-2.5 px-3">User Account</th>
                 <th className="py-2.5 px-3">Role</th>
                 <th className="py-2.5 px-3">Invocations</th>
@@ -562,21 +582,21 @@ export default function AdminDashboardPage() {
                 <th className="py-2.5 px-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-black/5 dark:divide-white/5">
+            <tbody className="divide-y-2 divide-black bg-white font-mono">
               {usersData && usersData.users.length > 0 ? (
                 usersData.users.map((u) => {
                   const isAdmin = u.role === "admin";
                   return (
-                    <tr key={u.id} className="hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                    <tr key={u.id} className="hover:bg-neutral-100 transition-colors">
                       {/* User Account */}
                       <td className="py-3 px-3">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 text-white flex items-center justify-center font-bold text-xs uppercase shadow-sm">
+                          <div className="w-7 h-7 border-2 border-black bg-black text-white flex items-center justify-center font-black text-xs uppercase shadow-brutal-xs">
                             {u.email.charAt(0)}
                           </div>
                           <div>
-                            <div className="font-semibold text-foreground/90">{u.full_name || "MasterChat User"}</div>
-                            <div className="text-[11px] text-foreground/50 font-mono">{u.email}</div>
+                            <div className="font-bold text-black font-sans">{u.full_name || "MasterChat User"}</div>
+                            <div className="text-[11px] text-neutral-600 font-mono">{u.email}</div>
                           </div>
                         </div>
                       </td>
@@ -585,10 +605,10 @@ export default function AdminDashboardPage() {
                       <td className="py-3 px-3">
                         <span
                           className={cn(
-                            "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border",
+                            "inline-flex items-center gap-1 px-2 py-0.5 border-2 border-black text-[10px] font-mono font-black uppercase shadow-brutal-xs",
                             isAdmin
-                              ? "bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30"
-                              : "bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/20"
+                              ? "bg-[#ffe600] text-black"
+                              : "bg-white text-black"
                           )}
                         >
                           {isAdmin ? <ShieldCheck className="w-2.5 h-2.5" /> : null}
@@ -597,57 +617,55 @@ export default function AdminDashboardPage() {
                       </td>
 
                       {/* Invocations */}
-                      <td className="py-3 px-3 font-mono font-medium">{u.total_requests.toLocaleString()}</td>
+                      <td className="py-3 px-3 font-mono font-bold">{u.total_requests.toLocaleString()}</td>
 
                       {/* Tokens */}
                       <td className="py-3 px-3">
-                        <div className="font-mono font-semibold">{u.total_tokens.toLocaleString()}</div>
-                        <div className="text-[10px] text-foreground/45 font-mono">
+                        <div className="font-mono font-black">{u.total_tokens.toLocaleString()}</div>
+                        <div className="text-[10px] text-neutral-500 font-mono">
                           {u.prompt_tokens.toLocaleString()}p / {u.completion_tokens.toLocaleString()}c
                         </div>
                       </td>
 
                       {/* Estimated Cost */}
-                      <td className="py-3 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                      <td className="py-3 px-3 font-mono font-black text-black">
                         ${u.total_estimated_cost.toFixed(4)}
                       </td>
 
                       {/* Top Model */}
-                      <td className="py-3 px-3 font-mono text-[11px] text-foreground/70">
+                      <td className="py-3 px-3 font-mono text-[11px] text-neutral-700">
                         {u.top_model || "—"}
                       </td>
 
-                      {/* Activity Counts (Count only, NO private messages) */}
-                      <td className="py-3 px-3 text-foreground/60">
-                        <span className="font-medium text-foreground/80">{u.total_conversations}</span> chats •{" "}
-                        <span className="font-medium text-foreground/80">{u.total_documents}</span> docs
+                      {/* Activity Counts */}
+                      <td className="py-3 px-3 text-neutral-700">
+                        <span className="font-bold text-black">{u.total_conversations}</span> chats •{" "}
+                        <span className="font-bold text-black">{u.total_documents}</span> docs
                       </td>
 
                       {/* Actions */}
                       <td className="py-3 px-3 text-right">
-                        <GlassButton
-                          variant="secondary"
-                          size="sm"
+                        <button
                           onClick={() => handleOpenUserDetail(u.id)}
-                          className="text-[11px] py-1 px-2.5"
+                          className="px-2.5 py-1 border-2 border-black bg-white hover:bg-black hover:text-white text-[11px] font-black uppercase font-mono shadow-brutal-xs transition-all"
                         >
-                          Inspect Usage
-                        </GlassButton>
+                          Inspect
+                        </button>
                       </td>
                     </tr>
                   );
                 })
               ) : (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-xs text-foreground/40">
-                    {isLoadingUsers ? "Loading user telemetry..." : "No user accounts match current search/filters."}
+                  <td colSpan={8} className="py-8 text-center text-xs font-mono text-neutral-500">
+                    {isLoadingUsers ? "LOADING USER TELEMETRY..." : "NO USER ACCOUNTS MATCH CURRENT SEARCH/FILTERS."}
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
-      </GlassCard>
+      </div>
 
       {/* User Detail & Audit Modal */}
       <GlassModal
@@ -658,21 +676,23 @@ export default function AdminDashboardPage() {
       >
         {isLoadingDetail || !selectedUserDetail ? (
           <div className="p-8 flex flex-col items-center justify-center gap-3">
-            <RefreshCw className="w-5 h-5 animate-spin text-purple-600" />
-            <span className="text-xs text-foreground/60">Retrieving user telemetry audit...</span>
+            <RefreshCw className="w-6 h-6 animate-spin text-black" />
+            <span className="text-xs font-mono font-bold uppercase text-neutral-600">
+              Retrieving user telemetry audit...
+            </span>
           </div>
         ) : (
           <div className="space-y-4">
             {/* User Profile Bar */}
-            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5">
+            <div className="flex items-center justify-between p-3.5 border-2 border-black bg-neutral-50 shadow-brutal-xs">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-500 text-white flex items-center justify-center font-bold text-sm shadow-sm uppercase">
+                <div className="w-10 h-10 border-2 border-black bg-black text-white flex items-center justify-center font-black text-sm uppercase shadow-brutal-xs">
                   {selectedUserDetail.user.email.charAt(0)}
                 </div>
                 <div>
-                  <div className="font-bold text-sm text-foreground">{selectedUserDetail.user.full_name || "MasterChat User"}</div>
-                  <div className="text-xs text-foreground/60 font-mono">{selectedUserDetail.user.email}</div>
-                  <div className="text-[10px] text-foreground/40 font-mono mt-0.5">ID: {selectedUserDetail.user.id}</div>
+                  <div className="font-black text-sm text-black">{selectedUserDetail.user.full_name || "MasterChat User"}</div>
+                  <div className="text-xs text-neutral-600 font-mono">{selectedUserDetail.user.email}</div>
+                  <div className="text-[10px] text-neutral-400 font-mono mt-0.5">ID: {selectedUserDetail.user.id}</div>
                 </div>
               </div>
 
@@ -681,10 +701,10 @@ export default function AdminDashboardPage() {
                 onClick={() => handleToggleRole(selectedUserDetail.user.id, selectedUserDetail.user.role)}
                 disabled={roleUpdatingId === selectedUserDetail.user.id}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border",
+                  "flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-xs font-mono font-black uppercase transition-all shadow-brutal-xs",
                   selectedUserDetail.user.role === "admin"
-                    ? "bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30 hover:bg-rose-500/15 hover:text-rose-700"
-                    : "bg-black/5 dark:bg-white/10 text-foreground/80 hover:bg-purple-500/15 hover:text-purple-700 border-black/10 dark:border-white/10"
+                    ? "bg-[#ffe600] text-black hover:bg-rose-500 hover:text-white"
+                    : "bg-white text-black hover:bg-black hover:text-white"
                 )}
                 title="Toggle administrator privileges"
               >
@@ -703,7 +723,7 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Privacy Shield Notice in Modal */}
-            <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-800 dark:text-emerald-300 flex items-start gap-2">
+            <div className="p-3 border-2 border-black bg-[#22c55e]/15 text-xs font-mono text-black flex items-start gap-2 shadow-brutal-xs">
               <Lock className="w-4 h-4 shrink-0 mt-0.5" />
               <span>
                 <strong>Privacy Shield:</strong> User conversations, message contents, and ingested document text are strictly confidential and excluded from administrator inspection.
@@ -712,21 +732,21 @@ export default function AdminDashboardPage() {
 
             {/* Usage Summary Metric Badges */}
             <div className="grid grid-cols-3 gap-2.5 text-center">
-              <div className="p-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5">
-                <div className="text-[10px] text-foreground/50 uppercase font-semibold">Total Spend</div>
-                <div className="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-0.5">
+              <div className="p-2.5 border-2 border-black bg-white shadow-brutal-xs">
+                <div className="text-[10px] text-neutral-600 uppercase font-black font-mono">Total Spend</div>
+                <div className="text-base font-black font-mono text-black mt-0.5">
                   ${selectedUserDetail.user.total_estimated_cost.toFixed(4)}
                 </div>
               </div>
-              <div className="p-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5">
-                <div className="text-[10px] text-foreground/50 uppercase font-semibold">Total Tokens</div>
-                <div className="text-base font-bold font-mono mt-0.5">
+              <div className="p-2.5 border-2 border-black bg-white shadow-brutal-xs">
+                <div className="text-[10px] text-neutral-600 uppercase font-black font-mono">Total Tokens</div>
+                <div className="text-base font-black font-mono text-black mt-0.5">
                   {selectedUserDetail.user.total_tokens.toLocaleString()}
                 </div>
               </div>
-              <div className="p-2.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5">
-                <div className="text-[10px] text-foreground/50 uppercase font-semibold">Invocations</div>
-                <div className="text-base font-bold font-mono mt-0.5">
+              <div className="p-2.5 border-2 border-black bg-white shadow-brutal-xs">
+                <div className="text-[10px] text-neutral-600 uppercase font-black font-mono">Invocations</div>
+                <div className="text-base font-black font-mono text-black mt-0.5">
                   {selectedUserDetail.user.total_requests.toLocaleString()}
                 </div>
               </div>
@@ -734,14 +754,16 @@ export default function AdminDashboardPage() {
 
             {/* Per-Model Breakdown */}
             <div>
-              <h3 className="text-xs font-bold uppercase text-foreground/60 tracking-wider mb-2">Model Consumption</h3>
+              <h3 className="text-xs font-black uppercase text-black font-mono tracking-wider mb-2 border-b-2 border-black pb-1">
+                Model Consumption
+              </h3>
               <div className="space-y-1.5">
                 {selectedUserDetail.model_breakdown.map((mb) => (
-                  <div key={mb.model} className="flex items-center justify-between p-2 rounded-xl bg-black/5 dark:bg-white/5 text-xs font-mono">
-                    <span className="font-semibold text-foreground/80">{mb.model}</span>
+                  <div key={mb.model} className="flex items-center justify-between p-2 border-2 border-black bg-white shadow-brutal-xs text-xs font-mono">
+                    <span className="font-black text-black">{mb.model}</span>
                     <div className="flex items-center gap-3">
-                      <span className="text-foreground/50">{mb.requests} calls ({mb.total_tokens.toLocaleString()} tokens)</span>
-                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">${mb.estimated_cost.toFixed(4)}</span>
+                      <span className="text-neutral-600">{mb.requests} calls ({mb.total_tokens.toLocaleString()} tokens)</span>
+                      <span className="font-black text-black">${mb.estimated_cost.toFixed(4)}</span>
                     </div>
                   </div>
                 ))}
@@ -750,23 +772,27 @@ export default function AdminDashboardPage() {
 
             {/* Recent API Invocations Log (Excludes message texts) */}
             <div>
-              <h3 className="text-xs font-bold uppercase text-foreground/60 tracking-wider mb-2">Recent API Invocations</h3>
-              <div className="max-h-48 overflow-y-auto space-y-1 pr-1">
+              <h3 className="text-xs font-black uppercase text-black font-mono tracking-wider mb-2 border-b-2 border-black pb-1">
+                Recent API Invocations
+              </h3>
+              <div className="max-h-48 overflow-y-auto space-y-1.5 pr-1">
                 {selectedUserDetail.recent_logs.length > 0 ? (
                   selectedUserDetail.recent_logs.map((log) => (
-                    <div key={log.id} className="flex items-center justify-between p-2 rounded-xl bg-black/5 dark:bg-white/5 text-[11px] font-mono">
+                    <div key={log.id} className="flex items-center justify-between p-2 border-2 border-black bg-neutral-50 text-[11px] font-mono shadow-brutal-xs">
                       <div>
-                        <span className="font-semibold text-foreground/80">{log.model}</span>
-                        <span className="text-foreground/40 ml-2">{new Date(log.created_at).toLocaleString()}</span>
+                        <span className="font-black text-black">{log.model}</span>
+                        <span className="text-neutral-500 ml-2">{new Date(log.created_at).toLocaleString()}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-foreground/50">{log.total_tokens.toLocaleString()} tok</span>
-                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">${log.estimated_cost.toFixed(4)}</span>
+                        <span className="text-neutral-600">{log.total_tokens.toLocaleString()} tok</span>
+                        <span className="font-black text-black">${log.estimated_cost.toFixed(4)}</span>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="p-4 text-center text-xs text-foreground/40">No usage logs available.</div>
+                  <div className="p-4 text-center text-xs font-mono text-neutral-500 border-2 border-dashed border-black/20">
+                    No usage logs available.
+                  </div>
                 )}
               </div>
             </div>

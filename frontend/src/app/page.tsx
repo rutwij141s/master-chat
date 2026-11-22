@@ -109,15 +109,11 @@ export default function ChatPage() {
     conversations.find((c) => c.id === activeConversationId) || null;
 
   return (
-    <main className="relative flex h-screen w-screen overflow-hidden">
-      {/* Liquid Mesh Background Orbs */}
-      <div className="liquid-mesh-bg">
-        <div className="mesh-blob-1" />
-        <div className="mesh-blob-2" />
-        <div className="mesh-blob-3" />
-      </div>
+    <main className="relative flex h-screen w-screen overflow-hidden bg-background">
+      {/* Neo-Brutalist Architecture Grid */}
+      <div className="brutal-grid-bg" />
 
-      {/* Glass Sidebar */}
+      {/* Brutalist Sidebar */}
       <Sidebar
         conversations={conversations}
         activeConversationId={activeConversationId}
@@ -130,7 +126,7 @@ export default function ChatPage() {
         onLogout={handleLogout}
       />
 
-      {/* Main Glass Chat Stage */}
+      {/* Main Stage */}
       <div className="relative z-10 flex-1 flex flex-col h-full overflow-hidden p-2 sm:p-3 pl-0 sm:pl-0">
         <ChatContainer
           activeConversation={activeConversation}

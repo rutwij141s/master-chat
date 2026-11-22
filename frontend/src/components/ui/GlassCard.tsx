@@ -19,39 +19,32 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   ...props
 }) => {
   const variantStyles = {
-    surface: "liquid-glass",
-    subtle: "liquid-glass-subtle rounded-2xl",
-    floating: "liquid-glass shadow-2xl hover:shadow-glass-lg transition-shadow duration-300",
+    surface: "bg-white border-2 border-black shadow-brutal rounded-none",
+    subtle: "bg-[#fafaf7] border-2 border-black shadow-brutal-sm rounded-none",
+    floating: "bg-white border-3 border-black shadow-brutal-lg hover:shadow-brutal-xl hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all duration-150 rounded-none",
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 8 }}
-      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+      exit={{ opacity: 0, y: 6 }}
+      transition={{ type: "spring", stiffness: 400, damping: 28 }}
       className={cn(
-        "relative overflow-hidden transition-all duration-200",
+        "relative overflow-hidden transition-all duration-150",
         variantStyles[variant],
         className
       )}
       {...props}
     >
-      {/* Optional Lens Refraction SVG Filter overlay */}
+      {/* Optional industrial grid watermark */}
       {lensEffect && (
-        <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-15">
-          <filter id="lensRefraction">
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-          <rect width="100%" height="100%" filter="url(#lensRefraction)" fill="none" />
-        </svg>
+        <div className="pointer-events-none absolute inset-0 opacity-10 bg-[radial-gradient(#000000_1px,transparent_1px)] [background-size:12px_12px]" />
       )}
-
-      {/* 1px inner specular highlight border */}
-      <div className="pointer-events-none absolute inset-0 rounded-[inherit] border border-white/20 dark:border-white/10" />
 
       {children}
     </motion.div>
   );
 };
+
+export const BrutalCard = GlassCard;

@@ -7,16 +7,13 @@ import {
   Search,
   FolderOpen,
   LogOut,
-  Moon,
-  Sun,
   Activity,
-  Layers,
   ChevronLeft,
   ChevronRight,
   ShieldCheck,
   Palette,
 } from "lucide-react";
-import { THEMES, getStoredTheme } from "@/lib/theme";
+import { getStoredTheme } from "@/lib/theme";
 import { ThemeSelectorModal } from "../ui/ThemeSelectorModal";
 import { Conversation, User, UsageSummary } from "@/lib/types";
 import { api } from "@/lib/api";
@@ -55,7 +52,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   const [currentThemeId, setCurrentThemeId] = useState<string>("opal-crisp");
 
-  // Theme detection & synchronization
   useEffect(() => {
     setCurrentThemeId(getStoredTheme());
 
@@ -68,7 +64,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     return () => window.removeEventListener("themechange", handleThemeChange);
   }, []);
 
-  // Load usage tracking
   useEffect(() => {
     if (user) {
       api.getUsage().then(setUsage).catch(() => {});
@@ -94,82 +89,83 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside
       className={cn(
-        "relative z-30 h-full flex flex-col transition-all duration-300 ease-in-out p-3",
+        "relative z-30 h-full flex flex-col transition-all duration-200 p-2 sm:p-3",
         isCollapsed ? "w-20" : "w-72 sm:w-80"
       )}
     >
-      <GlassCard
-        variant="surface"
-        className="h-full flex flex-col p-3 border border-white/40 dark:border-white/10 shadow-xl overflow-hidden rounded-3xl"
-      >
+      <div className="h-full flex flex-col p-3 bg-white border-3 border-black shadow-brutal-md rounded-none overflow-hidden">
         {/* Top Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/5">
+        <div className="flex items-center justify-between pb-3 border-b-2 border-black select-none">
           {!isCollapsed ? (
-            <div className="flex items-center gap-2.5 px-1">
-              <img
-                src="/logo.png"
-                alt="MasterChat"
-                className="w-7 h-7 object-contain drop-shadow-xs transition-transform hover:scale-105"
-              />
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 border-2 border-black p-0.5 bg-white shadow-[2px_2px_0px_0px_#000] flex items-center justify-center shrink-0">
+                <img
+                  src="/logo.png"
+                  alt="MasterChat"
+                  className="w-full h-full object-contain"
+                />
+              </div>
               <div className="flex flex-col">
-                <span className="font-bold text-base tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text leading-tight">
-                  MasterChat
+                <span className="font-black text-sm uppercase tracking-wider text-black leading-tight">
+                  MASTERCHAT
                 </span>
-                <span className="text-[9px] font-medium text-foreground/45 leading-none">
-                  by Rutwij Sudke
+                <span className="text-[9px] font-mono font-bold text-black/60 uppercase leading-none">
+                  BY RUTWIJ SUDKE
                 </span>
               </div>
             </div>
           ) : (
-            <img
-              src="/logo.png"
-              alt="MasterChat"
-              className="w-6 h-6 object-contain mx-auto my-1 drop-shadow-xs cursor-pointer hover:scale-110 transition-transform"
+            <div
               onClick={() => setIsCollapsed(false)}
-              title="Expand MasterChat sidebar"
-            />
+              className="w-8 h-8 border-2 border-black p-0.5 bg-white shadow-[2px_2px_0px_0px_#000] mx-auto cursor-pointer hover:bg-neutral-100 transition-colors flex items-center justify-center"
+              title="Expand sidebar"
+            >
+              <img
+                src="/logo.png"
+                alt="MasterChat"
+                className="w-full h-full object-contain"
+              />
+            </div>
           )}
 
           {/* Collapse/Expand Toggle */}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 text-foreground/60 hover:text-foreground transition-colors ml-auto"
+            className="w-7 h-7 flex items-center justify-center border-2 border-black bg-white text-black font-black hover:bg-black hover:text-white transition-colors shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 ml-auto"
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            {isCollapsed ? <ChevronRight className="w-4 h-4 stroke-[3]" /> : <ChevronLeft className="w-4 h-4 stroke-[3]" />}
           </button>
         </div>
 
         {/* Action Controls */}
         <div className="flex flex-col gap-2 mt-3">
           {/* New Chat Button */}
-          <GlassButton
-            variant="primary"
-            size="md"
+          <button
             onClick={onNewChat}
-            className="w-full justify-between shadow-md"
+            className="w-full py-2 px-3 bg-brutal-accent hover:bg-brutal-accentHover text-black font-black text-xs uppercase tracking-wider border-2 border-black shadow-[3px_3px_0px_0px_#000] hover:shadow-[5px_5px_0px_0px_#000] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#000] transition-all flex items-center justify-between cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <Plus className="w-4 h-4" />
-              {!isCollapsed && <span>New Chat</span>}
+              <Plus className="w-4 h-4 stroke-[3]" />
+              {!isCollapsed && <span>NEW CHAT</span>}
             </div>
             {!isCollapsed && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-white/20 text-white/90 font-mono">
+              <span className="text-[10px] px-1.5 py-0.2 border border-black bg-white text-black font-mono font-bold">
                 ⌘K
               </span>
             )}
-          </GlassButton>
+          </button>
 
           {/* Search Filter */}
           {!isCollapsed && (
-            <div className="relative mt-1">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/45 pointer-events-none" />
+            <div className="relative mt-0.5">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-black/60 pointer-events-none stroke-[2.5]" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search chats..."
-                className="w-full pl-8 pr-3 py-1.5 rounded-xl text-xs bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 focus:outline-none focus:border-indigo-500/50 text-foreground placeholder:text-foreground/45"
+                placeholder="SEARCH ARCHIVES..."
+                className="w-full pl-8 pr-3 py-1.5 text-xs font-mono font-bold uppercase border-2 border-black bg-white focus:bg-[#fffdf0] text-black placeholder:text-black/40 shadow-[2px_2px_0px_0px_#000] focus:shadow-[4px_4px_0px_0px_#000] focus:outline-none transition-all rounded-none"
               />
             </div>
           )}
@@ -178,15 +174,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Conversation List */}
         <div className="flex-1 overflow-y-auto mt-3 space-y-1 pr-1">
           {!isCollapsed && (
-            <div className="px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground/45">
-              Recent Chats
+            <div className="flex items-center justify-between px-1 py-1 text-[10px] font-mono font-black uppercase text-black/50 border-b border-black/10 mb-1">
+              <span>// RECENT STREAMS</span>
+              <span>{filteredConversations.length}</span>
             </div>
           )}
 
           {filteredConversations.length === 0 ? (
             !isCollapsed && (
-              <div className="p-4 text-center text-xs text-foreground/45">
-                {search ? "No matching conversations" : "No chats yet. Start a new one!"}
+              <div className="p-4 text-center text-xs font-mono font-bold text-black/40 border-2 border-dashed border-black/30 mt-2">
+                {search ? "NO ARCHIVES MATCHED" : "NO SESSIONS CREATED"}
               </div>
             )
           ) : (
@@ -204,68 +201,68 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Bottom Utility Controls */}
-        <div className="pt-3 border-t border-black/5 dark:border-white/5 flex flex-col gap-1.5">
-          {/* Documents Manager Pill */}
+        <div className="pt-3 border-t-2 border-black flex flex-col gap-1.5 bg-[#f4f4f0] p-2 mt-auto border-2">
+          {/* Documents Manager Button */}
           <button
             onClick={onOpenDocuments}
-            className="flex items-center gap-2.5 px-3 py-2 rounded-2xl hover:bg-white/40 dark:hover:bg-white/10 transition-colors text-xs font-medium text-foreground/80 hover:text-foreground"
+            className="w-full flex items-center gap-2 px-2.5 py-1.5 border-2 border-black bg-white hover:bg-neutral-100 text-black font-black text-xs uppercase shadow-[2px_2px_0px_0px_#000] hover:shadow-[3px_3px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
             title="Knowledge Base & RAG Documents"
           >
-            <FolderOpen className="w-4 h-4 text-indigo-500" />
-            {!isCollapsed && <span>Document Library</span>}
+            <FolderOpen className="w-3.5 h-3.5 stroke-[2.5]" />
+            {!isCollapsed && <span>DOC LIBRARY</span>}
           </button>
 
-          {/* Admin Dashboard Pill (Visible to Administrators) */}
+          {/* Admin Dashboard Button (Visible to Administrators) */}
           {(user?.role === "admin" || user?.email === "demo@masterchat.ai" || user?.email?.startsWith("admin@")) && (
             <button
               onClick={() => router.push("/admin")}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-2xl hover:bg-purple-500/15 dark:hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 transition-colors text-xs font-semibold"
+              className="w-full flex items-center gap-2 px-2.5 py-1.5 border-2 border-black bg-[#FFE600] hover:bg-[#ffd900] text-black font-black text-xs uppercase shadow-[2px_2px_0px_0px_#000] hover:shadow-[3px_3px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
               title="Admin Dashboard (Platform Usage & Costs)"
             >
-              <ShieldCheck className="w-4 h-4 text-purple-500" />
-              {!isCollapsed && <span>Admin Dashboard</span>}
+              <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" />
+              {!isCollapsed && <span>ADMIN CONSOLE</span>}
             </button>
           )}
 
-          {/* Usage Metrics Pill */}
+          {/* Usage Metrics Box */}
           {usage && !isCollapsed && (
-            <div className="px-3 py-1.5 rounded-2xl bg-black/5 dark:bg-white/5 text-[11px] text-foreground/60 flex items-center justify-between">
-              <span className="flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Tokens</span>
+            <div className="px-2 py-1 border-2 border-black bg-white text-[10px] font-mono font-bold flex items-center justify-between shadow-[2px_2px_0px_0px_#000]">
+              <span className="flex items-center gap-1">
+                <Activity className="w-3 h-3 text-black" />
+                <span>TOKENS:</span>
               </span>
-              <span className="font-mono font-semibold text-foreground/80">
+              <span className="font-black text-black">
                 {usage.total_tokens.toLocaleString()} (${usage.total_estimated_cost.toFixed(3)})
               </span>
             </div>
           )}
 
           {/* User Profile & Theme Row */}
-          <div className="flex items-center justify-between pt-1 px-1">
+          <div className="flex items-center justify-between pt-1">
             <button
               onClick={() => setIsThemeModalOpen(true)}
-              className="p-2 rounded-xl hover:bg-purple-500/10 text-foreground/70 hover:text-purple-500 transition-colors"
-              title="Liquid Glass Theme Palette (8 Light Themes Available)"
+              className="w-7 h-7 flex items-center justify-center border-2 border-black bg-white text-black hover:bg-black hover:text-white transition-colors shadow-[2px_2px_0px_0px_#000] cursor-pointer"
+              title="Brutalist Theme Palette (8 Themes)"
             >
-              <Palette className="w-4 h-4 text-purple-500" />
+              <Palette className="w-3.5 h-3.5" />
             </button>
 
             {!isCollapsed && user && (
-              <span className="text-xs font-medium text-foreground/75 truncate max-w-[130px]">
-                {user.email}
+              <span className="text-[11px] font-mono font-bold text-black truncate max-w-[130px] border border-black px-1 bg-white">
+                {user.email.split("@")[0]}
               </span>
             )}
 
             <button
               onClick={onLogout}
-              className="p-2 rounded-xl hover:bg-rose-500/10 text-foreground/60 hover:text-rose-500 transition-colors"
+              className="w-7 h-7 flex items-center justify-center border-2 border-black bg-white text-black hover:bg-red-500 hover:text-white transition-colors shadow-[2px_2px_0px_0px_#000] cursor-pointer"
               title="Sign out"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
-      </GlassCard>
+      </div>
 
       {/* Theme Selector Modal */}
       <ThemeSelectorModal

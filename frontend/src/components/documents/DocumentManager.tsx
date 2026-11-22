@@ -120,17 +120,17 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({
   return (
     <GlassModal isOpen={isOpen} onClose={onClose} title="Knowledge Base & Documents">
       <div className="space-y-5">
-        {/* Drag and Drop Zone */}
+        {/* Drag and Drop Zone - Brutalist industrial dropzone */}
         <div
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
           className={cn(
-            "p-6 rounded-2xl border-2 border-dashed transition-all text-center cursor-pointer flex flex-col items-center justify-center",
+            "p-6 border-3 border-dashed border-black rounded-none transition-all text-center cursor-pointer flex flex-col items-center justify-center shadow-brutal-sm",
             isDragging
-              ? "border-indigo-500 bg-indigo-500/10"
-              : "border-black/10 dark:border-white/10 hover:border-indigo-500/50 hover:bg-black/5 dark:hover:bg-white/5"
+              ? "bg-[#ffe600] border-black scale-[0.99]"
+              : "bg-white hover:bg-black/5"
           )}
         >
           <input
@@ -145,28 +145,28 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({
             className="hidden"
           />
 
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-3">
+          <div className="w-12 h-12 border-2 border-black bg-black text-white flex items-center justify-center mb-3 shadow-brutal-xs">
             <UploadCloud className="w-6 h-6" />
           </div>
 
-          <p className="text-sm font-semibold text-foreground">
-            Click to upload or drag & drop files
+          <p className="text-xs font-black uppercase tracking-wider text-black">
+            [+] Click to Upload or Drag & Drop Documents
           </p>
-          <p className="text-xs text-foreground/50 mt-1">
-            Supports PDF, DOCX, TXT, Markdown, CSV (up to 25MB)
+          <p className="text-[11px] font-mono text-neutral-600 mt-1">
+            Supports PDF, DOCX, TXT, MD, CSV, JSON (Up to 25MB)
           </p>
         </div>
 
         {/* URL Ingestion Form */}
         <form onSubmit={handleUrlUpload} className="flex gap-2">
           <div className="relative flex-1">
-            <Globe className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/45 pointer-events-none" />
+            <Globe className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 pointer-events-none" />
             <input
               type="url"
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
               placeholder="Or enter a web page URL to crawl & index..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl text-xs bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 focus:outline-none focus:border-indigo-500 text-foreground placeholder:text-foreground/45"
+              className="w-full pl-9 pr-3 py-2 text-xs font-mono border-2 border-black bg-white rounded-none shadow-brutal-xs focus:outline-none focus:ring-0 text-black placeholder:text-neutral-400"
             />
           </div>
           <GlassButton
@@ -181,49 +181,49 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({
 
         {/* Upload State Feedback */}
         {isUploading && (
-          <div className="flex items-center gap-2 p-3 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-medium animate-pulse">
-            <Loader2 className="w-4 h-4 animate-spin" />
+          <div className="flex items-center gap-2 p-3 border-2 border-black bg-[#ffe600] text-black text-xs font-mono font-bold uppercase shadow-brutal-xs animate-pulse">
+            <Loader2 className="w-4 h-4 animate-spin text-black" />
             <span>Parsing document, computing embeddings, and storing vector chunks...</span>
           </div>
         )}
 
         {uploadError && (
-          <div className="flex items-center gap-2 p-3 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 text-xs font-medium">
-            <AlertCircle className="w-4 h-4" />
+          <div className="flex items-center gap-2 p-3 border-2 border-black bg-rose-200 text-rose-950 text-xs font-mono font-bold uppercase shadow-brutal-xs">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{uploadError}</span>
           </div>
         )}
 
         {/* Document List */}
         <div className="mt-4">
-          <div className="flex items-center justify-between pb-2 text-xs font-semibold uppercase tracking-wider text-foreground/50">
+          <div className="flex items-center justify-between pb-2 border-b-2 border-black text-xs font-black uppercase tracking-wider font-mono text-black">
             <span>Indexed Documents ({documents.length})</span>
             {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
           </div>
 
-          <div className="space-y-2 max-h-60 overflow-y-auto pr-1 mt-1">
+          <div className="space-y-2 max-h-60 overflow-y-auto pr-1 mt-2">
             {documents.length === 0 && !isLoading ? (
-              <p className="text-center text-xs text-foreground/40 py-6">
-                No documents indexed yet. Upload documents to ground AI responses with RAG.
-              </p>
+              <div className="p-6 text-center border-2 border-dashed border-black/30 font-mono text-xs text-neutral-500">
+                NO DOCUMENTS INDEXED YET. UPLOAD FILES TO GROUND AI RESPONSES WITH RAG.
+              </div>
             ) : (
               documents.map((doc) => (
                 <div
                   key={doc.id}
-                  className="flex items-center justify-between p-3 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 hover:border-black/10 transition-all text-xs"
+                  className="flex items-center justify-between p-3 border-2 border-black bg-white shadow-brutal-sm text-xs hover:translate-x-0.5 transition-all"
                 >
-                  <div className="flex items-center gap-2.5 overflow-hidden">
-                    <div className="p-2 rounded-xl bg-indigo-500/15 text-indigo-500 flex-shrink-0">
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className="w-8 h-8 border-2 border-black bg-black text-white flex items-center justify-center shrink-0 shadow-brutal-xs">
                       {doc.file_type === "url" ? <Globe className="w-4 h-4" /> : <FileText className="w-4 h-4" />}
                     </div>
                     <div className="overflow-hidden">
-                      <p className="font-semibold text-foreground truncate max-w-[260px] sm:max-w-md">
+                      <p className="font-bold text-black truncate max-w-[240px] sm:max-w-md">
                         {doc.filename}
                       </p>
-                      <div className="flex items-center gap-2 text-[11px] text-foreground/50 mt-0.5">
-                        <span>{doc.file_size ? formatBytes(doc.file_size) : "Web Page"}</span>
+                      <div className="flex items-center gap-2 text-[10px] font-mono text-neutral-600 mt-0.5">
+                        <span>{doc.file_size ? formatBytes(doc.file_size) : "WEB PAGE"}</span>
                         <span>•</span>
-                        <span>{doc.chunk_count} chunks</span>
+                        <span>{doc.chunk_count} CHUNKS</span>
                         <span>•</span>
                         <span>{formatDate(doc.created_at)}</span>
                       </div>
@@ -234,12 +234,12 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({
                     {/* Status Pill */}
                     <span
                       className={cn(
-                        "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold capitalize",
+                        "inline-flex items-center gap-1 px-2 py-0.5 border-2 border-black text-[10px] font-mono font-black uppercase tracking-wider",
                         doc.status === "indexed"
-                          ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                          ? "bg-[#22c55e] text-black"
                           : doc.status === "processing"
-                          ? "bg-amber-500/15 text-amber-600 animate-pulse"
-                          : "bg-rose-500/15 text-rose-600"
+                          ? "bg-[#ffe600] text-black animate-pulse"
+                          : "bg-[#ef4444] text-white"
                       )}
                     >
                       {doc.status === "indexed" && <CheckCircle2 className="w-3 h-3" />}
@@ -251,7 +251,7 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({
                     {/* Delete */}
                     <button
                       onClick={() => handleDelete(doc.id)}
-                      className="p-1.5 rounded-xl hover:bg-rose-500/15 text-foreground/45 hover:text-rose-500 transition-colors"
+                      className="p-1.5 border-2 border-black bg-white hover:bg-black hover:text-white transition-all shadow-brutal-xs"
                       title="Delete document"
                     >
                       <Trash2 className="w-3.5 h-3.5" />

@@ -9,15 +9,12 @@ import {
   ThumbsUp,
   ThumbsDown,
   Edit2,
-  Sparkles,
-  User as UserIcon,
   Volume2,
   VolumeX,
 } from "lucide-react";
 import { Message } from "@/lib/types";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import { CitationPopover } from "./CitationPopover";
-import { GlassCard } from "../ui/GlassCard";
 import { cn } from "@/lib/utils";
 
 interface ChatMessageProps {
@@ -39,7 +36,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Stop any active speech when component unmounts
   useEffect(() => {
     return () => {
       if (typeof window !== "undefined" && window.speechSynthesis) {
@@ -66,7 +62,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
       return;
     }
 
-    // Clean markdown syntax for pleasant vocal articulation
     const plainText = message.content
       .replace(/!\[.*?\]\(.*?\)/g, "")
       .replace(/\[(.*?)\]\(.*?\)/g, "$1")
@@ -102,114 +97,114 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 350, damping: 28 }}
+      transition={{ type: "spring", stiffness: 400, damping: 28 }}
       className={cn(
-        "group flex w-full gap-3 py-3 px-2 sm:px-4",
+        "group flex w-full gap-2 sm:gap-3 py-2 px-1 sm:px-2",
         isUser ? "justify-end" : "justify-start"
       )}
     >
-      {/* Assistant Avatar */}
+      {/* Assistant Logo Badge */}
       {!isUser && (
         <div className="flex-shrink-0 mt-1">
-          <div className="w-8 h-8 rounded-2xl flex items-center justify-center bg-white/70 border border-white/60 shadow-xs overflow-hidden backdrop-blur-md">
+          <div className="w-8 h-8 border-2 border-black bg-white flex items-center justify-center shadow-[2px_2px_0px_0px_#000]">
             <img
               src="/logo.png"
-              alt="MasterChat AI"
-              className="w-6 h-6 object-contain"
+              alt="MasterChat"
+              className="w-5 h-5 object-contain"
             />
           </div>
         </div>
       )}
 
       {/* Message Bubble Container */}
-      <div className={cn("flex flex-col max-w-[85%] sm:max-w-[78%]", isUser && "items-end")}>
-        {/* User / Assistant Header Meta */}
-        <div className="flex items-center gap-2 mb-1 px-1 text-xs text-foreground/50">
-          <span className="font-medium">{isUser ? "You" : message.model || "MasterChat AI"}</span>
+      <div className={cn("flex flex-col max-w-[90%] sm:max-w-[82%]", isUser && "items-end")}>
+        {/* Header Metadata Tag */}
+        <div className="flex items-center gap-1.5 mb-1 px-1 text-[11px] font-mono font-bold uppercase text-black/60">
+          <span>{isUser ? "[OPERATOR]" : `[AGENT: ${message.model || "MASTERCHAT"}]`}</span>
           <span>•</span>
           <span>{new Date(message.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
         </div>
 
-        {/* Message Glass Body */}
+        {/* Message Brutalist Box Body */}
         {isEditing ? (
-          <div className="w-full flex flex-col gap-2 p-3 liquid-glass-input rounded-2xl">
+          <div className="w-full flex flex-col gap-2 p-3 bg-white border-2 border-black shadow-brutal rounded-none">
             <textarea
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
-              className="w-full bg-transparent resize-none focus:outline-none text-sm"
+              className="w-full bg-white resize-none focus:outline-none text-xs sm:text-sm font-mono border-2 border-black p-2"
               rows={3}
               autoFocus
             />
             <div className="flex justify-end gap-2 text-xs">
               <button
                 onClick={() => setIsEditing(false)}
-                className="px-3 py-1 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 transition-colors"
+                className="px-3 py-1 font-bold uppercase border-2 border-black bg-white hover:bg-neutral-100 shadow-[2px_2px_0px_0px_#000]"
               >
-                Cancel
+                CANCEL
               </button>
               <button
                 onClick={handleSaveEdit}
-                className="px-3 py-1 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-colors font-medium"
+                className="px-3 py-1 font-black uppercase border-2 border-black bg-brutal-accent hover:bg-brutal-accentHover text-black shadow-[2px_2px_0px_0px_#000]"
               >
-                Save & Resend
+                SAVE & RESEND
               </button>
             </div>
           </div>
         ) : (
-          <GlassCard
-            variant={isUser ? "subtle" : "surface"}
+          <div
             className={cn(
-              "px-4 py-3 sm:px-5 sm:py-3.5 shadow-sm text-foreground",
+              "px-4 py-3 sm:px-5 sm:py-3.5 border-2 border-black shadow-brutal rounded-none",
               isUser
-                ? "bg-gradient-to-br from-indigo-600/90 to-blue-600/90 text-white rounded-3xl rounded-tr-sm border-white/20"
-                : "rounded-3xl rounded-tl-sm border-white/30 dark:border-white/10"
+                ? "bg-brutal-accent text-black font-semibold"
+                : "bg-white text-black"
             )}
           >
             {isUser ? (
-              <p className="whitespace-pre-wrap text-sm sm:text-base leading-relaxed">{message.content}</p>
+              <p className="whitespace-pre-wrap text-sm sm:text-base font-bold leading-relaxed">{message.content}</p>
             ) : (
               <MarkdownRenderer content={message.content} />
             )}
 
             {/* Citations section if present */}
             {message.sources && message.sources.length > 0 && (
-              <div className="mt-3 pt-2.5 border-t border-black/5 dark:border-white/10">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-foreground/50 mb-1.5">
-                  Sources & Grounding References
+              <div className="mt-3 pt-2.5 border-t-2 border-black">
+                <p className="text-[10px] font-mono font-black uppercase tracking-wider text-black mb-1.5 flex items-center gap-1.5">
+                  <span className="w-2 h-2 bg-black inline-block" />
+                  <span>GROUNDING CITATIONS & PROVENANCE:</span>
                 </p>
-                <div className="flex flex-wrap items-center">
+                <div className="flex flex-wrap items-center gap-1">
                   {message.sources.map((cit, idx) => (
                     <CitationPopover key={cit.chunk_id || idx} citation={cit} index={idx} />
                   ))}
                 </div>
               </div>
             )}
-          </GlassCard>
+          </div>
         )}
 
-        {/* Message Actions Bar (Hover) */}
+        {/* Message Actions Bar */}
         {!isEditing && (
           <div
             className={cn(
-              "flex items-center gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-foreground/50",
+              "flex items-center gap-1 mt-1 opacity-70 group-hover:opacity-100 transition-opacity duration-150 text-black",
               isUser ? "justify-end" : "justify-start"
             )}
           >
             <button
               onClick={handleCopy}
               title="Copy message"
-              className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 hover:text-foreground transition-colors"
+              className="p-1 border border-black bg-white hover:bg-black hover:text-white transition-colors shadow-[1px_1px_0px_0px_#000]"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? <Check className="w-3.5 h-3.5 stroke-[3] text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
             </button>
 
             {isUser ? (
               <button
                 onClick={() => setIsEditing(true)}
                 title="Edit message"
-                className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 hover:text-foreground transition-colors"
+                className="p-1 border border-black bg-white hover:bg-black hover:text-white transition-colors shadow-[1px_1px_0px_0px_#000]"
               >
                 <Edit2 className="w-3.5 h-3.5" />
               </button>
@@ -219,14 +214,12 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                   onClick={handleToggleSpeak}
                   title={isPlayingAudio ? "Stop speaking" : "Read aloud (Text-to-Speech)"}
                   className={cn(
-                    "p-1 rounded-lg transition-colors cursor-pointer",
-                    isPlayingAudio
-                      ? "text-indigo-500 bg-indigo-500/10 hover:bg-indigo-500/20"
-                      : "hover:bg-black/5 dark:hover:bg-white/10 hover:text-foreground"
+                    "p-1 border border-black bg-white hover:bg-black hover:text-white transition-colors shadow-[1px_1px_0px_0px_#000] cursor-pointer",
+                    isPlayingAudio && "bg-black text-white"
                   )}
                 >
                   {isPlayingAudio ? (
-                    <VolumeX className="w-3.5 h-3.5 animate-pulse text-indigo-500" />
+                    <VolumeX className="w-3.5 h-3.5 animate-pulse text-[#FFE600]" />
                   ) : (
                     <Volume2 className="w-3.5 h-3.5" />
                   )}
@@ -235,7 +228,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                   <button
                     onClick={onRegenerate}
                     title="Regenerate response"
-                    className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 hover:text-foreground transition-colors"
+                    className="p-1 border border-black bg-white hover:bg-black hover:text-white transition-colors shadow-[1px_1px_0px_0px_#000]"
                   >
                     <RotateCw className="w-3.5 h-3.5" />
                   </button>
@@ -244,8 +237,8 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                   onClick={() => setFeedback(feedback === "up" ? null : "up")}
                   title="Helpful"
                   className={cn(
-                    "p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 transition-colors",
-                    feedback === "up" ? "text-emerald-500" : "hover:text-foreground"
+                    "p-1 border border-black bg-white hover:bg-emerald-400 transition-colors shadow-[1px_1px_0px_0px_#000]",
+                    feedback === "up" && "bg-emerald-400 text-black"
                   )}
                 >
                   <ThumbsUp className="w-3.5 h-3.5" />
@@ -254,8 +247,8 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                   onClick={() => setFeedback(feedback === "down" ? null : "down")}
                   title="Unhelpful"
                   className={cn(
-                    "p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 transition-colors",
-                    feedback === "down" ? "text-rose-500" : "hover:text-foreground"
+                    "p-1 border border-black bg-white hover:bg-rose-400 transition-colors shadow-[1px_1px_0px_0px_#000]",
+                    feedback === "down" && "bg-rose-400 text-black"
                   )}
                 >
                   <ThumbsDown className="w-3.5 h-3.5" />
@@ -265,15 +258,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
           </div>
         )}
       </div>
-
-      {/* User Avatar */}
-      {isUser && (
-        <div className="flex-shrink-0 mt-1">
-          <div className="w-8 h-8 rounded-2xl flex items-center justify-center bg-black/10 dark:bg-white/10 border border-white/20 shadow-sm text-foreground">
-            <UserIcon className="w-4 h-4" />
-          </div>
-        </div>
-      )}
     </motion.div>
   );
 };

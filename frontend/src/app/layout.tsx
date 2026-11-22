@@ -10,8 +10,8 @@ const montserratAlternates = Montserrat_Alternates({
 });
 
 export const metadata: Metadata = {
-  title: "MasterChat — Liquid Glass AI",
-  description: "Production AI Chat Platform featuring Apple Liquid Glass UI, Multi-Model LLM orchestration, RAG, and LangGraph Agents. Developed by Rutwij Sudke.",
+  title: "MasterChat — Modern Brutalist AI Platform",
+  description: "Production AI Chat Platform featuring Modern Brutalist Design System, Multi-Model LLM orchestration, RAG, and Autonomous Council. Developed by Rutwij Sudke.",
   icons: {
     icon: "/favicon.png",
     apple: "/icon.png",

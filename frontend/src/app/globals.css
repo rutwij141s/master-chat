@@ -4,111 +4,127 @@
 
 @layer base {
   /* =========================================================================
-     8 Apple Liquid Glass Light Themes
+     8 Neo-Brutalist Light Themes (Sharp Edges, Thick Borders, Hard Drop Shadows)
      ========================================================================= */
 
-  /* 1. Opal Crisp (Default: Pure white opal glass with ultraviolet & sky blue highlights) */
+  /* 1. Neo-Industrial (Default: Raw chalk concrete, stark black borders, hyper-yellow) */
   :root, .light {
-    --background: #f8fafc;
-    --foreground: #0f172a;
-    --glass-bg: rgba(255, 255, 255, 0.70);
-    --glass-border: rgba(255, 255, 255, 0.85);
-    --glass-shadow: 0 12px 40px rgba(99, 102, 241, 0.08);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
-    --mesh-blob-1: radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(168, 85, 247, 0.05) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(59, 130, 246, 0.05) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(236, 72, 153, 0.16) 0%, rgba(244, 63, 94, 0.04) 70%, transparent 100%);
+    --background: #f4f4f0;
+    --foreground: #000000;
+    --brutal-bg: #f4f4f0;
+    --brutal-surface: #ffffff;
+    --brutal-accent: #FFE600;
+    --brutal-accent-hover: #ffd900;
+    --brutal-border: #000000;
+    --brutal-shadow: 4px 4px 0px 0px #000000;
+    --brutal-shadow-lg: 8px 8px 0px 0px #000000;
+    --grid-color: rgba(0, 0, 0, 0.08);
+    --grid-accent: rgba(255, 230, 0, 0.25);
   }
 
-  /* 2. Rose Quartz (Frosted champagne blush glass with rose petals & soft peony glow) */
+  /* 2. Vermilion Signal (Architectural off-white, black framing, signal orange) */
   .theme-rose-quartz {
-    --background: #fff5f7;
-    --foreground: #2d0c1e;
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(251, 207, 232, 0.80);
-    --glass-shadow: 0 12px 40px rgba(219, 39, 119, 0.08);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
-    --mesh-blob-1: radial-gradient(circle, rgba(244, 114, 182, 0.25) 0%, rgba(251, 113, 133, 0.06) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(251, 191, 36, 0.18) 0%, rgba(244, 114, 182, 0.04) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(244, 63, 94, 0.16) 0%, rgba(219, 39, 119, 0.03) 70%, transparent 100%);
+    --background: #fff6f3;
+    --foreground: #000000;
+    --brutal-bg: #fff6f3;
+    --brutal-surface: #ffffff;
+    --brutal-accent: #FF4D00;
+    --brutal-accent-hover: #e04400;
+    --brutal-border: #000000;
+    --brutal-shadow: 4px 4px 0px 0px #000000;
+    --brutal-shadow-lg: 8px 8px 0px 0px #000000;
+    --grid-color: rgba(0, 0, 0, 0.08);
+    --grid-accent: rgba(255, 77, 0, 0.2);
   }
 
-  /* 3. Azure Breeze (Mediterranean sky cyan & cerulean reflections) */
+  /* 3. Cobalt Construct (Clean schematic drafting paper & electric cobalt) */
   .theme-azure-breeze {
-    --background: #f0f9ff;
-    --foreground: #082f49;
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(186, 230, 253, 0.85);
-    --glass-shadow: 0 12px 40px rgba(2, 132, 199, 0.08);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
-    --mesh-blob-1: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.06) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(96, 165, 250, 0.20) 0%, rgba(59, 130, 246, 0.05) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(45, 212, 191, 0.18) 0%, rgba(6, 182, 212, 0.04) 70%, transparent 100%);
+    --background: #f0f4ff;
+    --foreground: #000000;
+    --brutal-bg: #f0f4ff;
+    --brutal-surface: #ffffff;
+    --brutal-accent: #0055FF;
+    --brutal-accent-hover: #0044cc;
+    --brutal-border: #000000;
+    --brutal-shadow: 4px 4px 0px 0px #000000;
+    --brutal-shadow-lg: 8px 8px 0px 0px #000000;
+    --grid-color: rgba(0, 0, 0, 0.08);
+    --grid-accent: rgba(0, 85, 255, 0.2);
   }
 
-  /* 4. Mint Sage (Frosted morning botanical mint dew & fresh sage) */
+  /* 4. Acid Cyber (High-contrast industrial grid & razor acid lime) */
   .theme-mint-sage {
-    --background: #f2faf5;
-    --foreground: #062817;
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(167, 243, 208, 0.80);
-    --glass-shadow: 0 12px 40px rgba(5, 150, 105, 0.08);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
-    --mesh-blob-1: radial-gradient(circle, rgba(52, 211, 153, 0.25) 0%, rgba(16, 185, 129, 0.06) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(110, 231, 183, 0.22) 0%, rgba(5, 150, 105, 0.05) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(163, 230, 53, 0.16) 0%, rgba(101, 163, 13, 0.03) 70%, transparent 100%);
+    --background: #f2fff5;
+    --foreground: #000000;
+    --brutal-bg: #f2fff5;
+    --brutal-surface: #ffffff;
+    --brutal-accent: #00FF66;
+    --brutal-accent-hover: #00e055;
+    --brutal-border: #000000;
+    --brutal-shadow: 4px 4px 0px 0px #000000;
+    --brutal-shadow-lg: 8px 8px 0px 0px #000000;
+    --grid-color: rgba(0, 0, 0, 0.08);
+    --grid-accent: rgba(0, 255, 102, 0.2);
   }
 
-  /* 5. Sunset Peach (Tuscan terrace apricot, peach nectar & terracotta specular glass) */
+  /* 5. Hot Magenta (Stark gallery white & vivid electric magenta punch) */
   .theme-sunset-peach {
-    --background: #fff7ed;
-    --foreground: #431407;
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(254, 215, 170, 0.85);
-    --glass-shadow: 0 12px 40px rgba(234, 88, 12, 0.08);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
-    --mesh-blob-1: radial-gradient(circle, rgba(251, 146, 60, 0.24) 0%, rgba(249, 115, 22, 0.06) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(253, 186, 116, 0.22) 0%, rgba(234, 88, 12, 0.05) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(251, 113, 133, 0.16) 0%, rgba(244, 63, 94, 0.03) 70%, transparent 100%);
+    --background: #fff0f7;
+    --foreground: #000000;
+    --brutal-bg: #fff0f7;
+    --brutal-surface: #ffffff;
+    --brutal-accent: #FF007A;
+    --brutal-accent-hover: #e6006e;
+    --brutal-border: #000000;
+    --brutal-shadow: 4px 4px 0px 0px #000000;
+    --brutal-shadow-lg: 8px 8px 0px 0px #000000;
+    --grid-color: rgba(0, 0, 0, 0.08);
+    --grid-accent: rgba(255, 0, 122, 0.2);
   }
 
-  /* 6. Lavender Mist (Provence lilac mist, violet petals & crystal glass) */
+  /* 6. Ultraviolet (Chalk lavender & deep saturated ultraviolet) */
   .theme-lavender-mist {
-    --background: #faf5ff;
-    --foreground: #2e1065;
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(233, 213, 255, 0.85);
-    --glass-shadow: 0 12px 40px rgba(124, 58, 237, 0.08);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
-    --mesh-blob-1: radial-gradient(circle, rgba(192, 132, 252, 0.25) 0%, rgba(168, 85, 247, 0.06) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(216, 180, 254, 0.20) 0%, rgba(147, 51, 234, 0.05) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(167, 139, 250, 0.18) 0%, rgba(124, 58, 237, 0.04) 70%, transparent 100%);
+    --background: #f7f2ff;
+    --foreground: #000000;
+    --brutal-bg: #f7f2ff;
+    --brutal-surface: #ffffff;
+    --brutal-accent: #7928CA;
+    --brutal-accent-hover: #661eb0;
+    --brutal-border: #000000;
+    --brutal-shadow: 4px 4px 0px 0px #000000;
+    --brutal-shadow-lg: 8px 8px 0px 0px #000000;
+    --grid-color: rgba(0, 0, 0, 0.08);
+    --grid-accent: rgba(121, 40, 202, 0.2);
   }
 
-  /* 7. Arctic Glacier (Glacial polar light with frosted diamond reflections & silver sheen) */
+  /* 7. Blueprint Tech (Technical drafting canvas & radiant electric cyan) */
   .theme-arctic-glacier {
-    --background: #f1f5f9;
-    --foreground: #0f172a;
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(226, 232, 240, 0.90);
-    --glass-shadow: 0 12px 40px rgba(14, 165, 233, 0.07);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
-    --mesh-blob-1: radial-gradient(circle, rgba(186, 230, 253, 0.32) 0%, rgba(56, 189, 248, 0.06) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(203, 213, 225, 0.28) 0%, rgba(148, 163, 184, 0.06) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(147, 197, 253, 0.20) 0%, rgba(96, 165, 250, 0.04) 70%, transparent 100%);
+    --background: #effaff;
+    --foreground: #000000;
+    --brutal-bg: #effaff;
+    --brutal-surface: #ffffff;
+    --brutal-accent: #00E5FF;
+    --brutal-accent-hover: #00cce5;
+    --brutal-border: #000000;
+    --brutal-shadow: 4px 4px 0px 0px #000000;
+    --brutal-shadow-lg: 8px 8px 0px 0px #000000;
+    --grid-color: rgba(0, 0, 0, 0.08);
+    --grid-accent: rgba(0, 229, 255, 0.2);
   }
 
-  /* 8. Champagne Gold (Venetian palazzo champagne bubbles, spun gold & ivory pearl glass) */
+  /* 8. Solar Flare (Warm parchment canvas & blazing solar amber) */
   .theme-champagne-gold {
-    --background: #fefce8;
-    --foreground: #3f2c06;
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(254, 240, 138, 0.85);
-    --glass-shadow: 0 12px 40px rgba(202, 138, 4, 0.08);
-    --glass-inner-highlight: inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
-    --mesh-blob-1: radial-gradient(circle, rgba(253, 224, 71, 0.26) 0%, rgba(234, 179, 8, 0.06) 70%, transparent 100%);
-    --mesh-blob-2: radial-gradient(circle, rgba(254, 240, 138, 0.28) 0%, rgba(202, 138, 4, 0.05) 70%, transparent 100%);
-    --mesh-blob-3: radial-gradient(circle, rgba(251, 191, 36, 0.18) 0%, rgba(217, 119, 6, 0.04) 70%, transparent 100%);
+    --background: #fffdf0;
+    --foreground: #000000;
+    --brutal-bg: #fffdf0;
+    --brutal-surface: #ffffff;
+    --brutal-accent: #FFB800;
+    --brutal-accent-hover: #e5a500;
+    --brutal-border: #000000;
+    --brutal-shadow: 4px 4px 0px 0px #000000;
+    --brutal-shadow-lg: 8px 8px 0px 0px #000000;
+    --grid-color: rgba(0, 0, 0, 0.08);
+    --grid-accent: rgba(255, 184, 0, 0.2);
   }
 
   body {
@@ -118,40 +134,14 @@
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.4s ease, color 0.4s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 }
 
-/* Apple Liquid Glass Surface Classes */
-.liquid-glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow), var(--glass-inner-highlight);
-  border-radius: 24px;
-  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-}
-
-.liquid-glass-subtle {
-  background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.75);
-}
-
-.liquid-glass-input {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.8);
-  border-radius: 20px;
-}
-
-/* Fluid Mesh Gradients */
-.liquid-mesh-bg {
+/* =========================================================================
+   Brutalist Grid Pattern Background
+   ========================================================================= */
+.brutal-grid-bg {
   position: fixed;
   top: 0;
   left: 0;
@@ -159,119 +149,264 @@
   height: 100vh;
   z-index: 0;
   pointer-events: none;
-  overflow: hidden;
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, var(--grid-color) 1.5px, transparent 1.5px),
+    linear-gradient(to bottom, var(--grid-color) 1.5px, transparent 1.5px);
+  background-position: 0 0;
 }
 
-.mesh-blob-1 {
-  position: absolute;
-  top: -10%;
-  left: 15%;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: var(--mesh-blob-1, radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(168, 85, 247, 0.05) 70%, transparent 100%));
-  filter: blur(80px);
-  animation: floatOrb 22s ease-in-out infinite alternate;
-  transition: background 0.6s ease;
+/* Diagonal industrial hazard crosshatch */
+.brutal-stripes {
+  background: repeating-linear-gradient(
+    -45deg,
+    #000000,
+    #000000 8px,
+    var(--brutal-accent) 8px,
+    var(--brutal-accent) 16px
+  );
 }
 
-.mesh-blob-2 {
-  position: absolute;
-  bottom: -15%;
-  right: 10%;
-  width: 700px;
-  height: 700px;
-  border-radius: 50%;
-  background: var(--mesh-blob-2, radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(59, 130, 246, 0.05) 70%, transparent 100%));
-  filter: blur(90px);
-  animation: floatOrb2 26s ease-in-out infinite alternate;
-  transition: background 0.6s ease;
+.brutal-stripes-sm {
+  background: repeating-linear-gradient(
+    -45deg,
+    #000000,
+    #000000 4px,
+    var(--brutal-accent) 4px,
+    var(--brutal-accent) 8px
+  );
 }
 
-.mesh-blob-3 {
-  position: absolute;
-  top: 40%;
-  right: 35%;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  background: var(--mesh-blob-3, radial-gradient(circle, rgba(236, 72, 153, 0.16) 0%, rgba(244, 63, 94, 0.04) 70%, transparent 100%));
-  filter: blur(85px);
-  animation: floatOrb3 18s ease-in-out infinite alternate;
-  transition: background 0.6s ease;
+/* =========================================================================
+   Core Brutalist Surfaces & Component Classes
+   ========================================================================= */
+.brutal-card,
+.liquid-glass {
+  background: var(--brutal-surface, #ffffff);
+  border: 2px solid #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
+  border-radius: 0px !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-@keyframes floatOrb {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(60px, 80px) scale(1.15); }
-  100% { transform: translate(-40px, 40px) scale(0.95); }
+.brutal-card-lg {
+  background: var(--brutal-surface, #ffffff);
+  border: 3px solid #000000;
+  box-shadow: 6px 6px 0px 0px #000000;
+  border-radius: 0px !important;
 }
 
-@keyframes floatOrb2 {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-80px, -60px) scale(1.1); }
-  100% { transform: translate(50px, -40px) scale(0.9); }
+.brutal-card-xl {
+  background: var(--brutal-surface, #ffffff);
+  border: 4px solid #000000;
+  box-shadow: 8px 8px 0px 0px #000000;
+  border-radius: 0px !important;
 }
 
-@keyframes floatOrb3 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(-70px, 60px) scale(1.2); }
+.liquid-glass-subtle {
+  background: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px 0px #000000;
+  border-radius: 0px !important;
 }
 
-/* Custom Scrollbar */
+.liquid-glass-input {
+  background: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px 0px #000000;
+  border-radius: 0px !important;
+}
+
+/* Tactile Brutalist Action Buttons */
+.brutal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #000000;
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 3px 3px 0px 0px #000000;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-radius: 0px !important;
+  transition: all 0.1s ease;
+  user-select: none;
+  cursor: pointer;
+}
+
+.brutal-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0px 0px #000000;
+}
+
+.brutal-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #000000;
+}
+
+.brutal-btn-primary {
+  background: var(--brutal-accent, #FFE600);
+  color: #000000;
+  border: 2px solid #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 0px !important;
+}
+
+.brutal-btn-primary:hover {
+  background: var(--brutal-accent-hover, #ffd900);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #000000;
+}
+
+.brutal-btn-primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px #000000;
+}
+
+/* Brutalist Form Inputs */
+.brutal-input {
+  width: 100%;
+  border: 2px solid #000000;
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 3px 3px 0px 0px #000000;
+  border-radius: 0px !important;
+  padding: 0.625rem 0.875rem;
+  font-weight: 600;
+  outline: none;
+  transition: box-shadow 0.1s ease, transform 0.1s ease;
+}
+
+.brutal-input:focus {
+  outline: none;
+  border-color: #000000;
+  box-shadow: 5px 5px 0px 0px #000000;
+  transform: translate(-1px, -1px);
+}
+
+/* Technical Monospace Brutalist Badges */
+.brutal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1.5px solid #000000;
+  background: #ffffff;
+  color: #000000;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  box-shadow: 2px 2px 0px 0px #000000;
+  border-radius: 0px !important;
+  white-space: nowrap;
+}
+
+/* High-Contrast Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f4f4f0;
+  border-left: 2px solid #000000;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(150, 150, 150, 0.25);
-  border-radius: 9999px;
+  background: #000000;
+  border: 1px solid #ffffff;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(150, 150, 150, 0.45);
+  background: var(--brutal-accent, #FFE600);
 }
 
-/* Markdown styling inside liquid glass messages */
+/* Markdown styling inside brutalist container */
+.prose {
+  color: #000000;
+}
+
 .prose pre {
-  margin: 0.75rem 0;
-  border-radius: 16px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  margin: 1rem 0;
+  border-radius: 0px !important;
+  border: 2px solid #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
+  background: #000000 !important;
+  color: #ffffff !important;
 }
 
 .prose code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 600;
+  border: 1px solid #000000;
+  background: #f4f4f0;
+  padding: 1px 4px;
+  color: #000000;
+  border-radius: 0px !important;
+}
+
+.prose blockquote {
+  border-left: 4px solid #000000 !important;
+  background: #ffffff;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  border-radius: 0px !important;
+  box-shadow: 3px 3px 0px 0px #000000;
+  border-top: 1px solid #000000;
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+}
+
+.prose table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 2px solid #000000;
+  margin: 1rem 0;
+}
+
+.prose th {
+  background: #000000;
+  color: #ffffff;
+  border: 1px solid #000000;
+  padding: 0.5rem 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.prose td {
+  border: 1px solid #000000;
+  padding: 0.5rem 0.75rem;
+  background: #ffffff;
 }
 
 /* KaTeX styling */
 @import "katex/dist/katex.min.css";
 
 /* =========================================================================
-   Apple Liquid Glass Split Sliding Auth Panel
+   Neo-Brutalist Split Sliding Auth Container
    ========================================================================= */
 .auth-glass-container {
-  background: var(--glass-bg, rgba(255, 255, 255, 0.72));
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.85));
-  box-shadow: 0 24px 64px -12px rgba(31, 38, 135, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.9);
-  border-radius: 28px;
+  background: #ffffff;
+  border: 4px solid #000000;
+  box-shadow: 12px 12px 0px 0px #000000;
+  border-radius: 0px !important;
   position: relative;
   overflow: hidden;
-  width: 880px;
+  width: 900px;
   max-width: 100%;
   min-height: 580px;
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
 }
 
 .auth-form-box {
   position: absolute;
   top: 0;
   height: 100%;
-  transition: all 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+  background: #ffffff;
 }
 
 .login-form-box {
@@ -295,7 +430,7 @@
   transform: translateX(100%);
   opacity: 1;
   z-index: 5;
-  animation: authBoxShow 0.6s;
+  animation: authBoxShow 0.5s;
 }
 
 @keyframes authBoxShow {
@@ -316,25 +451,29 @@
   width: 50%;
   height: 100%;
   overflow: hidden;
-  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
   z-index: 20;
+  border-left: 3px solid #000000;
 }
 
 .auth-glass-container.panel-active .slide-panel-wrapper {
   transform: translateX(-100%);
+  border-left: none;
+  border-right: 3px solid #000000;
 }
 
 .slide-panel {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.94) 0%, rgba(147, 51, 234, 0.94) 50%, rgba(236, 72, 153, 0.90) 100%);
-  backdrop-filter: blur(28px) saturate(200%);
-  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  background: var(--brutal-accent, #FFE600);
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.12) 1.5px, transparent 1.5px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.12) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
   position: relative;
   left: -100%;
   height: 100%;
   width: 200%;
   transform: translateX(0);
-  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
-  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.45);
+  transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 .auth-glass-container.panel-active .slide-panel {
@@ -347,13 +486,14 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 0 45px;
+  padding: 0 40px;
   text-align: center;
   top: 0;
   height: 100%;
   width: 50%;
   transform: translateX(0);
-  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+  color: #000000;
 }
 
 .panel-content-left {
@@ -381,7 +521,9 @@
   .auth-glass-container {
     min-height: auto;
     width: 100%;
-    border-radius: 24px;
+    border-radius: 0px !important;
+    border: 3px solid #000000;
+    box-shadow: 6px 6px 0px 0px #000000;
   }
 
   .auth-form-box {
