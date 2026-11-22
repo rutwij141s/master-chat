@@ -127,13 +127,17 @@ export function applyTheme(themeId: string): void {
   root.classList.remove("dark");
   root.classList.add("light");
 
-  // Apply theme modifier if not default opal-crisp
-  if (validTheme.id !== "opal-crisp") {
-    root.classList.add(`theme-${validTheme.id}`);
-  }
+  // Apply theme modifier class
+  root.classList.add(`theme-${validTheme.id}`);
+
+  // Apply CSS custom variables directly to documentElement for instant reactivity
+  root.style.setProperty("--background", validTheme.colors.bg);
+  root.style.setProperty("--brutal-bg", validTheme.colors.bg);
+  root.style.setProperty("--brutal-accent", validTheme.colors.accent);
+  root.style.setProperty("--brutal-accent-hover", validTheme.colors.accent);
 
   localStorage.setItem(THEME_STORAGE_KEY, validTheme.id);
 
-  // Dispatch custom event for real-time reactive sync
+  // Dispatch custom event for real-time reactive sync across all open components
   window.dispatchEvent(new CustomEvent("themechange", { detail: { themeId: validTheme.id } }));
 }

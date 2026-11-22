@@ -135,7 +135,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       return {
         label: "COUNCIL",
         icon: <Users className="w-3 h-3 stroke-[2.5]" />,
-        badge: "bg-[#FFE600] text-black border border-black font-black",
+        badge: "bg-brutal-accent text-black border border-black font-black",
       };
     }
     if (prov === "anthropic" || id.includes("claude")) {

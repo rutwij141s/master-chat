@@ -219,7 +219,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
                   )}
                 >
                   {isPlayingAudio ? (
-                    <VolumeX className="w-3.5 h-3.5 animate-pulse text-[#FFE600]" />
+                    <VolumeX className="w-3.5 h-3.5 animate-pulse text-brutal-accent" />
                   ) : (
                     <Volume2 className="w-3.5 h-3.5" />
                   )}

@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 import { MessageList } from "./MessageList";
 import { MessageInput } from "./MessageInput";
 import { ModelSelector } from "./ModelSelector";
-import { FileText, Database, Download, FileDown, Check, Globe } from "lucide-react";
+import { FileText, Database, Download, FileDown, Check, Globe, PanelLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ChatContainerProps {
@@ -14,6 +14,8 @@ interface ChatContainerProps {
   onConversationCreated: (conv: Conversation) => void;
   onTitleUpdated: (id: string, title: string) => void;
   onOpenDocuments: () => void;
+  onToggleSidebar?: () => void;
+  isSidebarCollapsed?: boolean;
 }
 
 export const ChatContainer: React.FC<ChatContainerProps> = ({
@@ -21,6 +23,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
   onConversationCreated,
   onTitleUpdated,
   onOpenDocuments,
+  onToggleSidebar,
+  isSidebarCollapsed = false,
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -290,6 +294,19 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
       {/* Prominent Brutalist Top Navigation Header Bar */}
       <header className="flex items-center justify-between px-3 sm:px-5 py-2 bg-[#f4f4f0] border-b-3 border-black z-20 select-none">
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Sidebar Toggle Button */}
+          {onToggleSidebar && (
+            <button
+              type="button"
+              onClick={onToggleSidebar}
+              className="flex items-center justify-center p-1.5 bg-white hover:bg-brutal-accent text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer rounded-none transition-colors"
+              title={isSidebarCollapsed ? "Expand sidebar (Cmd+B)" : "Collapse sidebar (Cmd+B)"}
+              aria-label="Toggle sidebar"
+            >
+              <PanelLeft className="w-4 h-4 stroke-[2.5]" />
+            </button>
+          )}
+
           {/* Model Selector Section */}
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-mono font-black uppercase text-black hidden sm:inline px-1 bg-black text-white">
@@ -317,7 +334,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
               <button
                 type="button"
                 onClick={() => setShowExportMenu(!showExportMenu)}
-                className="flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-[#FFE600] text-black font-black text-xs uppercase border-2 border-black shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer rounded-none"
+                className="flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-brutal-accent text-black font-black text-xs uppercase border-2 border-black shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer rounded-none"
                 title="Export conversation transcript"
               >
                 {exportSuccess ? (
@@ -336,7 +353,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
                   <button
                     type="button"
                     onClick={exportAsMarkdown}
-                    className="w-full text-left px-2 py-1.5 text-xs font-bold hover:bg-[#FFE600] flex items-center gap-2 text-black cursor-pointer transition-colors border border-black mb-1"
+                    className="w-full text-left px-2 py-1.5 text-xs font-bold hover:bg-brutal-accent flex items-center gap-2 text-black cursor-pointer transition-colors border border-black mb-1"
                   >
                     <FileDown className="w-4 h-4 stroke-[2.5] flex-shrink-0" />
                     <div>
@@ -347,7 +364,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
                   <button
                     type="button"
                     onClick={exportAsText}
-                    className="w-full text-left px-2 py-1.5 text-xs font-bold hover:bg-[#FFE600] flex items-center gap-2 text-black cursor-pointer transition-colors border border-black"
+                    className="w-full text-left px-2 py-1.5 text-xs font-bold hover:bg-brutal-accent flex items-center gap-2 text-black cursor-pointer transition-colors border border-black"
                   >
                     <FileText className="w-4 h-4 stroke-[2.5] flex-shrink-0" />
                     <div>
@@ -365,7 +382,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
             <button
               type="button"
               onClick={onOpenDocuments}
-              className="flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-[#FFE600] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 text-xs font-bold uppercase transition-all cursor-pointer rounded-none"
+              className="flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-brutal-accent text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 text-xs font-bold uppercase transition-all cursor-pointer rounded-none"
               title="Click to view Knowledge Base documents"
             >
               <FileText className="w-3.5 h-3.5 stroke-[2.5]" />

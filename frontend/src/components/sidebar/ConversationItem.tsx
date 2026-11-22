@@ -11,6 +11,7 @@ interface ConversationItemProps {
   onSelect: () => void;
   onDelete: (id: string) => void;
   onRename?: (id: string, newTitle: string) => void;
+  isCollapsed?: boolean;
 }
 
 export const ConversationItem: React.FC<ConversationItemProps> = ({
@@ -19,6 +20,7 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
   onSelect,
   onDelete,
   onRename,
+  isCollapsed = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -31,6 +33,24 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
     }
     setIsEditing(false);
   };
+
+  // Compact icon button in collapsed sidebar mode
+  if (isCollapsed) {
+    return (
+      <button
+        onClick={onSelect}
+        className={cn(
+          "w-10 h-10 mx-auto flex items-center justify-center border-2 border-black transition-all cursor-pointer rounded-none relative group",
+          isActive
+            ? "bg-brutal-accent text-black shadow-[2px_2px_0px_0px_#000000] -translate-x-0.5 -translate-y-0.5"
+            : "bg-white text-black/70 hover:text-black hover:bg-neutral-100 hover:shadow-[2px_2px_0px_0px_#000000]"
+        )}
+        title={conversation.title || "Untitled Session"}
+      >
+        <MessageSquare className="w-4 h-4 stroke-[2.5]" />
+      </button>
+    );
+  }
 
   return (
     <div

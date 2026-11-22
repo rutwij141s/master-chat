@@ -25,6 +25,7 @@ import {
   Palette,
 } from "lucide-react";
 import { ThemeSelectorModal } from "@/components/ui/ThemeSelectorModal";
+import { getStoredTheme, applyTheme } from "@/lib/theme";
 import { api } from "@/lib/api";
 import {
   AdminOverview,
@@ -64,6 +65,18 @@ export default function AdminDashboardPage() {
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
 
   // Check auth and admin permissions on mount
+  useEffect(() => {
+    applyTheme(getStoredTheme());
+
+    const handleThemeChange = (e: any) => {
+      if (e.detail?.themeId) {
+        applyTheme(e.detail.themeId);
+      }
+    };
+    window.addEventListener("themechange", handleThemeChange);
+    return () => window.removeEventListener("themechange", handleThemeChange);
+  }, []);
+
   useEffect(() => {
     const rawUser = localStorage.getItem("masterchat_user");
     const token = localStorage.getItem("masterchat_access_token");
@@ -180,10 +193,11 @@ export default function AdminDashboardPage() {
 
   if (isAuthLoading) {
     return (
-      <div className="min-h-screen brutal-grid-bg flex items-center justify-center p-4">
-        <div className="border-3 border-black bg-white p-6 shadow-brutal-md flex flex-col items-center gap-3">
+      <div className="relative min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="brutal-grid-bg" />
+        <div className="relative z-10 border-3 border-black bg-white p-6 shadow-brutal-md flex flex-col items-center gap-3">
           <RefreshCw className="w-8 h-8 animate-spin text-black" />
-          <span className="text-xs font-black uppercase font-mono tracking-wider">
+          <span className="text-xs font-black uppercase font-mono tracking-wider text-black">
             AUTHENTICATING ADMIN ACCESS...
           </span>
         </div>
@@ -192,7 +206,11 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen brutal-grid-bg text-black flex flex-col p-4 md:p-8 space-y-6 font-sans">
+    <div className="relative min-h-screen bg-background text-foreground font-sans overflow-y-auto">
+      {/* Neo-Brutalist Architecture Grid Background */}
+      <div className="brutal-grid-bg" />
+
+      <div className="relative z-10 flex flex-col p-4 md:p-8 space-y-6 max-w-7xl mx-auto w-full">
       {/* Top Header Navigation */}
       <header className="border-3 border-black bg-white p-4 shadow-brutal-md flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -214,7 +232,7 @@ export default function AdminDashboardPage() {
                 <h1 className="text-xl md:text-2xl font-black uppercase tracking-tight">
                   MasterChat Admin Suite
                 </h1>
-                <span className="inline-flex items-center gap-1 text-[10px] font-mono font-black uppercase px-2 py-0.5 border-2 border-black bg-[#ffe600] text-black shadow-brutal-xs">
+                <span className="inline-flex items-center gap-1 text-[10px] font-mono font-black uppercase px-2 py-0.5 border-2 border-black bg-brutal-accent text-black shadow-brutal-xs">
                   <ShieldCheck className="w-3 h-3" />
                   <span>Telemetry</span>
                 </span>
@@ -271,7 +289,7 @@ export default function AdminDashboardPage() {
           {/* Theme Palette Button */}
           <button
             onClick={() => setIsThemeModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 border-2 border-black bg-white hover:bg-[#ffe600] text-xs font-black uppercase font-mono shadow-brutal-xs transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 border-2 border-black bg-white hover:bg-brutal-accent text-xs font-black uppercase font-mono shadow-brutal-xs transition-all"
             title="Choose Brutalist Theme"
           >
             <Palette className="w-3.5 h-3.5" />
@@ -311,7 +329,7 @@ export default function AdminDashboardPage() {
 
       {/* Feedback banner */}
       {feedbackMessage && (
-        <div className="flex items-center justify-between p-3 border-2 border-black bg-[#ffe600] shadow-brutal-xs text-xs font-mono font-bold uppercase text-black">
+        <div className="flex items-center justify-between p-3 border-2 border-black bg-brutal-accent shadow-brutal-xs text-xs font-mono font-bold uppercase text-black">
           <span>{feedbackMessage}</span>
           <button onClick={() => setFeedbackMessage(null)} className="p-1 hover:bg-black hover:text-white transition-all">
             <X className="w-4 h-4" />
@@ -366,7 +384,7 @@ export default function AdminDashboardPage() {
         <div className="border-3 border-black bg-white p-4 shadow-brutal-md relative">
           <div className="flex items-center justify-between">
             <span className="text-xs font-black uppercase tracking-wider font-mono text-neutral-600">Total Invocations</span>
-            <div className="w-8 h-8 border-2 border-black bg-[#ffe600] text-black flex items-center justify-center shadow-brutal-xs">
+            <div className="w-8 h-8 border-2 border-black bg-brutal-accent text-black flex items-center justify-center shadow-brutal-xs">
               <Activity className="w-4 h-4 stroke-[3]" />
             </div>
           </div>
@@ -431,7 +449,7 @@ export default function AdminDashboardPage() {
                 let badgeColor = "bg-neutral-200 text-black";
                 if (isDebate) {
                   providerBadge = "Council";
-                  badgeColor = "bg-[#ffe600] text-black";
+                  badgeColor = "bg-brutal-accent text-black";
                 } else if (isAnthropic) {
                   providerBadge = "Anthropic";
                   badgeColor = "bg-[#ff9900] text-black";
@@ -568,9 +586,9 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Table Content */}
-        <div className="overflow-x-auto border-2 border-black">
-          <table className="w-full text-left text-xs">
-            <thead>
+        <div className="overflow-x-auto border-2 border-black max-h-[600px] overflow-y-auto">
+          <table className="w-full text-left text-xs min-w-[850px]">
+            <thead className="sticky top-0 z-10">
               <tr className="bg-black text-white text-[11px] font-mono font-black uppercase tracking-wider">
                 <th className="py-2.5 px-3">User Account</th>
                 <th className="py-2.5 px-3">Role</th>
@@ -607,7 +625,7 @@ export default function AdminDashboardPage() {
                           className={cn(
                             "inline-flex items-center gap-1 px-2 py-0.5 border-2 border-black text-[10px] font-mono font-black uppercase shadow-brutal-xs",
                             isAdmin
-                              ? "bg-[#ffe600] text-black"
+                              ? "bg-brutal-accent text-black"
                               : "bg-white text-black"
                           )}
                         >
@@ -703,7 +721,7 @@ export default function AdminDashboardPage() {
                 className={cn(
                   "flex items-center gap-1.5 px-3 py-1.5 border-2 border-black text-xs font-mono font-black uppercase transition-all shadow-brutal-xs",
                   selectedUserDetail.user.role === "admin"
-                    ? "bg-[#ffe600] text-black hover:bg-rose-500 hover:text-white"
+                    ? "bg-brutal-accent text-black hover:bg-rose-500 hover:text-white"
                     : "bg-white text-black hover:bg-black hover:text-white"
                 )}
                 title="Toggle administrator privileges"
@@ -805,6 +823,7 @@ export default function AdminDashboardPage() {
         isOpen={isThemeModalOpen}
         onClose={() => setIsThemeModalOpen(false)}
       />
+      </div>
     </div>
   );
 }

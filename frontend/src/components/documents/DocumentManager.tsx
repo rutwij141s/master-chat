@@ -129,7 +129,7 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({
           className={cn(
             "p-6 border-3 border-dashed border-black rounded-none transition-all text-center cursor-pointer flex flex-col items-center justify-center shadow-brutal-sm",
             isDragging
-              ? "bg-[#ffe600] border-black scale-[0.99]"
+              ? "bg-brutal-accent border-black scale-[0.99]"
               : "bg-white hover:bg-black/5"
           )}
         >
@@ -181,7 +181,7 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({
 
         {/* Upload State Feedback */}
         {isUploading && (
-          <div className="flex items-center gap-2 p-3 border-2 border-black bg-[#ffe600] text-black text-xs font-mono font-bold uppercase shadow-brutal-xs animate-pulse">
+          <div className="flex items-center gap-2 p-3 border-2 border-black bg-brutal-accent text-black text-xs font-mono font-bold uppercase shadow-brutal-xs animate-pulse">
             <Loader2 className="w-4 h-4 animate-spin text-black" />
             <span>Parsing document, computing embeddings, and storing vector chunks...</span>
           </div>

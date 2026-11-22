@@ -216,7 +216,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
               className={cn(
                 "flex items-center gap-1 px-2 py-1 text-xs font-mono font-bold border-2 border-black transition-all cursor-pointer select-none rounded-none shadow-[2px_2px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5",
                 selectedModel === "debate"
-                  ? "bg-[#FFE600] text-black font-black"
+                  ? "bg-brutal-accent text-black font-black"
                   : "bg-white text-black hover:bg-neutral-100"
               )}
               title="Debate Chat: Consult 4 AI models simultaneously"

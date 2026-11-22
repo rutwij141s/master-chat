@@ -8,7 +8,7 @@
      ========================================================================= */
 
   /* 1. Neo-Industrial (Default: Raw chalk concrete, stark black borders, hyper-yellow) */
-  :root, .light {
+  :root, .light, .theme-opal-crisp {
     --background: #f4f4f0;
     --foreground: #000000;
     --brutal-bg: #f4f4f0;

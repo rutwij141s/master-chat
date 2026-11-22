@@ -16,10 +16,20 @@ export default function ChatPage() {
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [isDocumentsOpen, setIsDocumentsOpen] = useState(false);
   const [isLoadingConversations, setIsLoadingConversations] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // Authentication check & initial load
   useEffect(() => {
     applyTheme(getStoredTheme());
+
+    const handleThemeChange = (e: any) => {
+      if (e.detail?.themeId) {
+        applyTheme(e.detail.themeId);
+      }
+    };
+    window.addEventListener("themechange", handleThemeChange);
+
     const storedUser = localStorage.getItem("masterchat_user");
     const accessToken = localStorage.getItem("masterchat_access_token");
 
@@ -41,6 +51,24 @@ export default function ChatPage() {
           setUser({ id: "4fd1629e-5f63-4135-80e8-807a1632c551", email: "demo@masterchat.ai" });
         });
     }
+
+    return () => window.removeEventListener("themechange", handleThemeChange);
+  }, []);
+
+  // Keyboard shortcut Cmd+B / Ctrl+B to toggle sidebar
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        if (window.innerWidth < 640) {
+          setIsMobileSidebarOpen((prev) => !prev);
+        } else {
+          setIsSidebarCollapsed((prev) => !prev);
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   // Fetch conversations
@@ -113,17 +141,39 @@ export default function ChatPage() {
       {/* Neo-Brutalist Architecture Grid */}
       <div className="brutal-grid-bg" />
 
+      {/* Mobile Backdrop Overlay */}
+      {isMobileSidebarOpen && (
+        <div
+          onClick={() => setIsMobileSidebarOpen(false)}
+          className="fixed inset-0 bg-black/60 z-40 sm:hidden backdrop-blur-xs transition-opacity"
+          aria-hidden="true"
+        />
+      )}
+
       {/* Brutalist Sidebar */}
       <Sidebar
         conversations={conversations}
         activeConversationId={activeConversationId}
-        onSelectConversation={handleSelectConversation}
-        onNewChat={handleNewChat}
+        onSelectConversation={(id) => {
+          handleSelectConversation(id);
+          setIsMobileSidebarOpen(false);
+        }}
+        onNewChat={() => {
+          handleNewChat();
+          setIsMobileSidebarOpen(false);
+        }}
         onDeleteConversation={handleDeleteConversation}
         onRenameConversation={handleRenameConversation}
-        onOpenDocuments={() => setIsDocumentsOpen(true)}
+        onOpenDocuments={() => {
+          setIsDocumentsOpen(true);
+          setIsMobileSidebarOpen(false);
+        }}
         user={user}
         onLogout={handleLogout}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
+        isMobileOpen={isMobileSidebarOpen}
+        onCloseMobile={() => setIsMobileSidebarOpen(false)}
       />
 
       {/* Main Stage */}
@@ -133,6 +183,14 @@ export default function ChatPage() {
           onConversationCreated={handleConversationCreated}
           onTitleUpdated={handleTitleUpdated}
           onOpenDocuments={() => setIsDocumentsOpen(true)}
+          onToggleSidebar={() => {
+            if (typeof window !== "undefined" && window.innerWidth < 640) {
+              setIsMobileSidebarOpen((prev) => !prev);
+            } else {
+              setIsSidebarCollapsed((prev) => !prev);
+            }
+          }}
+          isSidebarCollapsed={isSidebarCollapsed}
         />
       </div>
 

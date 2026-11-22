@@ -117,7 +117,7 @@ export const AuthGlassCard: React.FC<AuthGlassCardProps> = ({
               <button
                 type="button"
                 aria-label="Google Sign In"
-                className="flex-1 py-2 border-2 border-black bg-white hover:bg-[#FFE600] text-black font-black text-xs uppercase flex items-center justify-center gap-1.5 shadow-[3px_3px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#000] transition-all"
+                className="flex-1 py-2 border-2 border-black bg-white hover:bg-brutal-accent text-black font-black text-xs uppercase flex items-center justify-center gap-1.5 shadow-[3px_3px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#000] transition-all"
               >
                 <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                   <path d="M12.24 10.285V13.8h6.887C18.2 16.16 15.64 18.5 12.24 18.5c-3.59 0-6.5-2.91-6.5-6.5s2.91-6.5 6.5-6.5c1.63 0 3.12.6 4.27 1.59l2.7-2.7C17.58 2.87 15.09 2 12.24 2 6.7 2 2.2 6.5 2.2 12s4.5 10 10.04 10c9.24 0 10.32-8.6 9.6-11.715H12.24z" />
@@ -243,7 +243,7 @@ export const AuthGlassCard: React.FC<AuthGlassCardProps> = ({
               <button
                 type="button"
                 aria-label="Google Sign In"
-                className="flex-1 py-2 border-2 border-black bg-white hover:bg-[#FFE600] text-black font-black text-xs uppercase flex items-center justify-center gap-1.5 shadow-[3px_3px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#000] transition-all"
+                className="flex-1 py-2 border-2 border-black bg-white hover:bg-brutal-accent text-black font-black text-xs uppercase flex items-center justify-center gap-1.5 shadow-[3px_3px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_0px_#000] transition-all"
               >
                 <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                   <path d="M12.24 10.285V13.8h6.887C18.2 16.16 15.64 18.5 12.24 18.5c-3.59 0-6.5-2.91-6.5-6.5s2.91-6.5 6.5-6.5c1.63 0 3.12.6 4.27 1.59l2.7-2.7C17.58 2.87 15.09 2 12.24 2 6.7 2 2.2 6.5 2.2 12s4.5 10 10.04 10c9.24 0 10.32-8.6 9.6-11.715H12.24z" />
