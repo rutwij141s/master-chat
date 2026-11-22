@@ -1,6 +1,6 @@
 import uuid
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class UserRegisterRequest(BaseModel):
@@ -27,5 +27,4 @@ class UserResponse(BaseModel):
     full_name: Optional[str] = None
     role: str = "user"
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

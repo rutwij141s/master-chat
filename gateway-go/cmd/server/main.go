@@ -105,6 +105,10 @@ func main() {
 		api.POST("/audio/transcribe", mediaHandler.TranscribeAudio)
 		api.POST("/audio/speech", mediaHandler.TextToSpeech)
 
+		// Accuracy & Hallucination Evaluation Suite
+		api.POST("/eval/verify", adminHandler.VerifyEvaluation)
+		api.GET("/eval/benchmark", adminHandler.RunEvaluationBenchmark)
+
 		// Admin Platform Telemetry & User Analytics (Privilege: Admin required)
 		adminGroup := api.Group("/admin")
 		adminGroup.Use(middleware.AdminRequired())

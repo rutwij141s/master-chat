@@ -37,3 +37,13 @@ func (h *AdminHandler) UpdateUserRole(c *gin.Context) {
 	targetURL := fmt.Sprintf("%s/api/v1/admin/users/%s/role", h.cfg.AIServiceURL, id)
 	proxy.ProxyJSON(c, targetURL)
 }
+
+func (h *AdminHandler) VerifyEvaluation(c *gin.Context) {
+	targetURL := fmt.Sprintf("%s/api/v1/eval/verify", h.cfg.AIServiceURL)
+	proxy.ProxyJSON(c, targetURL)
+}
+
+func (h *AdminHandler) RunEvaluationBenchmark(c *gin.Context) {
+	targetURL := fmt.Sprintf("%s/api/v1/eval/benchmark", h.cfg.AIServiceURL)
+	proxy.ProxyJSON(c, targetURL)
+}

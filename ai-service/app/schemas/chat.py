@@ -38,5 +38,6 @@ class ChatStreamChunk(BaseModel):
     title: Optional[str] = None
     model: Optional[str] = None
     citations: Optional[List[ChatCitation]] = None
+    evaluation: Optional[Dict[str, Any]] = None
     usage: Optional[Dict[str, Any]] = None
     error: Optional[str] = None
